@@ -1,0 +1,877 @@
+/**start of slickgrid styling**/
+/*
+IMPORTANT:
+In order to preserve the uniform grid appearance, all cell styles need to have padding, margin and border sizes.
+No built-in (selected, editable, highlight, flashing, invalid, loading, :focus) or user-specified CSS
+classes should alter those!
+*/
+
+.slick-header-columns {
+  background: url('%%pub%%system/img/header-columns-bg.gif') repeat-x center bottom;
+  border-bottom: 1px solid silver;
+}
+
+.slick-header-column {
+  background: url('%%pub%%system/img/header-columns-bg.gif') repeat-x center bottom;
+  border-right: 1px solid silver;
+}
+
+.slick-header-column:hover, .slick-header-column-active {
+  background: white url('%%pub%%system/img/header-columns-over-bg.gif') repeat-x center bottom;
+}
+
+.slick-headerrow {
+  background: #fafafa;
+}
+
+.slick-headerrow-column {
+  background: #fafafa;
+  border-bottom: 0;
+  height: 100%;
+}
+
+.slick-row.ui-state-active {
+  background: #F5F7D7;
+}
+
+.slick-row {
+  position: absolute;
+  background: white;
+  border: 0px;
+  line-height: 20px;
+}
+
+.slick-row.selected {
+  z-index: 10;
+  background: #DFE8F6;
+}
+
+.slick-cell {
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+.slick-group {
+  border-bottom: 2px solid silver;
+}
+
+.slick-group-toggle {
+  width: 9px;
+  height: 9px;
+  margin-right: 5px;
+}
+
+.slick-group-toggle.expanded {
+  background: url(%%pub%%system/img/collapse.gif) no-repeat center center;
+}
+
+.slick-group-toggle.collapsed {
+  background: url(%%pub%%system/img/expand.gif) no-repeat center center;
+}
+
+.slick-group-totals {
+  color: gray;
+  background: white;
+}
+
+.slick-cell.selected {
+  background-color: beige;
+}
+
+.slick-cell.active {
+  border-color: gray;
+  border-style: solid;
+}
+
+.slick-sortable-placeholder {
+  background: silver !important;
+}
+
+.slick-row.odd {
+  /*background: #fafafa;*/
+}
+
+.slick-row.ui-state-active {
+  background: #F5F7D7;
+}
+
+.slick-row.loading {
+  opacity: 0.5;
+  filter: alpha(opacity = 50);
+}
+
+.slick-cell.invalid {
+  border-color: red;
+  -moz-animation-duration: 0.2s;
+  -webkit-animation-duration: 0.2s;
+  -moz-animation-name: slickgrid-invalid-hilite;
+  -webkit-animation-name: slickgrid-invalid-hilite;  
+}
+
+@-moz-keyframes slickgrid-invalid-hilite {
+  from { box-shadow: 0 0 6px red; }
+  to { box-shadow: none; }
+}
+
+@-webkit-keyframes slickgrid-invalid-hilite {
+  from { box-shadow: 0 0 6px red; }
+  to { box-shadow: none; }
+}
+
+* {
+  font-family: arial;
+  font-size: 8pt;
+}
+
+body {
+  background: beige;
+  padding: 0;
+  margin: 8px;
+}
+
+h2 {
+  font-size: 10pt;
+  border-bottom: 1px dotted gray;
+}
+
+ul {
+  margin-left: 0;
+  padding: 0;
+  cursor: default;
+}
+
+li {
+  background: url("%%pub%%system/img/arrow_right_spearmint.png") no-repeat center left;
+  padding: 0 0 0 14px;
+  list-style: none;
+  margin: 0;
+}
+
+#myGrid {
+  background: white;
+  outline: 0;
+  border: 1px solid gray;
+}
+
+.grid-header {
+  border: 1px solid gray;
+  border-bottom: 0;
+  border-top: 0;
+  background: url('%%pub%%system/img/header-bg.gif') repeat-x center top;
+  color: black;
+  height: 24px;
+  line-height: 24px;
+}
+
+.grid-header label {
+  display: inline-block;
+  font-weight: bold;
+  margin: auto auto auto 6px;
+}
+
+.grid-header .ui-icon {
+  margin: 4px 4px auto 6px;
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.grid-header .ui-icon.ui-state-hover {
+  background-color: white;
+}
+
+.grid-header #txtSearch {
+  margin: 0 4px 0 4px;
+  padding: 2px 2px;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border: 1px solid silver;
+}
+
+.options-panel {
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+  border: 1px solid silver;
+  background: #f0f0f0;
+  padding: 4px;
+  margin-bottom: 20px;
+  width: 320px;
+  position: absolute;
+  top: 0px;
+  left: 650px;
+}
+
+/* Individual cell styles */
+.slick-cell.task-name {
+  font-weight: bold;
+  text-align: right;
+}
+
+.slick-cell.task-percent {
+  text-align: right;
+}
+
+.slick-cell.cell-move-handle {
+  font-weight: bold;
+  text-align: right;
+  border-right: solid gray;
+
+  background: #efefef;
+  cursor: move;
+}
+
+.cell-move-handle:hover {
+  background: #b6b9bd;
+}
+
+.slick-row.selected .cell-move-handle {
+  background: #D5DC8D;
+}
+
+.slick-row .cell-actions {
+  text-align: left;
+}
+
+.slick-row.complete {
+  background-color: #DFD;
+  color: #555;
+}
+
+.percent-complete-bar {
+  display: inline-block;
+  height: 6px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+}
+
+/* Slick.Editors.Text, Slick.Editors.Date */
+input.editor-text {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  margin: 0;
+  background: transparent;
+  outline: 0;
+  padding: 0;
+
+}
+
+.ui-datepicker-trigger {
+  margin-top: 2px;
+  padding: 0;
+  vertical-align: top;
+}
+
+/* Slick.Editors.PercentComplete */
+input.editor-percentcomplete {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  margin: 0;
+  background: transparent;
+  outline: 0;
+  padding: 0;
+
+  float: left;
+}
+
+.editor-percentcomplete-picker {
+  position: relative;
+  display: inline-block;
+  width: 16px;
+  height: 100%;
+  background: url("%%pub%%system/img/pencil.gif") no-repeat center center;
+  overflow: visible;
+  z-index: 1000;
+  float: right;
+}
+
+.editor-percentcomplete-helper {
+  border: 0 solid gray;
+  position: absolute;
+  top: -2px;
+  left: -9px;
+  background: url("%%pub%%system/img/editor-helper-bg.gif") no-repeat top left;
+  padding-left: 9px;
+
+  width: 120px;
+  height: 140px;
+  display: none;
+  overflow: visible;
+}
+
+.editor-percentcomplete-wrapper {
+  background: beige;
+  padding: 20px 8px;
+
+  width: 100%;
+  height: 98px;
+  border: 1px solid gray;
+  border-left: 0;
+}
+
+.editor-percentcomplete-buttons {
+  float: right;
+}
+
+.editor-percentcomplete-buttons button {
+  width: 80px;
+}
+
+.editor-percentcomplete-slider {
+  float: left;
+}
+
+.editor-percentcomplete-picker:hover .editor-percentcomplete-helper {
+  display: block;
+}
+
+.editor-percentcomplete-helper:hover {
+  display: block;
+}
+
+/* Slick.Editors.YesNoSelect */
+select.editor-yesno {
+  width: 100%;
+  margin: 0;
+  vertical-align: middle;
+}
+
+/* Slick.Editors.Checkbox */
+input.editor-checkbox {
+  margin: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+}
+/**end of slickgrid styling**/
+
+body{
+    background-image: url(%%pub%%system/img/channel_lineup_header.jpg);
+    background-repeat: no-repeat;   
+    background-position: left top;
+    font: 12px Helvetica, Arial, sans-serif;
+    overflow: hidden;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+#container,
+#containerSmall {
+    position: absolute;
+    top: 282px;
+    left: 26px;
+    width:850px;
+    height:340px;
+   
+}
+
+#containerSmall .ui-state-default,
+#container .ui-state-default{
+    border:0;
+}
+
+.slick-cell{
+    border-style: solid;
+}
+
+#containerSmall{
+    height:60px;
+    font-weight: bold;
+}
+
+#containerSmall .wide{
+    font-weight: normal;
+}
+
+#container{
+  top:345px;
+  height: 276px;  
+}
+
+
+#containerSmall .slick-viewport{
+  overflow: hidden !important;
+}
+
+.slick-viewport{
+    overflow-y:auto;
+    overflow-x: hidden !important;
+}
+
+
+.slick-header-columns{
+    display: none;
+    border-top:1px solid silver;
+}
+
+.slick-cell, .slick-headerrow-column, slick-header-column{
+    white-space: pre-wrap;      /* CSS3 */   
+    white-space: -moz-pre-wrap; /* Firefox */    
+    white-space: -pre-wrap;     /* Opera <7 */   
+    white-space: -o-pre-wrap;   /* Opera 7 */    
+    word-wrap: break-word;      /* IE */
+    text-align: left;
+}
+
+.hidden{
+    display: none;
+}
+
+.narrower,.narrow{
+    text-align: center;    
+}
+
+.narrow{
+   border-color:#fff; 
+}
+
+#container .narrower,.header .narrow{
+    padding-top:13px;
+}
+
+#containerSmall .slick-viewport{
+    background: #fafafa;
+}
+
+
+.slick-header-column{
+    text-align: center;
+    height:40px !important;
+    padding-top: 10px !important;
+    word-wrap: break-word !important;  
+}
+
+
+
+.slick-cell{
+    padding-left: 0;
+    padding-right:0;
+}
+
+
+/*start*/
+
+
+.table-header .narrow.genre{
+    width:69px;
+}
+
+.table-header{
+    position:absolute;
+    top: 152px;
+    left: 41px;
+    min-width:900px;
+    padding-top:80px;
+    overflow: hidden;
+}
+
+.table-header .header{
+    background: #e0e0e0;
+    text-align: center;   
+}
+
+.table-header .pull-left{
+    height:50px;   
+}
+
+.arrow{
+   padding-right: 6px;
+}
+
+.table-header .wide{
+    width:213px;
+    padding-top:20px;
+    padding-left:67px;    
+}
+
+
+.table-header .narrow{
+    width:70px;    
+}
+
+.table-header .call-letters{
+   border-right: 1px solid #fff; 
+}
+
+.table-header .channel-number{
+    border-right: 1px solid #fff;
+    border-left: 1px solid #fff;
+}
+
+.table-header .narrow.genre{
+    padding-top:20px;
+}
+
+.narrower.even{
+    background: #86b9ec;
+    border-color:#fff;
+}
+
+.narrower.odd{
+    background: #cde1f5;
+    border-color:#fff;
+}
+
+
+#container .wide,
+#container .narrow,
+#containerSmall .wide,
+#containerSmall .narrow
+{
+    background: #fff;
+    border-top: 1px solid #fff;
+    border-bottom: 1px solid #fff;
+    border-right: 0;
+    border-left: 0;
+}
+
+#container .inner{
+   height: 45px; 
+}
+
+#containerSmall .inner{
+    height: 26px;
+}
+
+#container .wide .inner,
+#containerSmall .wide .inner
+{
+    border-left: 2px solid #cde1f5;
+    border-top: 2px solid #cde1f5;
+    border-bottom: 2px solid #cde1f5;
+    padding-left:4px;
+}
+
+#container .narrow .inner,
+#containerSmall .narrow .inner
+{
+    border-top: 2px solid #cde1f5;
+    border-bottom: 2px solid #cde1f5;
+}
+
+#container .genre .inner,
+#containerSmall .genre .inner{
+    border-top: 2px solid #cde1f5;
+    border-bottom: 2px solid #cde1f5;
+    border-right: 2px solid #cde1f5;
+}
+
+#container .narrower,
+#containerSmall .narrower{
+    font-weight: bold;
+    border-top: 2px solid #fff;
+    border-bottom: 1px solid #fff;
+}
+
+#containerSmall .narrower{
+  border-bottom: 2px solid #fff; 
+}
+
+#genreSorter{
+    margin-left:10px;
+}
+
+#genreSorter .arrow{
+    padding-right:4px;
+}
+
+.two #genreSorter .arrow{
+    padding-right: 3px;
+    margin-left: -6px;
+}
+
+.two #genreSortStart{
+    margin-right: 15px;
+}
+
+
+
+#channelNumberSorter
+{
+    padding-left: 6px;
+}
+
+#mainHeader #nameSorter a,
+#mainHeader #channelNumberSorter a,
+#mainHeader #callLetterSorter a,
+#mainHeader #genreSorter a
+{
+    color:#ff0000;
+}
+
+
+
+#callLetterSorter{
+    padding-left: 8px;
+}
+
+#channelNumberSorter .arrow,
+#callLetterSorter .arrow
+{
+    padding-top: 6px;
+}
+
+
+#channelNameSortStart{
+    width:120px;
+    text-align: left;
+}
+
+.rotated .narrower{
+   background: #fff;
+}
+
+svg{
+   overflow: visible!important; 
+}
+
+.slick-viewport{
+    overflow-x: hidden!important;
+    overflow-y:scroll!important;
+}
+
+.red{
+    color:#ff0000;
+}
+
+input#txtSearch{
+    width:135px;
+    height: 20px;
+}
+
+/**start pager**/
+.slick-pager {
+  width: 100%;
+  height: 26px;
+  border: 1px solid gray;
+  border-top: 0;
+  background: url('%%pub%%system/img/header-columns-bg.gif') repeat-x center bottom;*/
+  vertical-align: middle;
+}
+
+.slick-pager .slick-pager-status {
+  display: inline-block;
+  padding: 6px;
+}
+
+.slick-pager .ui-icon-container {
+  display: inline-block;
+  margin: 2px;
+  border-color: gray;
+}
+
+.slick-pager .slick-pager-nav {
+  display: inline-block;
+  float: left;
+  padding: 2px;
+}
+
+.slick-pager .slick-pager-settings {
+  display: block;
+  float: right;
+  padding: 2px;
+}
+
+.slick-pager .slick-pager-settings * {
+  vertical-align: middle;
+}
+
+.slick-pager .slick-pager-settings a {
+  padding: 2px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+#pager{
+    width: 850px!important;
+    height: 20px;
+    position: absolute;
+    left: 26px;
+    top: 593px;
+    /*display:none;*/
+}
+
+.slick-pager{
+    border: 1px solid #ccc;
+}
+/**end of pager**/
+
+
+.reset{
+    padding-left:5px;
+    
+}
+
+.reset a{
+   color:#ff0000;
+   text-decoration: underline;
+}
+
+.result-count.no-channels-found{    
+   top: 65px;   
+}
+
+#mainHeader a{
+    font-weight:bold;
+    color:#000;
+}
+
+.search-box{
+    position: absolute;
+    border: 2px solid #86b9ec;
+    width: 422px;
+    top: 94px;
+    left: 25px;
+    height: 134px;
+}
+
+
+
+.text-holder,
+.link-holder
+{
+   position:absolute;
+}
+
+.link-holder{
+    top: 110px;
+    left: 263px;
+    z-index: 100;
+}
+
+.text-holder{
+    top: 112px;
+    left: 34px;
+    z-index: 100;
+}
+
+.link-holder li{
+    line-height: 18px;
+}
+
+.result-count{
+    display: block;
+    position:absolute;
+    width: 230px;
+    top:95px;
+}
+
+.result-count b{
+    text-decoration: none;
+}
+
+#xtra_notes{
+    position: absolute;
+    top: 91px;
+    left: 480px;
+    font-size: xx-small;
+    width: 464px; 
+}
+
+.search-label{
+    display: block;
+    font-weight: bold;
+    width: 170px;
+    margin-top: -10px;
+    margin-bottom: 2px;
+    text-align: center;
+}
+
+.text-holder .ui-state-default{
+    display: inline-block;
+    border-color: gray;
+    margin: 2px;
+    position: absolute;
+    top: 38px;
+    left: -1px;
+    display:none;
+}
+
+.ui-state-default .ui-icon:hover{
+    cursor: pointer;
+    background-image:url(%%pub%%system/img/ui-icons_454545_256x240.png);
+}
+
+body a{
+    text-decoration: underline;
+}
+
+.grid-canvas a{
+     color:#222;
+}
+
+a.activeLink {
+    color: #ff0000;
+    font-style: italic;
+}
+
+.why {
+     background: url(%%pub%%system/img/why-icon.png) no-repeat;
+     width: 14px;
+     height: 15px;
+     cursor: pointer;
+     position: absolute;
+     top: 252px;
+     left: 430px;
+     z-index:100;
+     display:none;
+}    
+
+.qtip-content .wrapper .code{
+  width:50px;
+  font-weight:bold;
+}
+.qtip-content .wrapper{
+  margin-bottom: 7px;
+}
+
+.qtip-content .wrapper.last{
+  margin-bottom: 0;
+}
+
+.text-holder{
+  top:120px;
+}
+.result-count{
+  top:60px;
+}
+.result-count.no-channels-found{
+  top:50px;
+}
+.link-holder{
+  top:105px;
+}
+
+/**these will display a fake table images while grid is re-rendering the table during scroll**/
+.fake-table0{
+  background-image:url(%%pub%%system/img/fake_table0.jpg);
+  background-position: -2px -2px;
+}
+
+.fake-table1{
+  background-image:url(%%pub%%system/img/fake_table1.jpg);
+  background-position: -2px -2px;
+}
+
+.fake-table2{
+  background-image:url(%%pub%%system/img/fake_table2.jpg);
+  background-position: -1px -2px;
+}
+
+.link-holder.com{
+  top:125px;
+}
+
+
+
+
+
+
+
+
+
+
