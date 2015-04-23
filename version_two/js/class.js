@@ -539,10 +539,15 @@ var toolTip = function(obj){
      */
     this.genreToolTip = function(data_temp_holder){
         var html = data_temp_holder.html();       
-        this.self.attr("title", html);
         this.self.qtip({
-            show: "click",
-            hide: "unfocus",
+            content: {
+              text: html
+            },
+            position:{
+              my: 'left top',  
+              at: 'bottom right',
+              target: this
+            },
             style: {
               classes: 'qtip-bootstrap'
             }
