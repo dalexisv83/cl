@@ -866,6 +866,40 @@ a.activeLink {
   top:125px;
 }
 
+/**comment button**/
+
+#comment_btn{
+  position: absolute;
+  top: 20px;
+  right: 13px;
+}
+
+a.btn-feedback.btns,
+span.btn-feedback.btns
+{
+    position: static;
+    top:0;
+    right:0;
+}
+
+span.btn-feedback:hover {
+  background-position: -49px -192px;
+}
+
+.comment-btn span.btns {
+    display: block;
+    width: 44px;
+    height: 16px;
+    background: url(%%pub%%system/img/content_btns.gif) left -192px no-repeat;
+    text-indent: -9999px;    
+}
+
+.comment-btn span:hover{
+     cursor: pointer;
+}
+
+/**comment button**/
+
 
 
 

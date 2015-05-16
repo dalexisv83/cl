@@ -1138,6 +1138,41 @@ var pop_at = function(a, b, c, d) {
     newWin.focus()
 };
 
+/**
+ * Creates the comment button
+ *
+ * @param {object} container the main container object that will hold the comment button
+ * @param {string} class_name preferred class name for the inner container
+ * @param {string} root_url the root url to call
+ */
+var commentBtn = function(container, class_name, root_url){
+    this.self = container;    
+    this.class_name = class_name;
+    this.root_url = root_url;
+    var that = this;
+    /**
+     * Initialize function
+     * @param {object} tool_author DOM element that holds the name of the tool's author
+     */
+    this.init = function(tool_author){
+        if (!tool_author || null === tool_author)
+           tool_author = $('#tool-author-id');
+        var feedback_btn = '<div class='+this.class_name+'><span class="btn-feedback btns" shape="rect" title="Provide Feedback">Provide Feedback</span></div>';
+        this.self.append(feedback_btn); //append to itself      
+        $('.'+this.class_name+' span.btn-feedback').click(function(e){
+            var url = window.top.location.pathname;
+            var aID = tool_author.val();
+            var w = 375;
+            var h = 375;
+            var winl = (screen.width-w)/2;
+            var wint = ((screen.height-h)/2) - (h/2);  
+            var feedbackForm = window.open (that.root_url + 'system/scripts/add-feedback-tools.jsp?pid=' + url + '&aid=' + aID + '','feedbackForm','location=0,status=0,scrollbars=0,  width=' + w +',height=' + h + '');
+            feedbackForm.moveTo(winl, wint);
+            feedbackForm.focus();                
+        });
+    };    
+};
+
 
 
 
