@@ -353,6 +353,10 @@ body{
     overflow: hidden;
 }
 
+body.commercial{
+  background-image: url(%%pub%%system/img/c_channel_lineup_header.jpg);
+}
+
 html, body {
     margin: 0;
     padding: 0;
