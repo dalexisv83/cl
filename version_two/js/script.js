@@ -66,6 +66,13 @@ $(function () {
     var tooltip = new toolTip(tool_tip_btn);
     //activate the genre codes tooltip
     var genre_codes_container = $('#genreCodes');
-    tooltip.genreToolTip(genre_codes_container);    
+    tooltip.genreToolTip(genre_codes_container);
+    
+    //initiate the comment btn
+    var btn = $('#comment_btn');
+    var root_url = '%%pub%%';
+    var class_name = 'comment-btn'; //add a class of comment-btn
+    var comment_btn = new commentBtn(btn,class_name,root_url);
+    comment_btn.init();
     
 });
