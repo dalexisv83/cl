@@ -393,7 +393,7 @@ html, body {
 
 #container{
   top:345px;
-  height: 375px;  
+  height: 350px;  
 }
 
 
@@ -534,7 +534,7 @@ html, body {
 }
 
 #container .inner{
-   height: 45px; 
+   height: 35px; 
 }
 
 #containerSmall .inner{
@@ -900,6 +900,10 @@ span.btn-feedback:hover {
 
 .comment-btn span:hover{
      cursor: pointer;
+}
+
+#container .slick-row{
+  line-height:15px;
 }
 
 /**comment button**/
