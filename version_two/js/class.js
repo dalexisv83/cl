@@ -49,7 +49,7 @@ var getServerPath = function(localhost){
 var config = {
     localhost:isLocalHost,
     k_width: 410,
-    rowHeightTall:48, //row height for the big grid
+    rowHeightTall:38, //row height for the big grid
     rowHeightShort:30, //row height for the small grid
     y_diff:14, //constant used for calculating distance on rotated text to the bottom
     adChannelUrl: "javascript:document.location.href='"+getServerPath(isLocalHost)+"programming/paid_programming_part_time_channels.html'",
@@ -313,20 +313,10 @@ bigGrid.prototype.render = function(){
             oThis.dataView.sort(oThis.comparer, args.sortAsc);            
         });
         
-        grid.setSortColumn("channel_name",true); //columnId, ascending        
+        grid.setSortColumn("channel_name",true); //columnId, ascending       
        
-        if (!oThis.dataType ||  'residential' === oThis.dataType.toLowerCase()) {
-            grid.onScroll.subscribe(function(e,args){
-                oThis.removeFakeTableClass();
-                if (!oThis.isFiltering) {
-                   //if we're not filtering add a fake table class
-                  //oThis.container.addClass(utility.randomizeClassName('fake-table'));
-                }
-                else{
-                  oThis.isFiltering = false;
-                }
-            });
-        } 
+       
+
 };
 
 /**
