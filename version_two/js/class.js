@@ -320,7 +320,7 @@ bigGrid.prototype.render = function(){
                 oThis.removeFakeTableClass();
                 if (!oThis.isFiltering) {
                    //if we're not filtering add a fake table class
-                   oThis.container.addClass(utility.randomizeClassName('fake-table'));
+                  //oThis.container.addClass(utility.randomizeClassName('fake-table'));
                 }
                 else{
                   oThis.isFiltering = false;
