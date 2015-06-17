@@ -317,6 +317,7 @@ bigGrid.prototype.render = function(){
         grid.setSortColumn("channel_name",true); //columnId, ascending       
        
        
+
 };
 
 /**
