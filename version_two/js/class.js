@@ -2,6 +2,7 @@
  * This js file holds the re-usable classes for Channel Line-up
  *
  * @author Joel Capillo <jcapillo@directv.com>
+ * @version 1
  * 
  */
 
