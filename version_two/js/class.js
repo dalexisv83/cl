@@ -1005,7 +1005,8 @@ var reset = function(context){
            search_box.self.val('');
            message_box.clear();
            grid.searchString = search_box.self.val();       
-           grid.updateFilter();          
+           grid.updateFilter();
+           dcsMultiTrack("DCSext.channel_lineup_search_term","reset button hit");
         });
     };
 };
