@@ -202,8 +202,8 @@ var bigGrid = function(rowHeight,context,featured_packages,data_type){
     this.sortcol = "channel_number";
     this.container = $('#'+context);
     this.package_channels = false;
-    this.searchString = '';
-    this.isFiltering = false;
+    this.searchString = '';   
+    this.search_terms = [];
     var oThis = this;
     this.comparer = function(a, b) {
         
@@ -229,19 +229,12 @@ var bigGrid = function(rowHeight,context,featured_packages,data_type){
         
         return (x == y ? 0 : (x > y ? 1 : -1));
     
-    };
-    this.removeFakeTableClass = function(){
-        for(var i=0; i < 3; i++) {
-          this.container.removeClass('fake-table' + i);        
-        }
-    };
+    };   
     this.updateFilter = function() {
       var oThis = this;     
       this.dataView.setFilterArgs({
         searchString: oThis.searchString
-       });
-      this.removeFakeTableClass(); //remove fake table class
-      this.isFiltering = true; //broadcast that we're filtering
+      });      
       this.dataView.refresh();
     };
     gridTable.call(this,rowHeight,context,featured_packages);   
@@ -256,35 +249,70 @@ bigGrid.prototype.render = function(){
         
         var oThis = this;
         
-        //private function for searching
-        var searchFilter = function(item, args) {
+        //function to modify if want to customize search
+        var searchFilter = function(item, args) {            
+            
             var regex = new RegExp(args.searchString, "i");
-            var searchFactor = null;
-            if (!oThis.package_channels) {
-                searchFactor =  item["anchors"].search(regex) != -1 ||
+            var searchFactor = false;
+            
+            //check if we're doing regular search on the search box
+            if (!oThis.package_channels) {                
+                
+                //check if we have a search terms array
+                if (oThis.search_terms.length > 0) {                        
+                    
+                    var found;                        
+                    var str_arr = oThis.search_terms;
+                  
+                    for (i = 0; i < str_arr.length; i += 1) {
+                        
+                        if (jQuery.trim(str_arr[i]).length == 0)
+                            continue;                       
+                        found = false;                                               
+                        regex = new RegExp(str_arr[i], "i");                                         
+                        found = item["anchors"].search(regex) != -1 ||
                                 item["channel_name"].search(regex) != -1 ||
                                 item["channel_number"].search(regex) != -1 ||
                                 item["call_letters"].search(regex) != -1 ||
-                                item["genre"].search(regex) != -1;
+                                item["genre"].search(regex) != -1;                                
+                        
+                        if (found){
+                            searchFactor = true;
+                            break;
+                        }
+                        
+                    }
+                   
+                }                
+                else{
+                    
+                    searchFactor =  item["anchors"].search(regex) != -1 ||
+                                    item["channel_name"].search(regex) != -1 ||
+                                    item["channel_number"].search(regex) != -1 ||
+                                    item["call_letters"].search(regex) != -1 ||
+                                    item["genre"].search(regex) != -1;
+                                    
+                }               
             }
-            else{              
-              var properties = oThis.package_channels.split('||');              
-              var hd_regex = new RegExp('hd', "i");
-              if (properties[1]) {
-                  switch(oThis.dataType) {
-                    case 'commercial':
-                        searchFactor = item[properties[0]].search(regex) != -1 &&
-                           (item["channel_name"].search(hd_regex) != -1 ||
-                           item["call_letters"].search(hd_regex) != -1);
-                        break;                       
-                    default:
-                        searchFactor = item[properties[0]].search(regex) != -1 &&
-                               item["channel_name"].search(hd_regex) != -1;
-                  }
-              }
-              else{
-                searchFactor = item[oThis.package_channels].search(regex) != -1;
-              }
+            else{
+                
+                var properties = oThis.package_channels.split('||');              
+                var hd_regex = new RegExp('hd', "i");
+                if (properties[1]) {
+                    switch(oThis.dataType) {
+                      case 'commercial':
+                          searchFactor = item[properties[0]].search(regex) != -1 &&
+                             (item["channel_name"].search(hd_regex) != -1 ||
+                             item["call_letters"].search(hd_regex) != -1);
+                          break;                       
+                      default:
+                          searchFactor = item[properties[0]].search(regex) != -1 &&
+                                 item["channel_name"].search(hd_regex) != -1;
+                    }
+                }
+                else{
+                  searchFactor = item[oThis.package_channels].search(regex) != -1;
+                }
             }
             
             if (searchFactor) 
@@ -504,7 +532,8 @@ var packageFilter = function(grid,message_box){
     this.filterChannelsByPackage = function(property,hd_only){  
       var msg_box = this.message_box;
       //start hooking-up to the grid
-      this.grid.package_channels = property; 
+      this.grid.package_channels = property;
+      this.grid.search_terms = [];      
       this.grid.searchString = 'x';
       this.grid.updateFilter();      
       var count = this.grid.dataView.getLength();
@@ -589,10 +618,13 @@ var searchBox = function(context,grid,messageBoxId){
         var utility = new Utility();
         oThis.keyup(function (e) {       
             oGrid.package_channels = false; //set to false to broadcast where searching normally
+            oGrid.search_terms = []; //clear the search term
             utility.normalizeNumLink();
             if (e.which == 27)
               oThis.val('');
             oGrid.searchString = oThis.val();
+            if (oGrid.searchString.indexOf(',') != -1)                       
+                    oGrid.search_terms = oGrid.searchString.split(',');
             oGrid.updateFilter();
             var count = oGrid.dataView.getLength();
             msg_box.clear();
@@ -1001,6 +1033,7 @@ var reset = function(context){
         var message_box = new messageBox(messageBoxId,grid);
         this.self.click(function(){
            grid.package_channels = false;
+           grid.search_terms = [];
            util.normalizeNumLink();
            search_box.self.val('');
            message_box.clear();
