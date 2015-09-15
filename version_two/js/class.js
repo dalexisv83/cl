@@ -9,7 +9,7 @@
 ///////////////////start////////////////////
 
 //IMPORTANT!!!!!!!!!!!!! Set this to FALSE if on remote server(AAC), set this to TRUE when running on local computer
-var isLocalHost = false; 
+var isLocalHost = true; 
 
 /**
  * Initiate inheritance Functions
@@ -587,7 +587,9 @@ var searchBox = function(context,grid,messageBoxId){
         var oGrid = this.grid;
         var msg_box = new messageBox(messageBoxId,this.grid);
         var utility = new Utility();
-        oThis.keyup(function (e) {       
+        oThis.keyup(function (e) {
+          if (e.which == 13)
+            return;
             oGrid.package_channels = false; //set to false to broadcast where searching normally
             utility.normalizeNumLink();
             if (e.which == 27)
@@ -601,6 +603,18 @@ var searchBox = function(context,grid,messageBoxId){
         });
         oThis.keydown(function (e) {       
            //write here your code for clearing serach box when hit enter
+           var clearedVal = '';
+           if (e.which == 13) {
+              clearedVal = oThis.val();
+              oThis.val('');
+              oGrid.searchString = clearedVal;
+            oGrid.updateFilter();
+            var count = oGrid.dataView.getLength();
+            msg_box.clear();
+            if ((count > 0 || count == 0) && oGrid.searchString.length > 0)
+              msg_box.createMsg(count);
+            msg_box.searchTerm(clearedVal);
+           }
         });
     };
 };
@@ -625,6 +639,9 @@ messageBox.prototype.createMsg = function(count){
     
     if (this.self.hasClass('no-channels-found'))
       this.self.removeClass('no-channels-found');
+
+    if (this.self.hasClass('search-term'))
+      this.self.removeClass('search-term');
       
     var msg = '';
     if (count == 0) {
@@ -663,6 +680,12 @@ messageBox.prototype.createPackageMsg = function(count,is_hd){
     
     this.self.html(msg);
 };
+
+messageBox.prototype.searchTerm = function(term) {
+  var msg = "You searched for <b>&ldquo;" + term + "&rdquo;</b><br /><br />";
+  this.self.addClass('search-term');
+  this.self.prepend(msg);
+}
 /**
  * End of message box class
  */

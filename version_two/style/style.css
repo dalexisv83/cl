@@ -843,8 +843,11 @@ a.activeLink {
 .result-count{
   top:60px;
 }
-.result-count.no-channels-found{
+.result-count.no-channels-found, .result-count.search-term{
   top:50px;
+}
+.result-count.no-channels-found.search-term{
+	top:41px;
 }
 .link-holder{
   top:105px;
