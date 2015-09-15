@@ -25,7 +25,7 @@ $(function () {
     big_grid.render();
     
     //activate the search box
-    var search_box = new searchBox('txtSearch',big_grid,'messageBox');
+    var search_box = new searchBox('txtSearch',big_grid,'messageBox','reset');
     search_box.autoSearch();
     
     //activate the package filters
@@ -59,7 +59,7 @@ $(function () {
     
     //initialize reset button
     var reset_btn = new reset('reset');
-    reset_btn.activate(big_grid,search_box,'messageBox');
+    reset_btn.deactivate(reset_btn);
     
     //initialize tooltip
     var tool_tip_btn = $('#genreLegend');

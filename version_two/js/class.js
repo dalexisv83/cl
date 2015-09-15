@@ -577,7 +577,7 @@ var toolTip = function(obj){
  * @param {string} context the id of an input text to attach
  * @param {string} messageBoxId the id of the message box to attach
  */
-var searchBox = function(context,grid,messageBoxId){
+var searchBox = function(context,grid,messageBoxId,resetBtnId){
     this.context = context;
     this.grid = grid;
     this.self = $('#'+this.context);
@@ -586,14 +586,21 @@ var searchBox = function(context,grid,messageBoxId){
         var oThis = this.self;
         var oGrid = this.grid;
         var msg_box = new messageBox(messageBoxId,this.grid);
+        var reset_btn = new reset(resetBtnId);
         var utility = new Utility();
         oThis.keyup(function (e) {
-          if (e.which == 13)
+          if ((e.which == 13) || (((e.which == 8) || (e.which == 46)) && (oThis.val().length == 0))){
+            reset_btn.deactivate(reset_btn);
             return;
+          }
             oGrid.package_channels = false; //set to false to broadcast where searching normally
             utility.normalizeNumLink();
-            if (e.which == 27)
+            if (e.which == 27){
               oThis.val('');
+              reset_btn.deactivate(reset_btn);
+            } else {
+              reset_btn.activate(oGrid,oThis,'messageBox',reset_btn.deactivate);
+            }            
             oGrid.searchString = oThis.val();
             oGrid.updateFilter();
             var count = oGrid.dataView.getLength();
@@ -1022,18 +1029,31 @@ columnSorter.prototype.enableGenreSort = function(){
  */
 var reset = function(context){
     this.self = $('#' + context);
-    this.activate = function(grid,search_box,messageBoxId){
+    this.activate = function(grid,search_box,messageBoxId,callback){
         var util = new Utility();
         var message_box = new messageBox(messageBoxId,grid);
+        this.self.addClass('active');
+
+        var oThis = this;
         this.self.click(function(){
+
            grid.package_channels = false;
            util.normalizeNumLink();
-           search_box.self.val('');
+           search_box.val('');
            message_box.clear();
-           grid.searchString = search_box.self.val();       
+           grid.searchString = search_box.val();
            grid.updateFilter();
            dcsMultiTrack("DCSext.channel_lineup_search_term","reset button hit");
+           console.log(oThis);
+           callback(oThis);
         });
+    };
+    this.deactivate = function(oThis){
+      if (oThis.self.hasClass('active'))
+        oThis.self.removeClass('active');
+      oThis.self.click(function(){
+        return false;
+      })
     };
 };
 /**
