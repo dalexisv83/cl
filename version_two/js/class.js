@@ -54,7 +54,8 @@ var config = {
     rowHeightShort:30, //row height for the small grid
     y_diff:14, //constant used for calculating distance on rotated text to the bottom
     adChannelUrl: "javascript:document.location.href='"+getServerPath(isLocalHost)+"programming/paid_programming_part_time_channels.html'",
-    deg: 10 //degree of rotation of the package divs
+    deg: 10, //degree of rotation of the package divs
+    search_delims: [',','|'] //array of supported search delimiters
 };
 
 
@@ -241,6 +242,22 @@ var bigGrid = function(rowHeight,context,featured_packages,data_type){
 };
 inheritPrototype(bigGrid, gridTable);
 
+
+var searchColumns = function(items,columns,search_term){
+    var regex = new RegExp(search_term, "i");
+    var is_match = false;
+   
+    $.each(columns, function(i, column_name) {
+        if (items[column_name].search(regex) != -1) {
+            is_match = true;
+            return false;
+        }
+    });
+    
+    return is_match;
+};
+
+
 bigGrid.prototype.render = function(){
         
         this.dataView = new Slick.Data.DataView();        
@@ -250,75 +267,61 @@ bigGrid.prototype.render = function(){
         var oThis = this;
         
         //function to modify if want to customize search
-        var searchFilter = function(item, args) {            
+        var searchFilter = function(rows, args) {            
             
-            var regex = new RegExp(args.searchString, "i");
-            var searchFactor = false;
+            var columns_to_search = ['anchors','channel_name','channel_number','call_letters','genre'];            
+            var searchFound = false;
             
             //check if we're doing regular search on the search box
             if (!oThis.package_channels) {                
-                
-                //check if we have a search terms array
+                //check if we have a multi search terms array
                 if (oThis.search_terms.length > 0) {                        
                     
                     var found;                        
                     var str_arr = oThis.search_terms;
-                  
+                    
                     for (i = 0; i < str_arr.length; i += 1) {
                         
                         if (jQuery.trim(str_arr[i]).length == 0)
                             continue;                       
-                        found = false;                                               
-                        regex = new RegExp(str_arr[i], "i");                                         
-                        found = item["anchors"].search(regex) != -1 ||
-                                item["channel_name"].search(regex) != -1 ||
-                                item["channel_number"].search(regex) != -1 ||
-                                item["call_letters"].search(regex) != -1 ||
-                                item["genre"].search(regex) != -1;                                
+                        
+                        found = false;
+                        
+                        found = searchColumns(rows,columns_to_search,str_arr[i]);
                         
                         if (found){
-                            searchFactor = true;
+                            searchFound = true;
                             break;
-                        }
-                        
-                    }
-                   
+                        }                        
+                    }                   
                 }                
                 else{
-                    
-                    searchFactor =  item["anchors"].search(regex) != -1 ||
-                                    item["channel_name"].search(regex) != -1 ||
-                                    item["channel_number"].search(regex) != -1 ||
-                                    item["call_letters"].search(regex) != -1 ||
-                                    item["genre"].search(regex) != -1;
-                                    
+                    searchFound = searchColumns(rows,columns_to_search,args.searchString);                                    
                 }               
             }
             else{
                 
+                var regex = new RegExp(args.searchString, "i");
                 var properties = oThis.package_channels.split('||');              
                 var hd_regex = new RegExp('hd', "i");
                 if (properties[1]) {
                     switch(oThis.dataType) {
                       case 'commercial':
-                          searchFactor = item[properties[0]].search(regex) != -1 &&
-                             (item["channel_name"].search(hd_regex) != -1 ||
-                             item["call_letters"].search(hd_regex) != -1);
+                          searchFound = rows[properties[0]].search(regex) != -1 &&
+                             (rows["channel_name"].search(hd_regex) != -1 ||
+                             rows["call_letters"].search(hd_regex) != -1);
                           break;                       
                       default:
-                          searchFactor = item[properties[0]].search(regex) != -1 &&
-                                 item["channel_name"].search(hd_regex) != -1;
+                          searchFound = rows[properties[0]].search(regex) != -1 &&
+                                 rows["channel_name"].search(hd_regex) != -1;
                     }
                 }
                 else{
-                  searchFactor = item[oThis.package_channels].search(regex) != -1;
+                  searchFound = rows[oThis.package_channels].search(regex) != -1;
                 }
             }
             
-            if (searchFactor) 
-              return true;
-            
-            return false;
+            return searchFound;
         };
         
         this.dataView.onRowCountChanged.subscribe(function (e, args) {
@@ -623,18 +626,87 @@ var searchBox = function(context,grid,messageBoxId){
             if (e.which == 27)
               oThis.val('');
             oGrid.searchString = oThis.val();
-            if (oGrid.searchString.indexOf(',') != -1)                       
-                    oGrid.search_terms = oGrid.searchString.split(',');
+            
+            var search_delim = new searchDelimiter(config.search_delims,oGrid.searchString);
+            var base_delim = config.search_delims[0]; //the first delimiter should be the first one on the array
+            if (search_delim.checkSearchDelimiter()){
+                if (search_delim.isMultipleDelimiter())
+                    oGrid.searchString = search_delim.syncDelimiterToBase();
+                oGrid.search_terms = oGrid.searchString.split(base_delim);
+            }
+                    
             oGrid.updateFilter();
             var count = oGrid.dataView.getLength();
             msg_box.clear();
             if ((count > 0 || count == 0) && oGrid.searchString.length > 0)
               msg_box.createMsg(count);
         });
-        oThis.keydown(function (e) {       
-           //write here your code for clearing serach box when hit enter
-        });
     };
+};
+
+
+/**
+ * Class responsible for search delimiter checking, manipulation, etc.
+ * @param {array} supported_delims collection of supported search delimiters
+ * @param {string} search_term the term/word to search
+ */
+var searchDelimiter = function(supported_delims,search_term){
+    this.supported_delims = supported_delims;
+    this.search_term = search_term;
+};
+
+
+/**
+ * Check if a search term contains multiple delims
+ * @retrun {boolean}
+ */
+searchDelimiter.prototype.isMultipleDelimiter = function(){
+    if (this.supported_delims.length == 1) return false; //return false right away since we only support one delimiter
+    
+    var is_mulitple = false;
+    var counter = 0;
+    for (var i = 0; i < this.supported_delims.length; i++) {
+        var supported_delim = this.supported_delims[i];
+        if (this.search_term.indexOf(supported_delim) != -1)
+           counter++;         
+    }
+    
+    if (counter > 1)
+        is_mulitple = true;
+        
+    return is_mulitple;
+};
+
+/**
+ * Syncs all the multiple delimiters into one base delimiter 
+ * @return {string} search term that is now delimited by one delimiter
+ */
+searchDelimiter.prototype.syncDelimiterToBase = function(){
+    var base_delim = this.supported_delims[0];
+    for (var i = 0; i < this.supported_delims.length; i++) {
+        var supported_delim = this.supported_delims[i];
+        if (supported_delim != base_delim)
+            this.search_term = this.search_term.replace(supported_delim,base_delim)         
+    }
+    return this.search_term;
+};
+
+
+
+/**
+ * Check if a search term contains a supported delims
+ * @return {boolean}
+ */
+searchDelimiter.prototype.checkSearchDelimiter = function(){
+    var found = false;
+    for (var i = 0; i < this.supported_delims.length; i++) {
+        var supported_delim = this.supported_delims[i];
+        if (this.search_term.indexOf(supported_delim) != -1){
+           found = true;
+           break;
+        }
+    }
+    return found;
 };
 
 
