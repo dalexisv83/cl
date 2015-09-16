@@ -631,6 +631,9 @@ var searchBox = function(context,grid,messageBoxId){
             if ((count > 0 || count == 0) && oGrid.searchString.length > 0)
               msg_box.createMsg(count);
         });
+        oThis.keydown(function (e) {       
+           //write here your code for clearing serach box when hit enter
+        });
     };
 };
 

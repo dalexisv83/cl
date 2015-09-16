@@ -1,4 +1,4 @@
-//cache our data
+//cache all data
 var featured_packages = data.featured_packages;
 var channels = data.channels;
 var ad_channels = AdSales.channels;
