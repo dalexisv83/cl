@@ -692,7 +692,7 @@ messageBox.prototype.createPackageMsg = function(count,is_hd){
 };
 
 messageBox.prototype.searchTerm = function(term) {
-  var msg = "<span>You searched for <b>&ldquo;" + term + "&rdquo;</b></span>";
+  var msg = "You searched for <b>&ldquo;<span>" + term + "</span>&rdquo;</b><br /><br />";
   this.self.addClass('search-term');
   this.self.prepend(msg);
 }
