@@ -589,32 +589,27 @@ var searchBox = function(context,grid,messageBoxId,resetBtnId){
         var reset_btn = new reset(resetBtnId);
         var utility = new Utility();
         oThis.keyup(function (e) {
-            // if enter
-            if (e.which == 13)
-              return;
-            
-            oGrid.package_channels = false; //set to false to broadcast where searching normally
-            utility.normalizeNumLink();
-            
-            // if escape or clear with backspace/delete
-            if ((e.which == 27) || (((e.which == 8) || (e.which == 46)) && (oThis.val().length == 0))){
+            // if escape or backspace/delete and search term is empty or blank string
+            if ((e.which == 27) || (((e.which == 8) || (e.which == 46)) && ((oThis.val().length == 0) || (oThis.val().match("^\\s*$"))))){
               oThis.val('');
               reset_btn.deactivate();
-            } else {
+              // else if backspace or delete or a number or letter or punctuation or space and term is not only a blank string
+            } else if ((e.which == 8) || (e.which == 46) || ((e.which >= 48) && (e.which <= 57)) || ((e.which >= 65) && (e.which <= 90)) || ((e.which = 32) && (!oThis.val().match("^\\s*$")))){
               reset_btn.activate(oGrid,oThis,messageBoxId);
+              oGrid.package_channels = false; //set to false to broadcast where searching normally
+              utility.normalizeNumLink();
+              oGrid.searchString = oThis.val();
+              oGrid.updateFilter();
+              var count = oGrid.dataView.getLength();
+              msg_box.clear();
+              if ((count > 0 || count == 0) && oGrid.searchString.length > 0)
+                msg_box.createMsg(count);
             }
-            
-            oGrid.searchString = oThis.val();
-            oGrid.updateFilter();
-            var count = oGrid.dataView.getLength();
-            msg_box.clear();
-            if ((count > 0 || count == 0) && oGrid.searchString.length > 0)
-              msg_box.createMsg(count);
         });
         oThis.keydown(function (e) {
-            //if enter
-            if ((e.which == 13) && (oThis.val().length != 0)) {
-                var clearedVal = oThis.val();
+            //if enter and search term is not empty and not blank string
+            if ((e.which == 13) && (oThis.val().length != 0) && (!oThis.val().match("^\\s*$"))) {
+                var clearedVal = oThis.val().replace(/ /g, '\u00a0');
                 oThis.val('');
                 oGrid.searchString = clearedVal;
                 oGrid.updateFilter();
