@@ -707,14 +707,20 @@ input#txtSearch{
 
 .reset a{
   display: inline-block;
-    padding: 7px;
-    background-color: #d3d3d3;
-   color:white;
-   text-decoration: underline;
+  padding: 3px 5px;
+  margin-left: 4px;
+  background-color: #e6e6e6;
+  color: #838383;
+  text-decoration: none;
+  cursor: default;
+  border: 1px solid #d3d3d3;
 }
 
 .reset a.active {
   background-color: red;
+  cursor: pointer;
+  color: white;
+  border: 1px solid #d34545;
 }
 
 .result-count.no-channels-found{    
