@@ -589,17 +589,19 @@ var searchBox = function(context,grid,messageBoxId,resetBtnId){
         var reset_btn = new reset(resetBtnId);
         var utility = new Utility();
         oThis.keyup(function (e) {
-          if ((e.which == 13) || (((e.which == 8) || (e.which == 46)) && (oThis.val().length == 0))){
-            reset_btn.deactivate(reset_btn);
+          // if enter
+          if (e.which == 13){
+            reset_btn.deactivate();
             return;
           }
             oGrid.package_channels = false; //set to false to broadcast where searching normally
             utility.normalizeNumLink();
-            if (e.which == 27){
+            // if escape or clear with backspace/delete
+            if ((e.which == 27) || (((e.which == 8) || (e.which == 46)) && (oThis.val().length == 0))){
               oThis.val('');
-              reset_btn.deactivate(reset_btn);
+              reset_btn.deactivate();
             } else {
-              reset_btn.activate(oGrid,oThis,'messageBox',reset_btn.deactivate);
+              reset_btn.activate(oGrid,oThis,'messageBox');
             }            
             oGrid.searchString = oThis.val();
             oGrid.updateFilter();
@@ -608,10 +610,10 @@ var searchBox = function(context,grid,messageBoxId,resetBtnId){
             if ((count > 0 || count == 0) && oGrid.searchString.length > 0)
               msg_box.createMsg(count);
         });
-        oThis.keydown(function (e) {       
-           //write here your code for clearing serach box when hit enter
+        oThis.keydown(function (e) {
            var clearedVal = '';
-           if (e.which == 13) {
+           //if enter
+           if ((e.which == 13) && (oThis.val().length != 0)) {
               clearedVal = oThis.val();
               oThis.val('');
               oGrid.searchString = clearedVal;
@@ -1028,15 +1030,13 @@ columnSorter.prototype.enableGenreSort = function(){
  * @param {string} context the id of the element to attach 
  */
 var reset = function(context){
+    oThis = this;
     this.self = $('#' + context);
     this.activate = function(grid,search_box,messageBoxId,callback){
         var util = new Utility();
         var message_box = new messageBox(messageBoxId,grid);
         this.self.addClass('active');
-
-        var oThis = this;
         this.self.click(function(){
-
            grid.package_channels = false;
            util.normalizeNumLink();
            search_box.val('');
@@ -1044,16 +1044,16 @@ var reset = function(context){
            grid.searchString = search_box.val();
            grid.updateFilter();
            dcsMultiTrack("DCSext.channel_lineup_search_term","reset button hit");
-           console.log(oThis);
-           callback(oThis);
+           oThis.self.off('click');
+           oThis.deactivate();
         });
     };
-    this.deactivate = function(oThis){
-      if (oThis.self.hasClass('active'))
-        oThis.self.removeClass('active');
-      oThis.self.click(function(){
+    this.deactivate = function(){
+      if (this.self.hasClass('active'))
+        this.self.removeClass('active');
+      this.self.click(function(){
         return false;
-      })
+      });
     };
 };
 /**

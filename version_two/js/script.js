@@ -59,7 +59,7 @@ $(function () {
     
     //initialize reset button
     var reset_btn = new reset('reset');
-    reset_btn.deactivate(reset_btn);
+    reset_btn.deactivate();
     
     //initialize tooltip
     var tool_tip_btn = $('#genreLegend');
