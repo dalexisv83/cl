@@ -589,19 +589,21 @@ var searchBox = function(context,grid,messageBoxId,resetBtnId){
         var reset_btn = new reset(resetBtnId);
         var utility = new Utility();
         oThis.keyup(function (e) {
-          // if enter
-          if (e.which == 13){
-            return;
-          }
+            // if enter
+            if (e.which == 13)
+              return;
+            
             oGrid.package_channels = false; //set to false to broadcast where searching normally
             utility.normalizeNumLink();
+            
             // if escape or clear with backspace/delete
             if ((e.which == 27) || (((e.which == 8) || (e.which == 46)) && (oThis.val().length == 0))){
               oThis.val('');
               reset_btn.deactivate();
             } else {
-              reset_btn.activate(oGrid,oThis,'messageBox');
-            }            
+              reset_btn.activate(oGrid,oThis,messageBoxId);
+            }
+            
             oGrid.searchString = oThis.val();
             oGrid.updateFilter();
             var count = oGrid.dataView.getLength();
@@ -610,19 +612,19 @@ var searchBox = function(context,grid,messageBoxId,resetBtnId){
               msg_box.createMsg(count);
         });
         oThis.keydown(function (e) {
-           var clearedVal = '';
-           //if enter
-           if ((e.which == 13) && (oThis.val().length != 0)) {
-              clearedVal = oThis.val();
-              oThis.val('');
-              oGrid.searchString = clearedVal;
-            oGrid.updateFilter();
-            var count = oGrid.dataView.getLength();
-            msg_box.clear();
-            if ((count > 0 || count == 0) && oGrid.searchString.length > 0)
-              msg_box.createMsg(count);
-            msg_box.searchTerm(clearedVal);
-           }
+            //if enter
+            if ((e.which == 13) && (oThis.val().length != 0)) {
+                var clearedVal = oThis.val();
+                oThis.val('');
+                oGrid.searchString = clearedVal;
+                oGrid.updateFilter();
+                var count = oGrid.dataView.getLength();
+                msg_box.clear();
+                if ((count > 0 || count == 0) && oGrid.searchString.length > 0)
+                    msg_box.createMsg(count);
+                msg_box.searchTerm(clearedVal);
+                oThis.focus();
+            }
         });
     };
 };
@@ -690,7 +692,7 @@ messageBox.prototype.createPackageMsg = function(count,is_hd){
 };
 
 messageBox.prototype.searchTerm = function(term) {
-  var msg = "You searched for <b>&ldquo;" + term + "&rdquo;</b><br /><br />";
+  var msg = "<span>You searched for <b>&ldquo;" + term + "&rdquo;</b></span>";
   this.self.addClass('search-term');
   this.self.prepend(msg);
 }
@@ -1029,30 +1031,28 @@ columnSorter.prototype.enableGenreSort = function(){
  * @param {string} context the id of the element to attach 
  */
 var reset = function(context){
-    oThis = this;
+    var oThis = this;
     this.self = $('#' + context);
-    this.activate = function(grid,search_box,messageBoxId,callback){
+    this.activate = function(grid,search_box,messageBoxId){
         var util = new Utility();
         var message_box = new messageBox(messageBoxId,grid);
         this.self.addClass('active');
-        this.self.click(function(){
-           grid.package_channels = false;
-           util.normalizeNumLink();
-           search_box.val('');
-           message_box.clear();
-           grid.searchString = search_box.val();
-           grid.updateFilter();
-           dcsMultiTrack("DCSext.channel_lineup_search_term","reset button hit");
-           oThis.self.off('click');
-           oThis.deactivate();
+        this.self.unbind().click(function(e){
+            grid.package_channels = false;
+            util.normalizeNumLink();
+            search_box.val('');
+            message_box.clear();
+            grid.searchString = search_box.val();
+            grid.updateFilter();           
+            oThis.self.removeClass('active');
+            //make sure to execute deactivate only when called programatically
+            if (!e) 
+              oThis.deactivate();
+            dcsMultiTrack("DCSext.channel_lineup_search_term","reset button hit");
         });
     };
     this.deactivate = function(){
-      if (this.self.hasClass('active'))
-        this.self.removeClass('active');
-      this.self.click(function(){
-        return false;
-      });
+      oThis.self.click();      
     };
 };
 /**
