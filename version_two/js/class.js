@@ -591,7 +591,6 @@ var searchBox = function(context,grid,messageBoxId,resetBtnId){
         oThis.keyup(function (e) {
           // if enter
           if (e.which == 13){
-            reset_btn.deactivate();
             return;
           }
             oGrid.package_channels = false; //set to false to broadcast where searching normally
