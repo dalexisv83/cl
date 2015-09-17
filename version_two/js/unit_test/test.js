@@ -754,28 +754,28 @@ QUnit.test( "Testing the \"sortByGenre\". Function called when clicking the genr
     
 });
 
-QUnit.module( "searchDelimiter" );
+QUnit.module( "searchDelimiterMgr" );
 QUnit.test( "Testing the \"checkSearchDelimiter\".", function( assert ) {
     
     var supported_delims = [','];
     var search_term = 'test';
-    var search_delim = new searchDelimiter(supported_delims,search_term);
+    var search_delim = new searchDelimiterMgr(supported_delims,search_term);
     
     assert.ok(!search_delim.checkSearchDelimiter(), 'Asserted that function returns false when search term is "' + search_term + '".');
     
     search_term = 'apple,orange'
-    search_delim = new searchDelimiter(supported_delims,search_term);
+    search_delim = new searchDelimiterMgr(supported_delims,search_term);
     
     assert.ok(search_delim.checkSearchDelimiter() == true, 'Asserted that function returns true when search term is "' + search_term + '".');
     
     //changing supported delims
     supported_delims = ['|'];
-    var search_delim = new searchDelimiter(supported_delims,search_term);
+    var search_delim = new searchDelimiterMgr(supported_delims,search_term);
     
     assert.ok(!search_delim.checkSearchDelimiter(), 'Asserted that function returns false when search term is "' + search_term + '".');
     
     search_term = 'apple|orange'
-    search_delim = new searchDelimiter(supported_delims,search_term);
+    search_delim = new searchDelimiterMgr(supported_delims,search_term);
     
     assert.ok(search_delim.checkSearchDelimiter() == true, 'Asserted that function returns true when search term is "' + search_term + '".');
     
@@ -786,21 +786,21 @@ QUnit.test( "Testing the \"syncDelimiterToBase\".", function( assert ) {
     
     var supported_delims = [','];
     var search_term = 'test,test,';
-    var search_delim = new searchDelimiter(supported_delims,search_term);
+    var search_delim = new searchDelimiterMgr(supported_delims,search_term);
     var result_str = search_delim.syncDelimiterToBase();
     
     assert.ok(result_str == search_term, 'Asserted that function returns the same string.');
     
     supported_delims = [',','|'];
     search_term = 'test|test,';
-    search_delim = new searchDelimiter(supported_delims,search_term);
+    search_delim = new searchDelimiterMgr(supported_delims,search_term);
     result_str = search_delim.syncDelimiterToBase();
     
     assert.ok(result_str != search_term, 'Asserted that function returns different string "'+result_str+'".');
     
     supported_delims = [',','|','#','*','&'];
     search_term = 'test,test,diy*rty&y';
-    search_delim = new searchDelimiter(supported_delims,search_term);
+    search_delim = new searchDelimiterMgr(supported_delims,search_term);
     result_str = search_delim.syncDelimiterToBase();
     
     assert.ok(search_delim.syncDelimiterToBase() != search_term, 'Asserted that function returns different string "'+result_str+'".');

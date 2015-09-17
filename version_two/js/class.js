@@ -208,10 +208,6 @@ var bigGrid = function(rowHeight,context,featured_packages,data_type){
 };
 inheritPrototype(bigGrid, gridTable);
 
-
-
-
-
 bigGrid.prototype.render = function(){
         
         this.dataView = new Slick.Data.DataView();        
@@ -579,13 +575,15 @@ var searchBox = function(context,grid,messageBoxId){
         var utility = new Utility();
         oThis.keyup(function (e) {       
             oGrid.package_channels = false; //set to false to broadcast where searching normally
-            oGrid.search_terms = []; //clear the search term
             utility.normalizeNumLink();
             if (e.which == 27)
               oThis.val('');
-            oGrid.searchString = oThis.val();
-            var search_delim = new searchDelimiter(config.search_delims,oGrid.searchString);
-            oGrid.search_terms = thisSearchBox.getSearchTerms(search_delim);
+            oGrid.searchString = jQuery.trim(oThis.val());
+            
+            //this is the part we're search term is processed for search delimiters
+            var delim_mgr = new searchDelimiterMgr(config.search_delims,oGrid.searchString);
+            oGrid.search_terms = thisSearchBox.getSearchTerms(delim_mgr);
+            
             oGrid.updateFilter();
             var count = oGrid.dataView.getLength();
             msg_box.clear();
@@ -594,14 +592,14 @@ var searchBox = function(context,grid,messageBoxId){
         });
     };
     /* Returns an array of multiple search terms
-     * @param {object} search_delim the searchDelimiter class instantiated
+     * @param {object} delim_mgr the searchDelimiterMgr class instantiated
      * @param {string} base_delim
      */
-    this.getSearchTerms = function(search_delim){
-        var base_delim = config.search_delims[0]; 
+    this.getSearchTerms = function(delim_mgr){
+        var base_delimiter = delim_mgr.base_delim; 
         var search_terms = [];
-        if (search_delim.checkSearchDelimiter())
-            search_terms = search_delim.syncDelimiterToBase().split(base_delim);
+        if (delim_mgr.checkSearchDelimiter())
+            search_terms = delim_mgr.syncDelimiterToBase().split(base_delimiter);
         return search_terms;
     };
 };
@@ -613,10 +611,13 @@ var searchBox = function(context,grid,messageBoxId){
  * Class responsible for search delimiter checking, manipulation, etc.
  * @param {array} supported_delims collection of supported search delimiters
  * @param {string} search_term the term/word to search
+ * 
+ * @todo add an exception throw if supported_delims is not an array or empty
  */
-var searchDelimiter = function(supported_delims,search_term){
+var searchDelimiterMgr = function(supported_delims,search_term){
     this.supported_delims = supported_delims;
     this.search_term = search_term;
+    this.base_delim = supported_delims[0]; //assign the base delimiter
     this.util = new Utility();
 };
 
@@ -625,12 +626,11 @@ var searchDelimiter = function(supported_delims,search_term){
  * Syncs all the multiple delimiters into one base delimiter 
  * @return {string} search term that is now delimited by one delimiter
  */
-searchDelimiter.prototype.syncDelimiterToBase = function(){
-    var base_delim = this.supported_delims[0];
+searchDelimiterMgr.prototype.syncDelimiterToBase = function(){
     for (var i = 0; i < this.supported_delims.length; i++) {
         var supported_delim = jQuery.trim(this.supported_delims[i]);
-        if (supported_delim != base_delim)
-           this.search_term = this.util.replaceAll(this.search_term,supported_delim,base_delim);
+        if (supported_delim != this.base_delim)
+           this.search_term = this.util.replaceAll(this.search_term,supported_delim,this.base_delim);
     }    
     return this.search_term;
 };
@@ -641,7 +641,7 @@ searchDelimiter.prototype.syncDelimiterToBase = function(){
  * Check if a search term contains a supported delimiter
  * @return {boolean}
  */
-searchDelimiter.prototype.checkSearchDelimiter = function(){
+searchDelimiterMgr.prototype.checkSearchDelimiter = function(){
     var found = false;
     for (var i = 0; i < this.supported_delims.length; i++) {
         var supported_delim = this.supported_delims[i];
