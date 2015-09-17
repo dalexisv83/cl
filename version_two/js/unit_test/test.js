@@ -6,7 +6,7 @@
  */
 
 
-var localhost = isLocalHost; 
+var localhost = config.localhost; 
 var featured_packages = data.featured_packages;
 var channels = data.channels;
 var ad_channels = AdSales.channels;
@@ -754,7 +754,7 @@ QUnit.test( "Testing the \"sortByGenre\". Function called when clicking the genr
     
 });
 
-
+QUnit.module( "searchDelimiter" );
 QUnit.test( "Testing the \"checkSearchDelimiter\".", function( assert ) {
     
     var supported_delims = [','];

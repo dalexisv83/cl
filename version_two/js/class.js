@@ -6,11 +6,6 @@
  * 
  */
 
-///////////////////start////////////////////
-
-//IMPORTANT!!!!!!!!!!!!! Set this to FALSE if on remote server(AAC), set this to TRUE when running on local computer
-var isLocalHost = false; 
-
 /**
  * Initiate inheritance Functions
  */
@@ -27,35 +22,6 @@ var inheritPrototype = function(childObject, parentObject) {
     var copyOfParent = Object.create(parentObject.prototype);
     copyOfParent.constructor = childObject;
     childObject.prototype = copyOfParent;
-};
-
-
-
-/**
- * Sets the proper server path
- * @param {boolean} localhost determines if we're running the application in localhost or remote server(Tridion) 
- */
-var getServerPath = function(localhost){
-    if (!localhost) {
-        return '%%pub%%';
-    }
-    else
-      return 'http://agentanswercenterstg.directv.com/en-us/res/';
-};
-
-
-/**
- * Holds the configuration values
- */
-var config = {
-    localhost:isLocalHost,
-    k_width: 410,
-    rowHeightTall:38, //row height for the big grid
-    rowHeightShort:30, //row height for the small grid
-    y_diff:14, //constant used for calculating distance on rotated text to the bottom
-    adChannelUrl: "javascript:document.location.href='"+getServerPath(isLocalHost)+"programming/paid_programming_part_time_channels.html'",
-    deg: 10, //degree of rotation of the package divs
-    search_delims: [',','|'] //array of supported search delimiters
 };
 
 
@@ -243,19 +209,7 @@ var bigGrid = function(rowHeight,context,featured_packages,data_type){
 inheritPrototype(bigGrid, gridTable);
 
 
-var searchColumns = function(items,columns,search_term){
-    var regex = new RegExp(search_term, "i");
-    var is_match = false;
-   
-    $.each(columns, function(i, column_name) {
-        if (items[column_name].search(regex) != -1) {
-            is_match = true;
-            return false;
-        }
-    });
-    
-    return is_match;
-};
+
 
 
 bigGrid.prototype.render = function(){
@@ -263,23 +217,17 @@ bigGrid.prototype.render = function(){
         this.dataView = new Slick.Data.DataView();        
         var grid = new Slick.Grid("#" + this.context, this.dataView, this.columns, this.options);
         var utility = new Utility();
-        
         var oThis = this;
         
         //function to modify if want to customize search
         var searchFilter = function(rows, args) {            
-            
-            var columns_to_search = ['anchors','channel_name','channel_number','call_letters','genre'];            
-            var searchFound = false;
-            
+            var isMatched = false;
             //check if we're doing regular search on the search box
-            if (!oThis.package_channels) {                
+            if (!oThis.package_channels) {               
                 //check if we have a multi search terms array
                 if (oThis.search_terms.length > 0) {                        
-                    
                     var found;                        
                     var str_arr = oThis.search_terms;
-                    
                     for (i = 0; i < str_arr.length; i += 1) {
                         
                         if (jQuery.trim(str_arr[i]).length == 0)
@@ -287,42 +235,55 @@ bigGrid.prototype.render = function(){
                         
                         found = false;
                         
-                        found = searchColumns(rows,columns_to_search,str_arr[i]);
+                        found = searchByColumns(rows,config.searchable_columns,str_arr[i]);
                         
                         if (found){
-                            searchFound = true;
+                            isMatched = true;
                             break;
                         }                        
                     }                   
                 }                
                 else{
-                    searchFound = searchColumns(rows,columns_to_search,args.searchString);                                    
+                    isMatched = searchByColumns(rows,config.searchable_columns,args.searchString);                                    
                 }               
             }
             else{
-                
                 var regex = new RegExp(args.searchString, "i");
                 var properties = oThis.package_channels.split('||');              
                 var hd_regex = new RegExp('hd', "i");
                 if (properties[1]) {
                     switch(oThis.dataType) {
                       case 'commercial':
-                          searchFound = rows[properties[0]].search(regex) != -1 &&
+                          isMatched = rows[properties[0]].search(regex) != -1 &&
                              (rows["channel_name"].search(hd_regex) != -1 ||
                              rows["call_letters"].search(hd_regex) != -1);
                           break;                       
                       default:
-                          searchFound = rows[properties[0]].search(regex) != -1 &&
+                          isMatched = rows[properties[0]].search(regex) != -1 &&
                                  rows["channel_name"].search(hd_regex) != -1;
                     }
                 }
                 else{
-                  searchFound = rows[oThis.package_channels].search(regex) != -1;
+                    isMatched = rows[oThis.package_channels].search(regex) != -1;
                 }
             }
             
-            return searchFound;
+            return isMatched;
         };
+        
+        //private function for column searching
+        var searchByColumns = function(rows,columns,search_term){
+            var regex = new RegExp(search_term, "i");
+            var is_matched = false;
+            $.each(columns, function(i, column_name) {
+                if (rows[column_name].search(regex) != -1) {
+                    is_matched = true;
+                    return false;
+                }
+            });            
+            return is_matched;
+        };
+        
         
         this.dataView.onRowCountChanged.subscribe(function (e, args) {
             grid.updateRowCount();
@@ -658,7 +619,7 @@ var searchDelimiter = function(supported_delims,search_term){
 
 /**
  * Check if a search term contains multiple delims
- * @retrun {boolean}
+ * @return {boolean}
  */
 searchDelimiter.prototype.isMultipleDelimiter = function(){
     if (this.supported_delims.length == 1) return false; //return false right away since we only support one delimiter
