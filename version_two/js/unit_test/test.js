@@ -782,28 +782,6 @@ QUnit.test( "Testing the \"checkSearchDelimiter\".", function( assert ) {
     
 });
 
-
-QUnit.test( "Testing the \"isMultipleDelimiter\".", function( assert ) {
-    
-    var supported_delims = [','];
-    var search_term = 'test,test,';
-    var search_delim = new searchDelimiter(supported_delims,search_term);
-    
-    assert.ok(!search_delim.isMultipleDelimiter(), 'Asserted that function returns false when we support one delimiter only.');
-    
-    supported_delims = ['|',','];
-    search_delim = new searchDelimiter(supported_delims,search_term);
-    
-    assert.ok(!search_delim.isMultipleDelimiter(), 'Asserted that function returns false when search term is "'+ search_term + '".');
-    
-    search_term = 'test,apple|banana';
-    search_delim = new searchDelimiter(supported_delims,search_term);
-    
-    assert.ok(search_delim.isMultipleDelimiter(), 'Asserted that function returns true when search term is "'+ search_term + '".');
-});
-
-
-
 QUnit.test( "Testing the \"syncDelimiterToBase\".", function( assert ) {
     
     var supported_delims = [','];
@@ -820,13 +798,13 @@ QUnit.test( "Testing the \"syncDelimiterToBase\".", function( assert ) {
     
     assert.ok(result_str != search_term, 'Asserted that function returns different string "'+result_str+'".');
     
-    supported_delims = [',','|','||'];
-    search_term = 'test|test,appple||orange';
+    supported_delims = [',','|','#','*','&'];
+    search_term = 'test,test,diy*rty&y';
     search_delim = new searchDelimiter(supported_delims,search_term);
     result_str = search_delim.syncDelimiterToBase();
     
     assert.ok(search_delim.syncDelimiterToBase() != search_term, 'Asserted that function returns different string "'+result_str+'".');
-   
+    assert.ok(search_delim.syncDelimiterToBase().split(supported_delims[0]).length === 5, 'Asserted that function returns an exploded string length of array === 5.' )
 });
 
 

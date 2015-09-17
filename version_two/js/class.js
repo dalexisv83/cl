@@ -226,26 +226,22 @@ bigGrid.prototype.render = function(){
             if (!oThis.package_channels) {               
                 //check if we have a multi search terms array
                 if (oThis.search_terms.length > 0) {                        
-                    var found;                        
-                    var str_arr = oThis.search_terms;
-                    for (i = 0; i < str_arr.length; i += 1) {
-                        
-                        if (jQuery.trim(str_arr[i]).length == 0)
+                    var found;                    
+                    for (i = 0; i < oThis.search_terms.length; i += 1) {
+                        var search_str = jQuery.trim(oThis.search_terms[i]);
+                        if (search_str.length == 0)
                             continue;                       
-                        
                         found = false;
-                        
-                        found = searchByColumns(rows,config.searchable_columns,str_arr[i]);
-                        
+                        found = searchByColumns(rows,config.searchable_columns,search_str);
                         if (found){
                             isMatched = true;
                             break;
                         }                        
                     }                   
                 }                
-                else{
+                else
                     isMatched = searchByColumns(rows,config.searchable_columns,args.searchString);                                    
-                }               
+                              
             }
             else{
                 var regex = new RegExp(args.searchString, "i");
@@ -263,9 +259,9 @@ bigGrid.prototype.render = function(){
                                  rows["channel_name"].search(hd_regex) != -1;
                     }
                 }
-                else{
+                else
                     isMatched = rows[oThis.package_channels].search(regex) != -1;
-                }
+                
             }
             
             return isMatched;
@@ -575,6 +571,7 @@ var searchBox = function(context,grid,messageBoxId){
     this.grid = grid;
     this.self = $('#'+this.context);
     this.self.focus();
+    var thisSearchBox = this;
     this.autoSearch = function(){
         var oThis = this.self;
         var oGrid = this.grid;
@@ -587,15 +584,8 @@ var searchBox = function(context,grid,messageBoxId){
             if (e.which == 27)
               oThis.val('');
             oGrid.searchString = oThis.val();
-            
             var search_delim = new searchDelimiter(config.search_delims,oGrid.searchString);
-            var base_delim = config.search_delims[0]; //the first delimiter should be the first one on the array
-            if (search_delim.checkSearchDelimiter()){
-                if (search_delim.isMultipleDelimiter())
-                    oGrid.searchString = search_delim.syncDelimiterToBase();
-                oGrid.search_terms = oGrid.searchString.split(base_delim);
-            }
-                    
+            oGrid.search_terms = thisSearchBox.getSearchTerms(search_delim);
             oGrid.updateFilter();
             var count = oGrid.dataView.getLength();
             msg_box.clear();
@@ -603,7 +593,20 @@ var searchBox = function(context,grid,messageBoxId){
               msg_box.createMsg(count);
         });
     };
+    /* Returns an array of multiple search terms
+     * @param {object} search_delim the searchDelimiter class instantiated
+     * @param {string} base_delim
+     */
+    this.getSearchTerms = function(search_delim){
+        var base_delim = config.search_delims[0]; 
+        var search_terms = [];
+        if (search_delim.checkSearchDelimiter())
+            search_terms = search_delim.syncDelimiterToBase().split(base_delim);
+        return search_terms;
+    };
 };
+
+
 
 
 /**
@@ -614,29 +617,9 @@ var searchBox = function(context,grid,messageBoxId){
 var searchDelimiter = function(supported_delims,search_term){
     this.supported_delims = supported_delims;
     this.search_term = search_term;
+    this.util = new Utility();
 };
 
-
-/**
- * Check if a search term contains multiple delims
- * @return {boolean}
- */
-searchDelimiter.prototype.isMultipleDelimiter = function(){
-    if (this.supported_delims.length == 1) return false; //return false right away since we only support one delimiter
-    
-    var is_mulitple = false;
-    var counter = 0;
-    for (var i = 0; i < this.supported_delims.length; i++) {
-        var supported_delim = this.supported_delims[i];
-        if (this.search_term.indexOf(supported_delim) != -1)
-           counter++;         
-    }
-    
-    if (counter > 1)
-        is_mulitple = true;
-        
-    return is_mulitple;
-};
 
 /**
  * Syncs all the multiple delimiters into one base delimiter 
@@ -645,24 +628,24 @@ searchDelimiter.prototype.isMultipleDelimiter = function(){
 searchDelimiter.prototype.syncDelimiterToBase = function(){
     var base_delim = this.supported_delims[0];
     for (var i = 0; i < this.supported_delims.length; i++) {
-        var supported_delim = this.supported_delims[i];
+        var supported_delim = jQuery.trim(this.supported_delims[i]);
         if (supported_delim != base_delim)
-            this.search_term = this.search_term.replace(supported_delim,base_delim)         
-    }
+           this.search_term = this.util.replaceAll(this.search_term,supported_delim,base_delim);
+    }    
     return this.search_term;
 };
 
 
 
 /**
- * Check if a search term contains a supported delims
+ * Check if a search term contains a supported delimiter
  * @return {boolean}
  */
 searchDelimiter.prototype.checkSearchDelimiter = function(){
     var found = false;
     for (var i = 0; i < this.supported_delims.length; i++) {
         var supported_delim = this.supported_delims[i];
-        if (this.search_term.indexOf(supported_delim) != -1){
+        if (this.search_term.indexOf(supported_delim) != -1){           
            found = true;
            break;
         }
@@ -1156,7 +1139,13 @@ var Utility = function(){
         }
         else
           return (Math.round(tan_width * 100) / 100) - 2; //need to compensate 2 units if IE    
-    };  
+    };
+    this.escapeRegExp = function(string) {
+      return string.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+    };
+    this.replaceAll = function(string, find, replace) {
+      return string.replace(new RegExp(this.escapeRegExp(find), 'g'), replace);
+    }
 };
 
 /**
