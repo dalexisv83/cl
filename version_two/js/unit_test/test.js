@@ -245,7 +245,7 @@ QUnit.test( "Testing the \"autoSearch\" function.", function( assert ) {
     var value_to_search = '520';
     
     var e = jQuery.Event( "keyup" );
-    e.which = 50;
+    e.keyCode = 50;
     //assign a value
     $("#testBox").val(value_to_search);
     // trigger the keyup event
@@ -259,7 +259,7 @@ QUnit.test( "Testing the \"autoSearch\" function.", function( assert ) {
     value_to_search = 'a';
     
     var e = jQuery.Event( "keyup" );
-    e.which = 50;
+    e.keyCode = 50;
     //assign a value
     $("#testBox").val(value_to_search);
     // trigger the keyup event
@@ -273,7 +273,7 @@ QUnit.test( "Testing the \"autoSearch\" function.", function( assert ) {
     value_to_search = 'a------';
     
     var e = jQuery.Event( "keyup" );
-    e.which = 50;
+    e.keyCode = 50;
     //assign a value
     $("#testBox").val(value_to_search);
     // trigger the keyup event
@@ -286,7 +286,7 @@ QUnit.test( "Testing the \"autoSearch\" function.", function( assert ) {
     value_to_search = '';
     
     var e = jQuery.Event( "keyup" );
-    e.which = 50;
+    e.keyCode = 50;
     //assign a value
     $("#testBox").val(value_to_search);
     // trigger the keyup event
@@ -297,21 +297,194 @@ QUnit.test( "Testing the \"autoSearch\" function.", function( assert ) {
     var expected_total = channels.length + ad_channels.length;
     assert.equal(expected_total, big_grid.dataView.getLength(), "Asserting that there are "+expected_total+" search results for term \""+value_to_search+"\".");
 
-
-    var testCodes = [8,9,13,16,17,18,19,20,27,33,34,35,36,37,38,39,40,45,46,48,49,50,51];
-
     function escapeRegExp(str) {
       return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
     }
 
+    var testCodes = [27];
+
+    $("#testBox").val("");
+    var boxValue = $("#testBox").val();
     $.each(testCodes, function(i, v) {
         var e = jQuery.Event('keyup', {keyCode: v});
-        $("#testBox").val("");
+        $('#' + search_box.resetBtnId).removeClass();
+        var newString = String.fromCharCode(e.keyCode);
+        //$("#testBox").val(escapeRegExp(newString))
+        jQuery('#testBox').trigger(e);
+        assert.notEqual($('#' + search_box.resetBtnId).attr("class"), search_box.activeClass, "On " + e.type + ", the keycode " + v + " (" + newString + ") does NOT add the class \"" + search_box.activeClass + "\" when the textbox says: " + (boxValue.replace(/ /g, '\u00a0') == '' ? "empty" : boxValue.replace(/ /g, '\u00a0')) + ".");
+    });
+
+    $("#testBox").val('              ');
+    var boxValue = $("#testBox").val();
+    $.each(testCodes, function(i, v) {
+        var e = jQuery.Event('keyup', {keyCode: v});
+        $('#' + search_box.resetBtnId).removeClass();
+        var newString = String.fromCharCode(e.keyCode);
+        //$("#testBox").val(escapeRegExp(newString))
+        jQuery('#testBox').trigger(e);
+        assert.notEqual($('#' + search_box.resetBtnId).attr("class"), search_box.activeClass, "On " + e.type + ", the keycode " + v + " (" + newString + ") does NOT add the class \"" + search_box.activeClass + "\" when the textbox says: " + (boxValue.replace(/ /g, '\u00a0') == '' ? "empty" : boxValue.replace(/ /g, '\u00a0')) + ".");
+    });
+
+    $("#testBox").val('espn');
+    var boxValue = $("#testBox").val();
+    $.each(testCodes, function(i, v) {
+        var e = jQuery.Event('keyup', {keyCode: v});
+        $('#' + search_box.resetBtnId).removeClass();
+        var newString = String.fromCharCode(e.keyCode);
+        //$("#testBox").val(escapeRegExp(newString))
+        jQuery('#testBox').trigger(e);
+        assert.notEqual($('#' + search_box.resetBtnId).attr("class"), search_box.activeClass, "On " + e.type + ", the keycode " + v + " (" + newString + ") does NOT add the class \"" + search_box.activeClass + "\" when the textbox says: " + (boxValue.replace(/ /g, '\u00a0') == '' ? "empty" : boxValue.replace(/ /g, '\u00a0')) + ".");
+    });
+
+    var testCodes = [8,46];
+
+    $("#testBox").val("");
+    var boxValue = $("#testBox").val();
+    $.each(testCodes, function(i, v) {
+        var e = jQuery.Event('keyup', {keyCode: v});
         $('#' + search_box.resetBtnId).removeClass();
         var newString = String.fromCharCode(v);
-        $("#testBox").val(escapeRegExp(newString))
+        //$("#testBox").val(escapeRegExp(newString))
         jQuery('#testBox').trigger(e);
-        assert.equal($('#' + search_box.resetBtnId).attr("class"), search_box.activeClass, "The keycode " + v + " (" + newString + ") adds the class " + search_box.activeClass + " when the textbox says: " + $("#testBox").val() +".");
+        assert.notEqual($('#' + search_box.resetBtnId).attr("class"), search_box.activeClass, "On " + e.type + ", the keycode " + v + " (" + newString + ") does NOT add the class \"" + search_box.activeClass + "\" when the textbox says: " + (boxValue.replace(/ /g, '\u00a0') == '' ? "empty" : boxValue.replace(/ /g, '\u00a0')) + ".");
+    });
+
+    $("#testBox").val('              ');
+    var boxValue = $("#testBox").val();
+    $.each(testCodes, function(i, v) {
+        var e = jQuery.Event('keyup', {keyCode: v});
+        $('#' + search_box.resetBtnId).removeClass();
+        var newString = String.fromCharCode(v);
+        //$("#testBox").val(escapeRegExp(newString))
+        jQuery('#testBox').trigger(e);
+        assert.notEqual($('#' + search_box.resetBtnId).attr("class"), search_box.activeClass, "On " + e.type + ", the keycode " + v + " (" + newString + ") does NOT add the class \"" + search_box.activeClass + "\" when the textbox says: " + (boxValue.replace(/ /g, '\u00a0') == '' ? "empty" : boxValue.replace(/ /g, '\u00a0')) + ".");
+    });
+
+    $("#testBox").val('espn');
+    var boxValue = $("#testBox").val();
+    $.each(testCodes, function(i, v) {
+        var e = jQuery.Event('keyup', {keyCode: v});
+        $('#' + search_box.resetBtnId).removeClass();
+        var newString = String.fromCharCode(v);
+        //$("#testBox").val(escapeRegExp(newString))
+        jQuery('#testBox').trigger(e);
+        assert.equal($('#' + search_box.resetBtnId).attr("class"), search_box.activeClass, "On " + e.type + ", the keycode " + v + " (" + newString + ") DOES add the class \"" + search_box.activeClass + "\" when the textbox says: " + (boxValue.replace(/ /g, '\u00a0') == '' ? "empty" : boxValue.replace(/ /g, '\u00a0')) + ".");
+    });
+
+    var testCodes = [48,49,50,51,52,53,54,55,56,57,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90];
+
+    $("#testBox").val('espn');
+    var boxValue = $("#testBox").val();
+    $.each(testCodes, function(i, v) {
+        var e = jQuery.Event('keyup', {keyCode: v});
+        $('#' + search_box.resetBtnId).removeClass();
+        var newString = String.fromCharCode(v);
+        //$("#testBox").val(escapeRegExp(newString))
+        jQuery('#testBox').trigger(e);
+        assert.equal($('#' + search_box.resetBtnId).attr("class"), search_box.activeClass, "On " + e.type + ", the keycode " + v + " (" + newString + ") DOES add the class \"" + search_box.activeClass + "\" when the textbox says: " + (boxValue.replace(/ /g, '\u00a0') == '' ? "empty" : boxValue.replace(/ /g, '\u00a0')) + ".");
+    });
+
+    var testCodes = [32];
+
+    $("#testBox").val('');
+    var boxValue = $("#testBox").val();
+    $.each(testCodes, function(i, v) {
+        var e = jQuery.Event('keyup', {keyCode: v});
+        $('#' + search_box.resetBtnId).removeClass();
+        var newString = String.fromCharCode(v);
+        //$("#testBox").val(escapeRegExp(newString))
+        jQuery('#testBox').trigger(e);
+        assert.notEqual($('#' + search_box.resetBtnId).attr("class"), search_box.activeClass, "On " + e.type + ", the keycode " + v + " (" + newString + ") does NOT add the class \"" + search_box.activeClass + "\" when the textbox says: " + (boxValue.replace(/ /g, '\u00a0') == '' ? "empty" : boxValue.replace(/ /g, '\u00a0')) + ".");
+    });
+
+    $("#testBox").val('              ');
+    var boxValue = $("#testBox").val();
+    $.each(testCodes, function(i, v) {
+        var e = jQuery.Event('keyup', {keyCode: v});
+        $('#' + search_box.resetBtnId).removeClass();
+        var newString = String.fromCharCode(v);
+        //$("#testBox").val(escapeRegExp(newString))
+        jQuery('#testBox').trigger(e);
+        assert.notEqual($('#' + search_box.resetBtnId).attr("class"), search_box.activeClass, "On " + e.type + ", the keycode " + v + " (" + newString + ") does NOT add the class \"" + search_box.activeClass + "\" when the textbox says: " + (boxValue.replace(/ /g, '\u00a0') == '' ? "empty" : boxValue.replace(/ /g, '\u00a0')) + ".");
+    });
+
+    $("#testBox").val('comedy');
+    var boxValue = $("#testBox").val();
+    $.each(testCodes, function(i, v) {
+        var e = jQuery.Event('keyup', {keyCode: v});
+        $('#' + search_box.resetBtnId).removeClass();
+        var newString = String.fromCharCode(v);
+        //$("#testBox").val(escapeRegExp(newString))
+        jQuery('#testBox').trigger(e);
+        assert.equal($('#' + search_box.resetBtnId).attr("class"), search_box.activeClass, "On " + e.type + ", the keycode " + v + " (" + newString + ") DOES add the class \"" + search_box.activeClass + "\" when the textbox says: " + (boxValue.replace(/ /g, '\u00a0') == '' ? "empty" : boxValue.replace(/ /g, '\u00a0')) + ".");
+    });
+
+    var testCodes = [13];
+
+    $("#testBox").val('');
+    var boxValue = $("#testBox").val();
+    $.each(testCodes, function(i, v) {
+        var e = jQuery.Event('keyup', {keyCode: v});
+        $('#' + search_box.resetBtnId).removeClass();
+        var newString = String.fromCharCode(v);
+        //$("#testBox").val(escapeRegExp(newString))
+        jQuery('#testBox').trigger(e);
+        assert.notEqual($('#' + search_box.resetBtnId).attr("class"), search_box.activeClass, "On " + e.type + ", the keycode " + v + " (" + newString + ") does NOT add the class \"" + search_box.activeClass + "\" when the textbox says: " + (boxValue.replace(/ /g, '\u00a0') == '' ? "empty" : boxValue.replace(/ /g, '\u00a0')) + ".");
+    });
+
+    $("#testBox").val('              ');
+    var boxValue = $("#testBox").val();
+    $.each(testCodes, function(i, v) {
+        var e = jQuery.Event('keyup', {keyCode: v});
+        $('#' + search_box.resetBtnId).removeClass();
+        var newString = String.fromCharCode(v);
+        //$("#testBox").val(escapeRegExp(newString))
+        jQuery('#testBox').trigger(e);
+        assert.notEqual($('#' + search_box.resetBtnId).attr("class"), search_box.activeClass, "On " + e.type + ", the keycode " + v + " (" + newString + ") does NOT add the class \"" + search_box.activeClass + "\" when the textbox says: " + (boxValue.replace(/ /g, '\u00a0') == '' ? "empty" : boxValue.replace(/ /g, '\u00a0')) + ".");
+    });
+
+    $("#testBox").val('comedy');
+    var boxValue = $("#testBox").val();
+    $.each(testCodes, function(i, v) {
+        var e = jQuery.Event('keyup', {keyCode: v});
+        $('#' + search_box.resetBtnId).removeClass();
+        var newString = String.fromCharCode(v);
+        //$("#testBox").val(escapeRegExp(newString))
+        jQuery('#testBox').trigger(e);
+        assert.equal($('#' + search_box.resetBtnId).attr("class"), search_box.activeClass, "On " + e.type + ", the keycode " + v + " (" + newString + ") DOES add the class \"" + search_box.activeClass + "\" when the textbox says: " + (boxValue.replace(/ /g, '\u00a0') == '' ? "empty" : boxValue.replace(/ /g, '\u00a0')) + ".");
+    });
+
+    $("#testBox").val('');
+    var boxValue = $("#testBox").val();
+    $.each(testCodes, function(i, v) {
+        var e = jQuery.Event('keydown', {keyCode: v});
+        $('#' + search_box.resetBtnId).removeClass();
+        var newString = String.fromCharCode(v);
+        //$("#testBox").val(escapeRegExp(newString))
+        jQuery('#testBox').trigger(e);
+        assert.notEqual($('#' + search_box.resetBtnId).attr("class"), search_box.activeClass, "On " + e.type + ", the keycode " + v + " (" + newString + ") does NOT add the class \"" + search_box.activeClass + "\" when the textbox says: " + (boxValue.replace(/ /g, '\u00a0') == '' ? "empty" : boxValue.replace(/ /g, '\u00a0')) + ".");
+    });
+
+    $("#testBox").val('              ');
+    var boxValue = $("#testBox").val();
+    $.each(testCodes, function(i, v) {
+        var e = jQuery.Event('keydown', {keyCode: v});
+        $('#' + search_box.resetBtnId).removeClass();
+        var newString = String.fromCharCode(v);
+        //$("#testBox").val(escapeRegExp(newString))
+        jQuery('#testBox').trigger(e);
+        assert.notEqual($('#' + search_box.resetBtnId).attr("class"), search_box.activeClass, "On " + e.type + ", the keycode " + v + " (" + newString + ") does NOT add the class \"" + search_box.activeClass + "\" when the textbox says: " + (boxValue.replace(/ /g, '\u00a0') == '' ? "empty" : boxValue.replace(/ /g, '\u00a0')) + ".");
+    });
+
+    $("#testBox").val('comedy');
+    var boxValue = $("#testBox").val();
+    $.each(testCodes, function(i, v) {
+        var e = jQuery.Event('keydown', {keyCode: v});
+        $('#' + search_box.resetBtnId).addClass('active');
+        var newString = String.fromCharCode(v);
+        //$("#testBox").val(escapeRegExp(newString))
+        jQuery('#testBox').trigger(e);
+        assert.equal($('#' + search_box.resetBtnId).attr("class"), search_box.activeClass, "On " + e.type + ", the keycode " + v + " (" + newString + ") DOES add the class \"" + search_box.activeClass + "\" when the textbox says: " + (boxValue.replace(/ /g, '\u00a0') == '' ? "empty" : boxValue.replace(/ /g, '\u00a0')) + ".");
     });
 });
 

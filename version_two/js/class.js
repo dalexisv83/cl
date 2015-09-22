@@ -596,11 +596,12 @@ var searchBox = function(context,grid,messageBoxId,resetBtnId,activeClass){
         var reset_btn = new reset(resetBtnId,activeClass);
         var utility = new Utility();
         oThis.keyup(function (e) {
-            // if escape or backspace/delete and search term is empty or blank string
-            if ((e.which == 27) || (((e.which == 8) || (e.which == 46)) && ((oThis.val().length == 0) || (oThis.val().match("^\\s*$"))))){
+            if ((e.keyCode == 27) || (((e.keyCode == 8) || (e.keyCode == 46)) && ((oThis.val().match("^\\s*$"))))){
+              // if escape or backspace/delete and search term is empty or blank string
               $('#' + resetBtnId).click();
+              
+            } else if ((e.keyCode == 8) || (e.keyCode == 46) || ((e.keyCode >= 48) && (e.keyCode <= 57)) || ((e.keyCode >= 65) && (e.keyCode <= 90)) || ((e.keyCode = 32) && (!oThis.val().match("^\\s*$")))){
               // else if backspace or delete or a number or letter or punctuation or space and term is not only a blank string
-            } else if ((e.which == 8) || (e.which == 46) || ((e.which >= 48) && (e.which <= 57)) || ((e.which >= 65) && (e.which <= 90)) || ((e.which = 32) && (!oThis.val().match("^\\s*$")))){
               reset_btn.activate(oGrid,oThis,messageBoxId);
               oGrid.package_channels = false; //set to false to broadcast where searching normally
               utility.normalizeNumLink();
@@ -610,21 +611,21 @@ var searchBox = function(context,grid,messageBoxId,resetBtnId,activeClass){
               msg_box.clear();
               if ((count > 0 || count == 0) && oGrid.searchString.length > 0)
                 msg_box.createMsg(count);
+              oThis.focus();
             }
         });
         oThis.keydown(function (e) {
-            //if enter and search term is not empty and not blank string
-            if ((e.which == 13) && (oThis.val().length != 0) && (!oThis.val().match("^\\s*$"))) {
-                var clearedVal = oThis.val().replace(/ /g, '\u00a0');
-                oThis.val('');
-                oGrid.searchString = clearedVal;
-                oGrid.updateFilter();
-                var count = oGrid.dataView.getLength();
-                msg_box.clear();
-                if ((count > 0 || count == 0) && oGrid.searchString.length > 0)
-                    msg_box.createMsg(count);
-                msg_box.searchTerm(clearedVal);
-                oThis.focus();
+            if ((e.keyCode == 13) && (oThis.val().length != 0) && (!oThis.val().match("^\\s*$"))) {
+              //if enter and search term is not empty and not blank string
+              var clearedVal = oThis.val().replace(/ /g, '\u00a0');
+              oThis.val('');
+              oGrid.searchString = clearedVal;
+              oGrid.updateFilter();
+              var count = oGrid.dataView.getLength();
+              msg_box.clear();
+              if ((count > 0 || count == 0) && oGrid.searchString.length > 0)
+                msg_box.createMsg(count);
+              msg_box.searchTerm(clearedVal);
             }
         });
     };
