@@ -94,6 +94,7 @@
 			todir="${build.dir}"			
 		>   
 			<exclude name="js/unit_test/test.js" />                       
+			<exclude name="js/config.js" />                       
 		</yui-compressor>
 		
 	</target>

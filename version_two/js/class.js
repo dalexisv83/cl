@@ -2,14 +2,10 @@
  * This js file holds the re-usable classes for Channel Line-up
  *
  * @author Joel Capillo <jcapillo@directv.com>
- * @version 1
+ * @version 2
  * 
  */
 
-///////////////////start////////////////////
-
-//IMPORTANT!!!!!!!!!!!!! Set this to FALSE if on remote server(AAC), set this to TRUE when running on local computer
-var isLocalHost = true; 
 
 /**
  * Initiate inheritance Functions
@@ -27,34 +23,6 @@ var inheritPrototype = function(childObject, parentObject) {
     var copyOfParent = Object.create(parentObject.prototype);
     copyOfParent.constructor = childObject;
     childObject.prototype = copyOfParent;
-};
-
-
-
-/**
- * Sets the proper server path
- * @param {boolean} localhost determines if we're running the application in localhost or remote server(Tridion) 
- */
-var getServerPath = function(localhost){
-    if (!localhost) {
-        return '%%pub%%';
-    }
-    else
-      return 'http://agentanswercenterstg.directv.com/en-us/res/';
-};
-
-
-/**
- * Holds the configuration values
- */
-var config = {
-    localhost:isLocalHost,
-    k_width: 410,
-    rowHeightTall:38, //row height for the big grid
-    rowHeightShort:30, //row height for the small grid
-    y_diff:14, //constant used for calculating distance on rotated text to the bottom
-    adChannelUrl: "javascript:document.location.href='"+getServerPath(isLocalHost)+"programming/paid_programming_part_time_channels.html'",
-    deg: 10 //degree of rotation of the package divs
 };
 
 
@@ -203,8 +171,8 @@ var bigGrid = function(rowHeight,context,featured_packages,data_type){
     this.sortcol = "channel_number";
     this.container = $('#'+context);
     this.package_channels = false;
-    this.searchString = '';
-    this.isFiltering = false;
+    this.searchString = '';   
+    this.search_terms = [];
     var oThis = this;
     this.comparer = function(a, b) {
         
@@ -230,19 +198,12 @@ var bigGrid = function(rowHeight,context,featured_packages,data_type){
         
         return (x == y ? 0 : (x > y ? 1 : -1));
     
-    };
-    this.removeFakeTableClass = function(){
-        for(var i=0; i < 3; i++) {
-          this.container.removeClass('fake-table' + i);        
-        }
-    };
+    };   
     this.updateFilter = function() {
       var oThis = this;     
       this.dataView.setFilterArgs({
         searchString: oThis.searchString
-       });
-      this.removeFakeTableClass(); //remove fake table class
-      this.isFiltering = true; //broadcast that we're filtering
+      });      
       this.dataView.refresh();
     };
     gridTable.call(this,rowHeight,context,featured_packages);   
@@ -254,45 +215,69 @@ bigGrid.prototype.render = function(){
         this.dataView = new Slick.Data.DataView();        
         var grid = new Slick.Grid("#" + this.context, this.dataView, this.columns, this.options);
         var utility = new Utility();
-        
         var oThis = this;
         
-        //private function for searching
-        var searchFilter = function(item, args) {
-            var regex = new RegExp(args.searchString, "i");
-            var searchFactor = null;
-            if (!oThis.package_channels) {
-                searchFactor =  item["anchors"].search(regex) != -1 ||
-                                item["channel_name"].search(regex) != -1 ||
-                                item["channel_number"].search(regex) != -1 ||
-                                item["call_letters"].search(regex) != -1 ||
-                                item["genre"].search(regex) != -1;
+        //function to modify if want to customize search
+        var searchFilter = function(rows, args) {            
+            var isMatched = false;
+            //check if we're doing regular search on the search box
+            if (!oThis.package_channels) {               
+                //check if we have a multi search terms array
+                if (oThis.search_terms.length > 0) {                        
+                    var found;                    
+                    for (i = 0; i < oThis.search_terms.length; i += 1) {
+                        var search_str = jQuery.trim(oThis.search_terms[i]);
+                        if (search_str.length == 0)
+                            continue;                       
+                        found = false;
+                        found = searchByColumns(rows,config.searchable_columns,search_str);
+                        if (found){
+                            isMatched = true;
+                            break;
+                        }                        
+                    }                   
+                }                
+                else
+                    isMatched = searchByColumns(rows,config.searchable_columns,args.searchString);                                    
+                              
             }
-            else{              
-              var properties = oThis.package_channels.split('||');              
-              var hd_regex = new RegExp('hd', "i");
-              if (properties[1]) {
-                  switch(oThis.dataType) {
-                    case 'commercial':
-                        searchFactor = item[properties[0]].search(regex) != -1 &&
-                           (item["channel_name"].search(hd_regex) != -1 ||
-                           item["call_letters"].search(hd_regex) != -1);
-                        break;                       
-                    default:
-                        searchFactor = item[properties[0]].search(regex) != -1 &&
-                               item["channel_name"].search(hd_regex) != -1;
-                  }
-              }
-              else{
-                searchFactor = item[oThis.package_channels].search(regex) != -1;
-              }
+            else{
+                var regex = new RegExp(args.searchString, "i");
+                var properties = oThis.package_channels.split('||');              
+                var hd_regex = new RegExp('hd', "i");
+                if (properties[1]) {
+                    switch(oThis.dataType) {
+                      case 'commercial':
+                          isMatched = rows[properties[0]].search(regex) != -1 &&
+                             (rows["channel_name"].search(hd_regex) != -1 ||
+                             rows["call_letters"].search(hd_regex) != -1);
+                          break;                       
+                      default:
+                          isMatched = rows[properties[0]].search(regex) != -1 &&
+                                 rows["channel_name"].search(hd_regex) != -1;
+                    }
+                }
+                else
+                    isMatched = rows[oThis.package_channels].search(regex) != -1;
+                
             }
             
-            if (searchFactor) 
-              return true;
-            
-            return false;
+            return isMatched;
         };
+        
+        //private function for column searching
+        var searchByColumns = function(rows,columns,search_term){
+            var regex = new RegExp(search_term, "i");
+            var is_matched = false;
+            $.each(columns, function(i, column_name) {
+                if (rows[column_name].search(regex) != -1) {
+                    is_matched = true;
+                    return false;
+                }
+            });            
+            return is_matched;
+        };
+        
         
         this.dataView.onRowCountChanged.subscribe(function (e, args) {
             grid.updateRowCount();
@@ -509,7 +494,8 @@ var packageFilter = function(grid,message_box){
     this.filterChannelsByPackage = function(property,hd_only){  
       var msg_box = this.message_box;
       //start hooking-up to the grid
-      this.grid.package_channels = property; 
+      this.grid.package_channels = property;
+      this.grid.search_terms = [];      
       this.grid.searchString = 'x';
       this.grid.updateFilter();      
       var count = this.grid.dataView.getLength();
@@ -589,46 +575,138 @@ var searchBox = function(context,grid,messageBoxId,resetBtnId,activeClass){
     this.self.focus();
     this.resetBtnId = resetBtnId;
     this.activeClass = activeClass;
+    
+    var thisSearchBox = this;
+    
     this.autoSearch = function(){
         var oThis = this.self;
         var oGrid = this.grid;
         var msg_box = new messageBox(messageBoxId,this.grid);
         var reset_btn = new reset(resetBtnId,activeClass);
         var utility = new Utility();
+        
         oThis.keyup(function (e) {
-            if ((e.keyCode == 27) || (((e.keyCode == 8) || (e.keyCode == 46)) && ((oThis.val().match("^\\s*$"))))){
+            if ((e.keyCode == 27) || (((e.keyCode == 8) ||
+                (e.keyCode == 46)) && ((oThis.val().match("^\\s*$"))))){
               // if escape or backspace/delete and search term is empty or blank string
-              $('#' + resetBtnId).click();
-              
-            } else if ((e.keyCode == 8) || (e.keyCode == 46) || ((e.keyCode >= 48) && (e.keyCode <= 57)) || ((e.keyCode >= 65) && (e.keyCode <= 90)) || ((e.keyCode = 32) && (!oThis.val().match("^\\s*$")))){
-              // else if backspace or delete or a number or letter or punctuation or space and term is not only a blank string
-              reset_btn.activate(oGrid,oThis,messageBoxId);
-              oGrid.package_channels = false; //set to false to broadcast where searching normally
-              utility.normalizeNumLink();
-              oGrid.searchString = oThis.val();
-              oGrid.updateFilter();
-              var count = oGrid.dataView.getLength();
-              msg_box.clear();
-              if ((count > 0 || count == 0) && oGrid.searchString.length > 0)
-                msg_box.createMsg(count);
-              oThis.focus();
+              $('#' + resetBtnId).click();              
+            } else if ((e.keyCode == 8) || (e.keyCode == 46) ||
+                       ((e.keyCode >= 48) && (e.keyCode <= 57)) ||
+                       ((e.keyCode >= 65) && (e.keyCode <= 90)) ||
+                       ((e.keyCode = 32) && (!oThis.val().match("^\\s*$")))){
+                
+                // else if backspace or delete or a number or letter or punctuation or space and term is not only a blank string
+                reset_btn.activate(oGrid,oThis,messageBoxId);
+                oGrid.package_channels = false; //set to false to broadcast we're searching normally
+                utility.normalizeNumLink();
+                
+                oGrid.searchString = jQuery.trim(oThis.val());
+                var result_count = thisSearchBox.doSearch(oGrid,config.search_delims);
+                
+                msg_box.clear();
+                if ((result_count > 0 || result_count === 0) && oGrid.searchString.length > 0){
+                   msg_box.createMsg(result_count);
+                }
+                
+                oThis.focus();
             }
         });
+        
         oThis.keydown(function (e) {
             if ((e.keyCode == 13) && (oThis.val().length != 0) && (!oThis.val().match("^\\s*$"))) {
-              //if enter and search term is not empty and not blank string
-              var clearedVal = oThis.val().replace(/ /g, '\u00a0');
-              oThis.val('');
-              oGrid.searchString = clearedVal;
-              oGrid.updateFilter();
-              var count = oGrid.dataView.getLength();
-              msg_box.clear();
-              if ((count > 0 || count == 0) && oGrid.searchString.length > 0)
-                msg_box.createMsg(count);
-              msg_box.searchTerm(clearedVal);
+                //if enter and search term is not empty and not blank string
+                var clearedVal = oThis.val().replace(/ /g, '\u00a0');
+                oThis.val('');
+                
+                oGrid.searchString = jQuery.trim(clearedVal);
+                var result_count = thisSearchBox.doSearch(oGrid,config.search_delims);
+                
+                msg_box.clear();
+                if ((result_count > 0 || result_count === 0) && oGrid.searchString.length > 0){
+                   msg_box.createMsg(result_count);
+                }
+                
+                msg_box.searchTerm(clearedVal);
             }
         });
+
     };
+    
+    /**
+     * Does the actual search
+     * @param {object} grid the Grid class to attach
+     * @param {object} search_box the searchBox class
+     * @param {array} search_delims the accepted search delimiters
+     * @return {integer} 
+     */
+    this.doSearch = function(grid,search_delims){
+        var delim_mgr = new searchDelimiterMgr(search_delims,grid.searchString);
+        grid.search_terms = this.getSearchTerms(delim_mgr);
+        grid.updateFilter();
+        return grid.dataView.getLength();
+    };
+    
+    /* Returns an array of multiple search terms
+     * @param {object} delim_mgr the searchDelimiterMgr class instantiated
+     * @param {string} base_delim
+     * @return {array} search_terms
+     */
+    this.getSearchTerms = function(delim_mgr){
+        var base_delimiter = delim_mgr.base_delim; 
+        var search_terms = [];
+        if (delim_mgr.checkSearchDelimiter())
+            search_terms = delim_mgr.syncDelimiterToBase().split(base_delimiter);
+        return search_terms;
+    };
+};
+
+
+
+
+/**
+ * Class responsible for search delimiter checking, manipulation, etc.
+ * @param {array} supported_delims collection of supported search delimiters
+ * @param {string} search_term the term/word to search
+ * 
+ * @todo add an exception throw if supported_delims is not an array or empty
+ */
+var searchDelimiterMgr = function(supported_delims,search_term){
+    this.supported_delims = supported_delims;
+    this.search_term = search_term;
+    this.base_delim = supported_delims[0]; //assign the base delimiter
+    this.util = new Utility();
+};
+
+
+/**
+ * Syncs all the multiple delimiters into one base delimiter 
+ * @return {string} search term that is now delimited by one delimiter
+ */
+searchDelimiterMgr.prototype.syncDelimiterToBase = function(){
+    for (var i = 0; i < this.supported_delims.length; i++) {
+        var supported_delim = jQuery.trim(this.supported_delims[i]);
+        if (supported_delim != this.base_delim)
+           this.search_term = this.util.replaceAll(this.search_term,supported_delim,this.base_delim);
+    }    
+    return this.search_term;
+};
+
+
+
+/**
+ * Check if a search term contains a supported delimiter
+ * @return {boolean}
+ */
+searchDelimiterMgr.prototype.checkSearchDelimiter = function(){
+    var found = false;
+    for (var i = 0; i < this.supported_delims.length; i++) {
+        var supported_delim = this.supported_delims[i];
+        if (this.search_term.indexOf(supported_delim) != -1){           
+           found = true;
+           break;
+        }
+    }
+    return found;
 };
 
 
@@ -1039,6 +1117,7 @@ var reset = function(context, activeClass){
     this.activate = function(grid,search_box,messageBoxId){
         var util = new Utility();
         var message_box = new messageBox(messageBoxId,grid);
+        
         this.self.addClass(oThis.aClass);
         this.self.unbind().click(function(e){
           grid.package_channels = false;
@@ -1046,9 +1125,10 @@ var reset = function(context, activeClass){
           search_box.val('');
           message_box.clear();
           grid.searchString = search_box.val();
+          grid.search_terms = [];
           grid.updateFilter();
           oThis.self.removeClass(oThis.aClass);
-          if (grid.environment != 'test')
+          if (grid.environment !== 'test')
             dcsMultiTrack("DCSext.channel_lineup_search_term","reset button hit");
         });
     };
@@ -1130,7 +1210,13 @@ var Utility = function(){
         }
         else
           return (Math.round(tan_width * 100) / 100) - 2; //need to compensate 2 units if IE    
-    };  
+    };
+    this.escapeRegExp = function(string) {
+      return string.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+    };
+    this.replaceAll = function(string, find, replace) {
+      return string.replace(new RegExp(this.escapeRegExp(find), 'g'), replace);
+    }
 };
 
 /**

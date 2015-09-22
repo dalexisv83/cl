@@ -6,7 +6,7 @@
  */
 
 
-var localhost = isLocalHost; 
+var localhost = config.localhost; 
 var featured_packages = data.featured_packages;
 var channels = data.channels;
 var ad_channels = AdSales.channels;
@@ -486,6 +486,56 @@ QUnit.test( "Testing the \"autoSearch\" function.", function( assert ) {
         jQuery('#testBox').trigger(e);
         assert.equal($('#' + search_box.resetBtnId).attr("class"), search_box.activeClass, "On " + e.type + ", the keycode " + v + " (" + newString + ") DOES add the class \"" + search_box.activeClass + "\" when the textbox says: " + (boxValue.replace(/ /g, '\u00a0') == '' ? "empty" : boxValue.replace(/ /g, '\u00a0')) + ".");
     });
+
+    //combined delimiter test
+    value_to_search = 'mtv#216|217';
+    var expected_length = 3; //the search term if split/exploded is 3
+    
+    var e = jQuery.Event( "keyup" );
+    e.which = 50;
+    //assign a value
+    $("#testBox").val(value_to_search);
+    // trigger the keyup event
+    $("#testBox").trigger(e);
+    
+    var html = $('#messageBox').html();
+    assert.ok(html.length > 0, 'Testing if there\'s a search result on the box message when searching for term "'+value_to_search+'". Asserting that the message found is '+ html);
+    assert.ok(big_grid.search_terms.length > 0, 'Asserting that search terms array is populated.');
+    assert.ok(big_grid.search_terms.length === expected_length, 'Asserting that search terms array is the same length as expected which is ' + expected_length + '.');
+    
+    //more combined test
+    value_to_search = 'mtv#216|217*diy#nba#cnn';
+    var expected_length = 6; //the search term if split/exploded is 6
+    
+    var e = jQuery.Event( "keyup" );
+    e.which = 50;
+    //assign a value
+    $("#testBox").val(value_to_search);
+    // trigger the keyup event
+    $("#testBox").trigger(e);
+    
+    var html = $('#messageBox').html();
+    assert.ok(html.length > 0, 'Testing if there\'s a search result on the box message when searching for term "'+value_to_search+'". Asserting that the message found is '+ html);
+    assert.ok(big_grid.search_terms.length > 0, 'Asserting that search terms array is populated.');
+    assert.ok(big_grid.search_terms.length === expected_length, 'Asserting that search terms array is the same length as expected which is ' + expected_length + '.');
+    
+    //test for single delimiter
+    value_to_search = 'mtv,216,217';
+    var expected_length = 3; //the search term if split/exploded is 3
+    
+    var e = jQuery.Event( "keyup" );
+    e.which = 50;
+    //assign a value
+    $("#testBox").val(value_to_search);
+    // trigger the keyup event
+    $("#testBox").trigger(e);
+    
+    var html = $('#messageBox').html();
+    assert.ok(html.length > 0, 'Testing if there\'s a search result on the box message when searching for term "'+value_to_search+'". Asserting that the message found is '+ html);
+    assert.ok(big_grid.search_terms.length > 0, 'Asserting that search terms array is populated.');
+    assert.ok(big_grid.search_terms.length === expected_length, 'Asserting that search terms array is the same length as expected which is ' + expected_length + '.');
+    
+
 });
 
 
@@ -947,9 +997,59 @@ QUnit.test( "Testing the \"sortByGenre\". Function called when clicking the genr
     
 });
 
+QUnit.module( "searchDelimiterMgr" );
+QUnit.test( "Testing the \"checkSearchDelimiter\".", function( assert ) {
+    
+    var supported_delims = [','];
+    var search_term = 'test';
+    var search_delim = new searchDelimiterMgr(supported_delims,search_term);
+    
+    assert.ok(!search_delim.checkSearchDelimiter(), 'Asserted that function returns false when search term is "' + search_term + '".');
+    
+    search_term = 'apple,orange'
+    search_delim = new searchDelimiterMgr(supported_delims,search_term);
+    
+    assert.ok(search_delim.checkSearchDelimiter() == true, 'Asserted that function returns true when search term is "' + search_term + '".');
+    
+    //changing supported delims
+    supported_delims = ['|'];
+    var search_delim = new searchDelimiterMgr(supported_delims,search_term);
+    
+    assert.ok(!search_delim.checkSearchDelimiter(), 'Asserted that function returns false when search term is "' + search_term + '".');
+    
+    search_term = 'apple|orange'
+    search_delim = new searchDelimiterMgr(supported_delims,search_term);
+    
+    assert.ok(search_delim.checkSearchDelimiter() == true, 'Asserted that function returns true when search term is "' + search_term + '".');
+    
+    
+});
 
-
-
+QUnit.test( "Testing the \"syncDelimiterToBase\".", function( assert ) {
+    var supported_delims = [','];
+    var search_term = 'test,test,';
+    var search_delim = new searchDelimiterMgr(supported_delims,search_term);
+    var result_str = search_delim.syncDelimiterToBase();
+    
+    assert.ok(result_str == search_term, 'Asserted that function returns the same string.');
+    
+    supported_delims = [',','|'];
+    search_term = 'test|test,';
+    search_delim = new searchDelimiterMgr(supported_delims,search_term);
+    result_str = search_delim.syncDelimiterToBase();
+    
+    assert.ok(result_str != search_term, 'Asserted that function returns different string "'+result_str+'".');
+    
+    supported_delims = [',','|','#','*','&'];
+    search_term = 'test#test,diy*rty*y';
+    search_delim = new searchDelimiterMgr(supported_delims,search_term);
+    
+    result_str = search_delim.syncDelimiterToBase(); //expected to return a different string
+    var expected_search_terms_length = 5;
+    
+    assert.ok(search_delim.syncDelimiterToBase() != search_term, 'Asserted that function returns different string "'+result_str+'".');
+    assert.ok(search_delim.syncDelimiterToBase().split(supported_delims[0]).length === expected_search_terms_length, 'Asserted that function returns an exploded string length of array === 5.' )
+});
 
 
 
