@@ -25,12 +25,12 @@ $(function () {
     big_grid.render();
     
     //activate the search box
-    var search_box = new searchBox('txtSearch',big_grid,'messageBox','reset');
+    var search_box = new searchBox('txtSearch',big_grid,'messageBox','reset','active');
     search_box.autoSearch();
     
     //activate the package filters
-    big_grid.activateHdChannelsFilter(search_box,'messageBox');
-    big_grid.activateRegularChannelsFilter(search_box,'messageBox');
+    big_grid.activateHdChannelsFilter(search_box,'messageBox','reset','active');
+    big_grid.activateRegularChannelsFilter(search_box,'messageBox','reset','active');
     
     //get the width for each big_grid cell
     var cell_width = big_grid.getNarrowCellWidth();
@@ -59,7 +59,6 @@ $(function () {
     
     //initialize reset button
     var reset_btn = new reset('reset');
-    reset_btn.deactivate();
     
     //initialize tooltip
     var tool_tip_btn = $('#genreLegend');

@@ -217,6 +217,7 @@ QUnit.test( "Testing the \"autoSearch\" function.", function( assert ) {
    fixture.append('<div id="containerSmall"></div>');
    fixture.append('<div id="messageBox"></div>');
    fixture.append('<input type=text id="testBox"/>');
+   fixture.append('<a id="reset">reset</a>');
    
     //initialize the small(top) grid
     var small_grid = new smallGrid(230,'containerSmall',featured_packages);
@@ -236,8 +237,10 @@ QUnit.test( "Testing the \"autoSearch\" function.", function( assert ) {
     big_grid.setChannels(ad_channels);
     big_grid.render();
     
-    var search_box = new searchBox('testBox',big_grid,'messageBox');
-    search_box.autoSearch(); //bind the keyup event
+    big_grid.environment = 'test';
+
+    var search_box = new searchBox('testBox',big_grid,'messageBox','reset','active');
+    search_box.autoSearch(); //bind the keyup event instantiates new reset
     
     var value_to_search = '520';
     
@@ -293,6 +296,23 @@ QUnit.test( "Testing the \"autoSearch\" function.", function( assert ) {
     assert.ok(html.length == 0, 'Testing if there\'s a search result on the box message when searching for term "'+value_to_search+'". Asserting that the message found is '+ html);
     var expected_total = channels.length + ad_channels.length;
     assert.equal(expected_total, big_grid.dataView.getLength(), "Asserting that there are "+expected_total+" search results for term \""+value_to_search+"\".");
+
+
+    var testCodes = [8,9,13,16,17,18,19,20,27,33,34,35,36,37,38,39,40,45,46,48,49,50,51];
+
+    function escapeRegExp(str) {
+      return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+    }
+
+    $.each(testCodes, function(i, v) {
+        var e = jQuery.Event('keyup', {keyCode: v});
+        $("#testBox").val("");
+        $('#' + search_box.resetBtnId).removeClass();
+        var newString = String.fromCharCode(v);
+        $("#testBox").val(escapeRegExp(newString))
+        jQuery('#testBox').trigger(e);
+        assert.equal($('#' + search_box.resetBtnId).attr("class"), search_box.activeClass, "The keycode " + v + " (" + newString + ") adds the class " + search_box.activeClass + " when the textbox says: " + $("#testBox").val() +".");
+    });
 });
 
 

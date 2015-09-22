@@ -66,6 +66,7 @@ var config = {
  * @param {array} featured_packages the array of programming packages to feature
  */
 var gridTable = function(rowHeight,context,featured_packages){
+    this.environment = '';
     this.rowHeight = rowHeight;
     this.data = [];
     this.columns = [];
@@ -392,15 +393,17 @@ bigGrid.prototype.setColumns = function(columns){
  * @param {object} search_box the search box object
  * @param {string} messageBoxId the id of the message box to attach
  */
-bigGrid.prototype.activateHdChannelsFilter = function(search_box,messageBoxId){
+bigGrid.prototype.activateHdChannelsFilter = function(search_box,messageBoxId,resetBtnId,activeClass){
     var grid = this;
     var message_box = new messageBox(messageBoxId,grid); //initiate the message box
     var util = new Utility();
+    var reset_btn = new reset(resetBtnId,activeClass);
     $.each(this.featured_packages, function(i, v) {
             var context = "hd_btn"+i;
             var link = $('#'+context);
             var package_filter = new packageFilter(grid,message_box);
             link.click(function() {
+                reset_btn.activate(grid,search_box.self,messageBoxId);
                 util.normalizeNumLink();
                 search_box.self.val('');
                 var numlink = $(this);
@@ -422,15 +425,17 @@ bigGrid.prototype.activateHdChannelsFilter = function(search_box,messageBoxId){
  * @param {object} search_box the search box object
  * @param {string} messageBoxId the id of the message box to attach
  */
-bigGrid.prototype.activateRegularChannelsFilter = function(search_box,messageBoxId){
+bigGrid.prototype.activateRegularChannelsFilter = function(search_box,messageBoxId,resetBtnId,activeClass){
     var grid = this;
     var message_box = new messageBox(messageBoxId,grid); //initiate the message box
     var util = new Utility();
+    var reset_btn = new reset(resetBtnId,activeClass);
     $.each(this.featured_packages, function(i, v) {
         var context = "reg_btn"+i;
         var link = $('#'+context);
         var package_filter = new packageFilter(grid,message_box);
         link.click(function(){
+            reset_btn.activate(grid,search_box.self,messageBoxId);
             util.normalizeNumLink();
             search_box.self.val('');
             var numlink = $(this);
@@ -577,22 +582,23 @@ var toolTip = function(obj){
  * @param {string} context the id of an input text to attach
  * @param {string} messageBoxId the id of the message box to attach
  */
-var searchBox = function(context,grid,messageBoxId,resetBtnId){
+var searchBox = function(context,grid,messageBoxId,resetBtnId,activeClass){
     this.context = context;
     this.grid = grid;
     this.self = $('#'+this.context);
     this.self.focus();
+    this.resetBtnId = resetBtnId;
+    this.activeClass = activeClass;
     this.autoSearch = function(){
         var oThis = this.self;
         var oGrid = this.grid;
         var msg_box = new messageBox(messageBoxId,this.grid);
-        var reset_btn = new reset(resetBtnId);
+        var reset_btn = new reset(resetBtnId,activeClass);
         var utility = new Utility();
         oThis.keyup(function (e) {
             // if escape or backspace/delete and search term is empty or blank string
             if ((e.which == 27) || (((e.which == 8) || (e.which == 46)) && ((oThis.val().length == 0) || (oThis.val().match("^\\s*$"))))){
-              oThis.val('');
-              reset_btn.deactivate();
+              $('#' + resetBtnId).click();
               // else if backspace or delete or a number or letter or punctuation or space and term is not only a blank string
             } else if ((e.which == 8) || (e.which == 46) || ((e.which >= 48) && (e.which <= 57)) || ((e.which >= 65) && (e.which <= 90)) || ((e.which = 32) && (!oThis.val().match("^\\s*$")))){
               reset_btn.activate(oGrid,oThis,messageBoxId);
@@ -1025,29 +1031,25 @@ columnSorter.prototype.enableGenreSort = function(){
  * 
  * @param {string} context the id of the element to attach 
  */
-var reset = function(context){
+var reset = function(context, activeClass){
     var oThis = this;
+    this.aClass = activeClass;
     this.self = $('#' + context);
     this.activate = function(grid,search_box,messageBoxId){
         var util = new Utility();
         var message_box = new messageBox(messageBoxId,grid);
-        this.self.addClass('active');
+        this.self.addClass(oThis.aClass);
         this.self.unbind().click(function(e){
-            grid.package_channels = false;
-            util.normalizeNumLink();
-            search_box.val('');
-            message_box.clear();
-            grid.searchString = search_box.val();
-            grid.updateFilter();           
-            oThis.self.removeClass('active');
-            //make sure to execute deactivate only when called programatically
-            if (!e) 
-              oThis.deactivate();
+          grid.package_channels = false;
+          util.normalizeNumLink();
+          search_box.val('');
+          message_box.clear();
+          grid.searchString = search_box.val();
+          grid.updateFilter();
+          oThis.self.removeClass(oThis.aClass);
+          if (grid.environment != 'test')
             dcsMultiTrack("DCSext.channel_lineup_search_term","reset button hit");
         });
-    };
-    this.deactivate = function(){
-      oThis.self.click();      
     };
 };
 /**
