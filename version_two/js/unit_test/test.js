@@ -282,20 +282,6 @@ QUnit.test( "Testing the \"autoSearch\" function.", function( assert ) {
     var html = $('#messageBox').html();
     assert.ok(html.length > 0, 'Testing if there\'s a search result on the box message when searching for term "'+value_to_search+'". Asserting that the message found is '+html);
     assert.equal(html.match(/\d+/)[0], big_grid.dataView.getLength(), "Asserting that there are "+html.match(/\d+/)[0]+" search results for term \""+value_to_search+"\".");
-    
-    value_to_search = '';
-    
-    var e = jQuery.Event( "keyup" );
-    e.keyCode = 50;
-    //assign a value
-    $("#testBox").val(value_to_search);
-    // trigger the keyup event
-    $("#testBox").trigger(e);
-    
-    var html = $('#messageBox').html();
-    assert.ok(html.length == 0, 'Testing if there\'s a search result on the box message when searching for term "'+value_to_search+'". Asserting that the message found is '+ html);
-    var expected_total = channels.length + ad_channels.length;
-    assert.equal(expected_total, big_grid.dataView.getLength(), "Asserting that there are "+expected_total+" search results for term \""+value_to_search+"\".");
 
     function escapeRegExp(str) {
       return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
