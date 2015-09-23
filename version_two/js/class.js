@@ -586,16 +586,16 @@ var searchBox = function(context,grid,messageBoxId,resetBtnId,activeClass){
         var utility = new Utility();
         
         oThis.keyup(function (e) {
-            if ((e.keyCode == 27) || (((e.keyCode == 8) ||
-                (e.keyCode == 46)) && ((oThis.val().match("^\\s*$"))))){
-              // if escape or backspace/delete and search term is empty or blank string
+            if (  (e.keyCode == 27) // if escape
+               || (((e.keyCode == 8) || (e.keyCode == 46)) // ( [ OR backspace OR delete ]
+               && ((oThis.val().match("^\\s*$")))) // AND search term is not a blank string "only spaces" )
+               ){
               $('#' + resetBtnId).click();              
-            } else if ((e.keyCode == 8) || (e.keyCode == 46) ||
-                       ((e.keyCode >= 48) && (e.keyCode <= 57)) ||
-                       ((e.keyCode >= 65) && (e.keyCode <= 90)) ||
-                       ((e.keyCode = 32) && (!oThis.val().match("^\\s*$")))){
-                
-                // else if backspace or delete or a number or letter or punctuation or space and term is not only a blank string
+            } else if (  ((!oThis.val().match("^\\s*$")) && (oThis.val().length != 0)) // if ( term is not empty AND not a blank string "only spaces" )
+                      && ((e.keyCode == 8) || (e.keyCode = 32) || (e.keyCode == 46) // AND ( backspace OR space OR delete
+                      || ((e.keyCode >= 48) && (e.keyCode <= 57)) // OR [ a number ]
+                      || ((e.keyCode >= 65) && (e.keyCode <= 90))) // OR [ a letter ] )
+                      ){
                 reset_btn.activate(oGrid,oThis,messageBoxId);
                 oGrid.package_channels = false; //set to false to broadcast we're searching normally
                 utility.normalizeNumLink();
@@ -603,7 +603,6 @@ var searchBox = function(context,grid,messageBoxId,resetBtnId,activeClass){
                 oGrid.searchString = jQuery.trim(oThis.val());
                 var result_count = thisSearchBox.doSearch(oGrid,config.search_delims);
                 
-                msg_box.clear();
                 if ((result_count > 0 || result_count === 0) && oGrid.searchString.length > 0){
                    msg_box.createMsg(result_count);
                 }
@@ -613,15 +612,16 @@ var searchBox = function(context,grid,messageBoxId,resetBtnId,activeClass){
         });
         
         oThis.keydown(function (e) {
-            if ((e.keyCode == 13) && (oThis.val().length != 0) && (!oThis.val().match("^\\s*$"))) {
-                //if enter and search term is not empty and not blank string
+            if (  (e.keyCode == 13) // if enter
+               && (oThis.val().length != 0) // AND search term is not empty
+               && (!oThis.val().match("^\\s*$")) // AND search term is not a blank string "only spaces"
+               ) {
                 var clearedVal = oThis.val().replace(/ /g, '\u00a0');
                 oThis.val('');
                 
                 oGrid.searchString = jQuery.trim(clearedVal);
                 var result_count = thisSearchBox.doSearch(oGrid,config.search_delims);
                 
-                msg_box.clear();
                 if ((result_count > 0 || result_count === 0) && oGrid.searchString.length > 0){
                    msg_box.createMsg(result_count);
                 }
