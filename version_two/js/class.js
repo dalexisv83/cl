@@ -627,6 +627,7 @@ var searchBox = function(context,grid,messageBoxId,resetBtnId,activeClass){
                 }
                 
                 msg_box.searchTerm(clearedVal);
+                reset_btn.activate(oGrid,oThis,messageBoxId);
             }
         });
 
