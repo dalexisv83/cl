@@ -410,6 +410,7 @@ html, body {
 .container {
   position: absolute;
   top: -25px;
+  width: 750px;
 }
 
 #container,
