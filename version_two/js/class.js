@@ -584,6 +584,7 @@ var searchBox = function(context,grid,messageBoxId,resetBtnId,activeClass){
         var msg_box = new messageBox(messageBoxId,this.grid);
         var reset_btn = new reset(resetBtnId,activeClass);
         var utility = new Utility();
+        msg_box.clear();
         
         oThis.keyup(function (e) {
             if (  (e.keyCode == 27) // if escape
@@ -719,7 +720,7 @@ var messageBox = function(context,grid){
     this.self = $('#'+context);
     this.grid = grid;
     this.clear = function(){
-        this.self.html('');
+        this.self.html('To look up multiple networks, use a comma (,) to separate search terms.');
     };
 };
 
