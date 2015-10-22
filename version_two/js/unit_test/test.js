@@ -204,7 +204,7 @@ QUnit.test( "Testing the \"clear\" function.", function( assert ) {
    msg_box.clear();
    var html = msg_box.self.html();
    
-   assert.deepEqual(html.length, 0, 'Testing clear function. Asserted that the message box is clear and empty.');   
+   assert.deepEqual(html, 'To look up multiple networks, use a comma (,) to separate search terms.', 'Testing clear function. Asserted that the message box reverts to: "To look up multiple networks, use a comma (,) to separate search terms."');   
 });
 
 
