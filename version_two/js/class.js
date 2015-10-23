@@ -601,7 +601,7 @@ var searchBox = function(context,grid,messageBoxId,resetBtnId,activeClass){
                 oGrid.package_channels = false; //set to false to broadcast we're searching normally
                 utility.normalizeNumLink();
                 
-                oGrid.searchString = jQuery.trim(oThis.val());
+                oGrid.searchString = oThis.val();
                 var result_count = thisSearchBox.doSearch(oGrid,config.search_delims);
                 
                 if ((result_count > 0 || result_count === 0) && oGrid.searchString.length > 0){
@@ -617,17 +617,17 @@ var searchBox = function(context,grid,messageBoxId,resetBtnId,activeClass){
                && (oThis.val().length != 0) // AND search term is not empty
                && (!oThis.val().match("^\\s*$")) // AND search term is not a blank string "only spaces"
                ) {
-                var clearedVal = oThis.val().replace(/ /g, '\u00a0');
+                var clearedVal = oThis.val();
                 oThis.val('');
                 
-                oGrid.searchString = jQuery.trim(clearedVal);
+                oGrid.searchString = clearedVal;
                 var result_count = thisSearchBox.doSearch(oGrid,config.search_delims);
                 
                 if ((result_count > 0 || result_count === 0) && oGrid.searchString.length > 0){
                    msg_box.createMsg(result_count);
                 }
                 
-                msg_box.searchTerm(clearedVal);
+                msg_box.searchTerm(clearedVal.replace(/ /g, '\u00a0'));
                 reset_btn.activate(oGrid,oThis,messageBoxId);
             }
         });
