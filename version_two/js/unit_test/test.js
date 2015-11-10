@@ -475,7 +475,7 @@ QUnit.test( "Testing the \"autoSearch\" function.", function( assert ) {
 
     //combined delimiter test
     value_to_search = 'mtv#216|217';
-    var expected_length = 3; //the search term if split/exploded is 3
+    var expected_length = 0; //the search term if split/exploded is 3
     
     var e = jQuery.Event( "keyup" );
     e.which = 50;
@@ -486,12 +486,12 @@ QUnit.test( "Testing the \"autoSearch\" function.", function( assert ) {
     
     var html = $('#messageBox').html();
     assert.ok(html.length > 0, 'Testing if there\'s a search result on the box message when searching for term "'+value_to_search+'". Asserting that the message found is '+ html);
-    assert.ok(big_grid.search_terms.length > 0, 'Asserting that search terms array is populated.');
+    assert.ok(big_grid.search_terms.length === 0, 'Asserting that search terms array is not populated.');
     assert.ok(big_grid.search_terms.length === expected_length, 'Asserting that search terms array is the same length as expected which is ' + expected_length + '.');
     
     //more combined test
     value_to_search = 'mtv#216|217*diy#nba#cnn';
-    var expected_length = 6; //the search term if split/exploded is 6
+    var expected_length = 0; //the search term if split/exploded is 6
     
     var e = jQuery.Event( "keyup" );
     e.which = 50;
@@ -502,7 +502,7 @@ QUnit.test( "Testing the \"autoSearch\" function.", function( assert ) {
     
     var html = $('#messageBox').html();
     assert.ok(html.length > 0, 'Testing if there\'s a search result on the box message when searching for term "'+value_to_search+'". Asserting that the message found is '+ html);
-    assert.ok(big_grid.search_terms.length > 0, 'Asserting that search terms array is populated.');
+    assert.ok(big_grid.search_terms.length === 0, 'Asserting that search terms array is not populated.');
     assert.ok(big_grid.search_terms.length === expected_length, 'Asserting that search terms array is the same length as expected which is ' + expected_length + '.');
     
     //test for single delimiter
