@@ -113,6 +113,16 @@
 		<mkdir dir="${build.dir}/css" />
 	</target>
 	
-	<target name="main" depends="start,compress,concat,clean" />
+	<target name="copy">
+	    <copyfile src="${basedir}/version_two/index.htm" dest="${build.dir}/index.htm"/>
+	    <copyfile src="${basedir}/version_two/index_com.htm" dest="${build.dir}/index_com.htm"/>
+	</target>
+	
+	<target name="addBuildNumber">
+	    <replaceregexp flags="g" file="${build.dir}/index.htm" match="#.*#" replace="${env.BUILD_NUMBER}" />
+	    <replaceregexp flags="g" file="${build.dir}/index_com.htm" match="#.*#" replace="${env.BUILD_NUMBER}" />
+	</target>	
+	
+	<target name="main" depends="start,compress,concat,copy,addBuildNumber,clean" />
 	
 </project>
