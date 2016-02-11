@@ -15,7 +15,7 @@ if (typeof Object.create !== 'function') {
     Object.create = function (o) {
       "use strict";
         function F(){
-            return true;
+            return undefined;
         }
         F.prototype = o;
         return new F();
@@ -89,7 +89,8 @@ gridTable.prototype.getColumns = function(){
 };
 
 gridTable.prototype.setColumns = function(className,minWidth){
-  "use strict";
+   "use strict";
+    /*jslint unparam: true */
     var utility = new Utility(config.localhost),
     featured_packages_count = this.featured_packages.length,
     width = this.getNarrowCellWidth(),
@@ -101,11 +102,12 @@ gridTable.prototype.setColumns = function(className,minWidth){
     len,
     i,
     class_name,
-
+    
+    
     /**
      * Private function used for formatting package cells
-     */
-      narrowRowFormatter = function(cell, row, value) {
+     */    
+    narrowRowFormatter = function(row, cell, value, columnDef, dataContext) {
         if (utility.isInteger(value)) {
           index = cell - 4;
           if (row === 0) {
@@ -118,11 +120,11 @@ gridTable.prototype.setColumns = function(className,minWidth){
         }
         return value;
     };
-
+   
     /**
     * Regular row formatter for fix width columns
     */
-       fixRowFormatter = function(cell, value, dataContext) {
+    fixRowFormatter = function(row, cell, value, columnDef, dataContext) {
         if (!dataContext.hasOwnProperty('url') || cell > 0) {
            div = '<div class="inner">'+value+'</div>';
         }
@@ -141,14 +143,14 @@ gridTable.prototype.setColumns = function(className,minWidth){
     }
 
     //initatiate fix headers
-     columns = [
+    columns = [
       { id: "channel_name", name: "Channel Name", field: "channel_name", width: 212, formatter: fixRowFormatter, sortable: true, cssClass:'wide' },
       { id: "channel_number", name: "Channel Number", field: "channel_number", width: 70, sortable: true , cssClass:'narrow', formatter: fixRowFormatter  },
       { id: "call_letters", name: "Call Letters", field: "call_letters", width: 70, sortable: true, cssClass:'narrow', formatter: fixRowFormatter },
       { id: "genre", name: "Genre", field: "genre", width: 70, formatter: fixRowFormatter, sortable: true, cssClass:'narrow genre' }
     ];
 
-     len = columns.length;
+    len = columns.length;
     //fill the packages column
     for(i = 0; i < featured_packages_count; i++){
        class_name = '';
@@ -168,7 +170,6 @@ gridTable.prototype.setColumns = function(className,minWidth){
         formatter: narrowRowFormatter
 
       };
-
     }
     this.columns = columns;
 };
@@ -215,8 +216,8 @@ var bigGrid = function(rowHeight,context,featured_packages,data_type){
           }
         }
         else{
-          x = jQuery.trim(a[sortcol].toUpperCase());
-          y = jQuery.trim(b[sortcol].toUpperCase());
+          x = $.trim(a[sortcol].toUpperCase());
+          y = $.trim(b[sortcol].toUpperCase());
         }
 
         return (x === y ? 0 : (x > y ? 1 : -1));
@@ -249,7 +250,7 @@ bigGrid.prototype.render = function(){
         hd_regex,
         i,
         //private function for column searching
-         searchByColumns = function(rows,columns,search_term){
+        searchByColumns = function(rows,columns,search_term){
             var regex = new RegExp(search_term, "i"),
             is_matched = false;
             $.each(columns, function(i, column_name) {
@@ -263,28 +264,27 @@ bigGrid.prototype.render = function(){
 
 
         //function to modify if want to customize search
-       searchFilter = function(rows, args) {
+        searchFilter = function(rows, args) {
             isMatched  = false;
             //check if we're doing regular search on the search box
             if (!oThis.package_channels) {
                 //check if we have a multi search terms array
-                if (oThis.search_terms.length > 0) {
-                  found = true;
+                if (oThis.search_terms.length > 0) {                                 
                     for (i = 0; i < oThis.search_terms.length; i += 1) {
-                        search_str = jQuery.trim(oThis.search_terms[i]);
-                        if (search_str.length === 0) {
-                        found = false;
-                        found = searchByColumns(rows,config.searchable_columns,search_str);
-                      }
-                        if (found){
-                            isMatched = true;
-                            break;
+                        search_str = $.trim(oThis.search_terms[i]);
+                        if (search_str.length > 0){                                                  
+                            found = false;
+                            found = searchByColumns(rows,config.searchable_columns,search_str);
+                            if (found){
+                                isMatched = true;
+                                break;
+                            }  
                         }
-                    }
+                    }                   
                 }
-                else {
+                else{
                     isMatched = searchByColumns(rows,config.searchable_columns,args.searchString);
-                  }
+                }
             } else {
                regex = new RegExp(args.searchString, "i");
                properties = oThis.package_channels.split('||');
@@ -327,9 +327,6 @@ bigGrid.prototype.render = function(){
         });
 
         grid.setSortColumn("channel_name",true); //columnId, ascending
-
-
-
 };
 
 /**
@@ -444,7 +441,7 @@ bigGrid.prototype.activateHdChannelsFilter = function(search_box,messageBoxId,re
                 //remove the fix width columns from the equation
                 property = parseInt($(this).attr('data'), 10) - 3;
                 property = 'p' + property;
-                property = property+'||HD';
+                property = property+'||HD';                
                 package_filter.filterChannelsByPackage(property,true);
             });
     });
@@ -484,6 +481,7 @@ bigGrid.prototype.activateRegularChannelsFilter = function(search_box,messageBox
             //remove the fix width columns from the equation
             property = parseInt($(this).attr('data'), 10) - 3;
             property = 'p' + property; //determine the property
+            
             package_filter.filterChannelsByPackage(property,false);
         });
     });
@@ -565,13 +563,13 @@ var packageFilter = function(grid,message_box){
      */
     this.filterChannelsByPackage = function(property,hd_only){
       var msg_box = this.message_box,
-      count = this.grid.dataView.getLength();
+      count;
       //start hooking-up to the grid
       this.grid.package_channels = property;
       this.grid.search_terms = [];
       this.grid.searchString = 'x';
-      this.grid.updateFilter();
-
+      this.grid.updateFilter(); 
+      count = this.grid.dataView.getLength();
       //display message
       msg_box.createPackageMsg(count,hd_only);
     };
@@ -772,7 +770,7 @@ searchDelimiterMgr.prototype.syncDelimiterToBase = function(){
     var i,
     supported_delim;
     for (i = 0; i < this.supported_delims.length; i++) {
-         supported_delim = jQuery.trim(this.supported_delims[i]);
+        supported_delim = $.trim(this.supported_delims[i]);
         if (supported_delim !== this.base_delim) {
            this.search_term = this.util.replaceAll(this.search_term,supported_delim,this.base_delim);
        }
@@ -973,7 +971,7 @@ programmingHeaders.prototype.rotate = function(localhost,rect_deg, y_diff){
 
         //draw the text
         R = new Raphael(div.attr('id'), width, 0), //create the canvas
-        paper = R.text(calc_text_x_coord, text_y_coord),
+        paper,
 
 
         //draw the rectangle that wraps the text
@@ -983,7 +981,7 @@ programmingHeaders.prototype.rotate = function(localhost,rect_deg, y_diff){
         rect_fill = is_even_count ? (is_odd ? '#86b9ec':'#cde1f5') : (is_odd ? '#cde1f5':'#86b9ec'),
         tool_tip = new toolTip(div);
 
-
+         
         rect.attr({
             'fill': rect_fill,
             'stroke':'#fff'
@@ -992,7 +990,8 @@ programmingHeaders.prototype.rotate = function(localhost,rect_deg, y_diff){
         }).hover(
             oThis.onHoverIn, oThis.onHoverOut
         );
-
+        
+        paper = R.text(calc_text_x_coord, text_y_coord);
         paper.attr({
                 "font-family":"helvetica",
                 "font-size":"12",

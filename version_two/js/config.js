@@ -13,6 +13,7 @@
  * @return {string} the correct server path
  */
 var getServerPath = function(localhost){
+    'use strict';
     if (!localhost) {
         return '%%pub%%';
     }    

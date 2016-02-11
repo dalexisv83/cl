@@ -1,6 +1,6 @@
 //cache all data
 /*global AdSales, smallGrid, config, bigGrid, searchBox, programmingHeaders, columnSorter, reset, toolTip, commentBtn */
-/*jslint newcap: true */
+/*jslint newcap: true */ 
 var featured_packages = data.featured_packages,
 channels = data.channels,
 ad_channels = AdSales.channels,
@@ -23,8 +23,7 @@ $(function () {
     channelNumberSortStart,
     callLetterSortStart,
     genreSortStart,
-    column_sorter,
-    reset_btn,
+    column_sorter,   
     tool_tip_btn,
     tooltip,
     genre_codes_container,
@@ -81,10 +80,7 @@ $(function () {
     column_sorter.enableChannelNumberSort();
     column_sorter.enableCallLetterSort();
     column_sorter.enableGenreSort();
-
-    //initialize reset button
-    reset_btn = new reset('reset');
-
+    
     //initialize tooltip
     tool_tip_btn = $('#genreLegend');
     tooltip = new toolTip(tool_tip_btn);
