@@ -3,16 +3,29 @@
  *
  * @author Joel Capillo <jcapillo@directv.com>
  * @version 2
- * 
+ *
  */
 
+ /*global cachedElements*/
+  cachedElements.callType.on("click" , function(){
+    "use strict";
+    var
+    str = buildComment(cachedElements),
+    buildComment,
+    setCharactersRemaining;
+    setCharactersRemaining(cachedElements, str);
+  });
 
+/*jslint todo: true */
+/*jslint plusplus: true */
 /**
  * Initiate inheritance Functions
  */
 if (typeof Object.create !== 'function') {
     Object.create = function (o) {
-        function F() {
+      "use strict";
+        function F(){
+            return true;
         }
         F.prototype = o;
         return new F();
@@ -20,9 +33,10 @@ if (typeof Object.create !== 'function') {
 }
 
 var inheritPrototype = function(childObject, parentObject) {
-    var copyOfParent = Object.create(parentObject.prototype);
-    copyOfParent.constructor = childObject;
-    childObject.prototype = copyOfParent;
+  "use strict";
+  var copyOfParent = Object.create(parentObject.prototype);
+  copyOfParent.constructor = childObject;
+  childObject.prototype = copyOfParent;
 };
 
 
@@ -34,6 +48,8 @@ var inheritPrototype = function(childObject, parentObject) {
  * @param {array} featured_packages the array of programming packages to feature
  */
 var gridTable = function(rowHeight,context,featured_packages){
+    'use strict';
+    /*global config,Slick,reset,packageFilter,messageBox  */
     this.environment = '';
     this.rowHeight = rowHeight;
     this.data = [];
@@ -41,24 +57,24 @@ var gridTable = function(rowHeight,context,featured_packages){
     this.context = context;
     this.options = {};
     this.featured_packages = featured_packages;
-    this.k_width = config.k_width;   
-    
-    if (this.featured_packages == undefined || 0 === this.featured_packages.length)
-        throw new Error('Featured packages could not be empty.');
-    
+    this.k_width = config.k_width;
+
+    if (this.featured_packages === undefined || this.featured_packages.length === 0) {
+          throw new Error('Featured packages could not be empty.');
+        }
+
     this.getNarrowCellWidth = function(){
         return this.k_width/this.featured_packages.length;
-    };
-    
-    this.init = function(){
     };
 };
 
 gridTable.prototype.render = function(){
-    new Slick.Grid("#"+this.context, this.data, this.columns, this.options);
+  "use strict";
+   Slick.Grid("#"+this.context, this.data, this.columns, this.options);
 };
 
 gridTable.prototype.setOptions = function(enableCellNavigation,enableColumnReorder){
+  "use strict";
     var options = {
         enableCellNavigation:enableCellNavigation,
         enableColumnReorder:enableColumnReorder,
@@ -68,80 +84,90 @@ gridTable.prototype.setOptions = function(enableCellNavigation,enableColumnReord
 };
 
 gridTable.prototype.getOptions = function(){
+  "use strict";
     return this.options;
 };
 
 gridTable.prototype.getChannels = function(){
+  "use strict";
     return this.data;
 };
 
-gridTable.prototype.setChannels = function(data){
-};
-
 gridTable.prototype.getColumns = function(){
+  "use strict";
     return this.columns;
 };
 
 gridTable.prototype.setColumns = function(className,minWidth){
-    var utility = new Utility(config.localhost);
-    var featured_packages_count = this.featured_packages.length;
-    var width = this.getNarrowCellWidth();
-    
+  "use strict";
+    var utility = new Utility(config.localhost),
+    featured_packages_count = this.featured_packages.length,
+    width = this.getNarrowCellWidth(),
+    html,
+    index,
+    div,
+    fixRowFormatter,
+    columns,
+    len,
+    i,
+    class_name,
+
     /**
-     * Private function used for formatting package cells 
+     * Private function used for formatting package cells
      */
-    var narrowRowFormatter = function(row, cell, value, columnDef, dataContext) {
+      narrowRowFormatter = function(cell, row, value) {
         if (utility.isInteger(value)) {
-          var index = cell - 4;
-          var html = '';
-          if (row == 0) {
+          index = cell - 4;
+          if (row === 0) {
              html = '<a href="#" id="hd_btn'+index+'" class="numLink" title="click to show '+value+' HD channels" data="'+cell+'">'+value+'</a>';
           }
           else{
               html = '<a href="#" id="reg_btn'+index+'" class="numLink" title="click to show all '+value+' channels" data="'+cell+'">'+value+'</a>';
-          }         
-          return html;
+          }
+          value = html;
         }
-        else
-          return value;
+        return value;
     };
-    
+
     /**
     * Regular row formatter for fix width columns
     */
-    var fixRowFormatter = function(row, cell, value, columnDef, dataContext) {
+       fixRowFormatter = function(cell, value, dataContext) {
         if (!dataContext.hasOwnProperty('url') || cell > 0) {
-           return '<div class="inner">'+value+'</div>';
+           div = '<div class="inner">'+value+'</div>';
         }
         else{
-          return '<div class="inner">'+'<a href="'+dataContext.url+'" target="_blank">'+value+'</a>'+'</div>';
-        }     
+           div = '<div class="inner">'+'<a href="'+dataContext.url+'" target="_blank">'+value+'</a>'+'</div>';
+        }
+        return div;
     };
-    
-    if (!className)
+
+    if (!className) {
       className = 'narrower';
-    
-    if (!minWidth)
-      minWidth = 5;    
-    
+    }
+
+    if (!minWidth) {
+      minWidth = 5;
+    }
+
     //initatiate fix headers
-    var columns = [     
-      { id: "channel_name", name: "Channel Name", field: "channel_name", width: 212, formatter: fixRowFormatter, sortable: true, cssClass:'wide' },      
+     columns = [
+      { id: "channel_name", name: "Channel Name", field: "channel_name", width: 212, formatter: fixRowFormatter, sortable: true, cssClass:'wide' },
       { id: "channel_number", name: "Channel Number", field: "channel_number", width: 70, sortable: true , cssClass:'narrow', formatter: fixRowFormatter  },
       { id: "call_letters", name: "Call Letters", field: "call_letters", width: 70, sortable: true, cssClass:'narrow', formatter: fixRowFormatter },
       { id: "genre", name: "Genre", field: "genre", width: 70, formatter: fixRowFormatter, sortable: true, cssClass:'narrow genre' }
     ];
-    
-    var len = columns.length;
+
+     len = columns.length;
     //fill the packages column
-    for(var i = 0; i < featured_packages_count; i++){
-      var class_name = '';
-      if (i % 2 == 0) {
+    for(i = 0; i < featured_packages_count; i++){
+       class_name = '';
+      if (i % 2 === 0) {
         class_name = className + ' even';
       }
-      else
-        class_name = className + ' odd';      
-      
+      else {
+        class_name = className + ' odd';
+      }
       columns[i + len] = {
         id: 'p' + (i + 1),
         name: '',
@@ -150,10 +176,11 @@ gridTable.prototype.setColumns = function(className,minWidth){
         cssClass: class_name,
         minWidth: minWidth,
         formatter: narrowRowFormatter
+
       };
-      
-    }    
-    this.columns = columns;  
+
+    }
+    this.columns = columns;
 };
 /**
  * End of the base class gridTable
@@ -164,169 +191,189 @@ gridTable.prototype.setColumns = function(className,minWidth){
  * Start of big grid class that inherits from parent class gridTable
  *
  */
-var bigGrid = function(rowHeight,context,featured_packages,data_type){   
+var bigGrid = function(rowHeight,context,featured_packages,data_type){
+    "use strict";
     this.dataType = data_type;
     this.dataView = null;
-    this.sortdir = 0;    
+    this.sortdir = 0;
     this.sortcol = "channel_number";
     this.container = $('#'+context);
     this.package_channels = false;
-    this.searchString = '';   
+    this.searchString = '';
     this.search_terms = [];
-    var oThis = this;
+    var oThis = this,
+    x,
+    y;
     this.comparer = function(a, b) {
-        
+
         var sortcol = oThis.sortcol;
-        if (!a[sortcol])
+        if (!a[sortcol]) {
           a[sortcol] = '';
-        if (!b[sortcol]) 
+        }
+        if (!b[sortcol]) {
           b[sortcol] = '';
-       
-        var x,y;
-        if (sortcol == 'channel_number'){      
-          x = parseInt(a[sortcol]);
-          y = parseInt(b[sortcol]);
-          if (isNaN(x))       
+        }
+
+        if (sortcol === 'channel_number'){
+          x = parseInt(a[sortcol], 10);
+          y = parseInt(b[sortcol], 10);
+          if (isNaN(x)) {
             x = 0;
-          if (isNaN(y))
-            y = 0;     
+          }
+          if (isNaN(y)) {
+            y = 0;
+          }
         }
         else{
           x = jQuery.trim(a[sortcol].toUpperCase());
-          y = jQuery.trim(b[sortcol].toUpperCase());      
+          y = jQuery.trim(b[sortcol].toUpperCase());
         }
-        
-        return (x == y ? 0 : (x > y ? 1 : -1));
-    
-    };   
+
+        return (x === y ? 0 : (x > y ? 1 : -1));
+
+    };
     this.updateFilter = function() {
-      var oThis = this;     
+      var oThis = this;
       this.dataView.setFilterArgs({
         searchString: oThis.searchString
-      });      
+      });
       this.dataView.refresh();
     };
-    gridTable.call(this,rowHeight,context,featured_packages);   
+    gridTable.call(this,rowHeight,context,featured_packages);
 };
 inheritPrototype(bigGrid, gridTable);
 
 bigGrid.prototype.render = function(){
-        
-        this.dataView = new Slick.Data.DataView();        
-        var grid = new Slick.Grid("#" + this.context, this.dataView, this.columns, this.options);
-        var utility = new Utility();
-        var oThis = this;
-        
-        //function to modify if want to customize search
-        var searchFilter = function(rows, args) {            
-            var isMatched = false;
-            //check if we're doing regular search on the search box
-            if (!oThis.package_channels) {               
-                //check if we have a multi search terms array
-                if (oThis.search_terms.length > 0) {                        
-                    var found;                    
-                    for (i = 0; i < oThis.search_terms.length; i += 1) {
-                        var search_str = jQuery.trim(oThis.search_terms[i]);
-                        if (search_str.length == 0)
-                            continue;                       
-                        found = false;
-                        found = searchByColumns(rows,config.searchable_columns,search_str);
-                        if (found){
-                            isMatched = true;
-                            break;
-                        }                        
-                    }                   
-                }                
-                else
-                    isMatched = searchByColumns(rows,config.searchable_columns,args.searchString);                                    
-                              
-            }
-            else{
-                var regex = new RegExp(args.searchString, "i");
-                var properties = oThis.package_channels.split('||');              
-                var hd_regex = new RegExp('hd', "i");
-                if (properties[1]) {
-                    switch(oThis.dataType) {
-                      case 'commercial':
-                          isMatched = rows[properties[0]].search(regex) != -1 &&
-                             (rows["channel_name"].search(hd_regex) != -1 ||
-                             rows["call_letters"].search(hd_regex) != -1);
-                          break;                       
-                      default:
-                          isMatched = rows[properties[0]].search(regex) != -1 &&
-                                 rows["channel_name"].search(hd_regex) != -1;
-                    }
-                }
-                else
-                    isMatched = rows[oThis.package_channels].search(regex) != -1;
-                
-            }
-            
-            return isMatched;
-        };
-        
+    "use strict";
+    /* global config, Slick, messageBox, reset, packageFilter  */
+     /*jslint unparam: true */
+
+        this.dataView = new Slick.Data.DataView();
+        var grid = new Slick.Grid("#" + this.context, this.dataView, this.columns, this.options),
+         oThis = this,
+        isMatched,
+        found = false,
+        search_str,
+        regex,
+        properties,
+        hd_regex,
+        i,
         //private function for column searching
-        var searchByColumns = function(rows,columns,search_term){
-            var regex = new RegExp(search_term, "i");
-            var is_matched = false;
+         searchByColumns = function(rows,columns,search_term){
+            var regex = new RegExp(search_term, "i"),
+            is_matched = false;
             $.each(columns, function(i, column_name) {
-                if (rows[column_name].search(regex) != -1) {
+                if (rows[column_name].search(regex) !== -1) {
                     is_matched = true;
                     return false;
                 }
-            });            
+            });
             return is_matched;
+        },
+
+
+        //function to modify if want to customize search
+       searchFilter = function(rows, args) {
+            isMatched  = false;
+            //check if we're doing regular search on the search box
+            if (!oThis.package_channels) {
+                //check if we have a multi search terms array
+                if (oThis.search_terms.length > 0) {
+                  found = true;
+                    for (i = 0; i < oThis.search_terms.length; i += 1) {
+                        search_str = jQuery.trim(oThis.search_terms[i]);
+                        if (search_str.length === 0) {
+                        found = false;
+                        found = searchByColumns(rows,config.searchable_columns,search_str);
+                      }
+                        if (found){
+                            isMatched = true;
+                            break;
+                        }
+                    }
+                }
+                else {
+                    isMatched = searchByColumns(rows,config.searchable_columns,args.searchString);
+                  }
+            } else {
+               regex = new RegExp(args.searchString, "i");
+               properties = oThis.package_channels.split('||');
+               hd_regex = new RegExp('hd', "i");
+              if (properties[1]) {
+                  if(oThis.dataType === 'commercial') {
+                        isMatched = rows[properties[0]].search(regex) !== -1 && (rows.channel_name.search(hd_regex) !== -1 ||rows.call_letters.search(hd_regex) !== -1);
+                     } else {
+                       isMatched = rows[properties[0]].search(regex) !== -1 && rows.channel_name.search(hd_regex) !== -1;
+                  }
+              }
+              else {
+                  isMatched = rows[oThis.package_channels].search(regex) !== -1;
+                }
+            }
+            return isMatched;
         };
-        
-        
+
+
+
         this.dataView.onRowCountChanged.subscribe(function (e, args) {
             grid.updateRowCount();
             grid.render();
-        });        
+        });
         this.dataView.onRowsChanged.subscribe(function (e, args) {
             grid.invalidateRows(args.rows);
             grid.render();
-        });        
-        
+        });
+
         this.dataView.setItems(this.data);
         this.dataView.setFilterArgs({
             searchString: oThis.searchString
         });
         this.dataView.setFilter(searchFilter); //set the searchfilter function to use
-        
+
         grid.onSort.subscribe(function (e, args) {
             oThis.sortdir = args.sortAsc ? 1 : -1;
             oThis.sortcol = args.sortCol.field;
-            oThis.dataView.sort(oThis.comparer, args.sortAsc);            
+            oThis.dataView.sort(oThis.comparer, args.sortAsc);
         });
-        
-        grid.setSortColumn("channel_name",true); //columnId, ascending       
-       
-       
+
+        grid.setSortColumn("channel_name",true); //columnId, ascending
+
+
 
 };
 
 /**
  * Sets the data for ad and regular channels
- * 
+ *
  * @param {array} data the array of channels
  */
-bigGrid.prototype.setChannels = function(data){    
-    var formatter = new UrlFormatter(config.localhost);
-    var ad_channel_url = formatter.formatUrl(config.adChannelUrl);
-    var total_count = this.data.length;
-    
-    for (var i = 0; i < data.length; i++ ) { //loop through all channels
-        
-        var channel = data[i];
-        
-        if (!channel.hasOwnProperty('genre') || !channel.genre)
+bigGrid.prototype.setChannels = function(data){
+  "use strict";
+    var formatter = new UrlFormatter(config.localhost),
+    ad_channel_url = formatter.formatUrl(config.adChannelUrl),
+    total_count = this.data.length,
+    i,
+    channel,
+    n,
+    num,
+    property,
+    anchor,
+    channel_url,
+    id,
+    channel_name,
+    channel_num;
+
+    for (i = 0; i < data.length; i++ ) { //loop through all channels
+        channel = data[i];
+        if (!channel.hasOwnProperty('genre') || !channel.genre) {
           channel.genre = '';
-          
-        if (!channel.hasOwnProperty('callletters') || !channel.callletters)
+        }
+
+        if (!channel.hasOwnProperty('callletters') || !channel.callletters) {
           channel.callletters = '';
-          
-        var anchor,channel_url,id,channel_name,channel_num;
+        }
+
+
         if (channel.hasOwnProperty('searchTerm') && channel.hasOwnProperty('channelNum')){
           //if ad channel
           id = total_count + i;
@@ -342,8 +389,8 @@ bigGrid.prototype.setChannels = function(data){
           channel_url = formatter.formatUrl(channel.url);
           channel_name = channel.channelnamebold;
           channel_num = channel.channelnumber;
-        }     
-        
+        }
+
         this.data[id] = {
             id:  "id_" + id,
             channel_name: channel_name,
@@ -353,22 +400,23 @@ bigGrid.prototype.setChannels = function(data){
             url:channel_url,
             genre:channel.genre
         };
-       
-        for(var n = 0; n < this.featured_packages.length; n++ ){
-            var num = n + 1;
-            var property = 'p' + num;
+
+        for(n = 0; n < this.featured_packages.length; n++ ){
+            num = n + 1;
+            property = 'p' + num;
             if (channel[property]) {
-               this.data[id][property] = channel[property]; 
+               this.data[id][property] = channel[property];
             }
             else{
-                this.data[id][property] = " ";                      
+                this.data[id][property] = " ";
             }
         }
-        
-    }   
+
+    }
 };
 
-bigGrid.prototype.setColumns = function(columns){  
+bigGrid.prototype.setColumns = function(columns){
+    "use strict";
    this.columns = columns;
 };
 
@@ -379,58 +427,75 @@ bigGrid.prototype.setColumns = function(columns){
  * @param {string} messageBoxId the id of the message box to attach
  */
 bigGrid.prototype.activateHdChannelsFilter = function(search_box,messageBoxId,resetBtnId,activeClass){
-    var grid = this;
-    var message_box = new messageBox(messageBoxId,grid); //initiate the message box
-    var util = new Utility();
-    var reset_btn = new reset(resetBtnId,activeClass);
+    "use strict";
+     /*jslint newcap: true */
+      /*jslint unparam: true */
+    var grid = this,
+
+
+    message_box = new messageBox(messageBoxId,grid), //initiate the message box
+    util = new Utility(),
+    reset_btn = new reset(resetBtnId,activeClass),
+    context,
+    link,
+    package_filter = new packageFilter(grid,message_box),
+    property;
+
     $.each(this.featured_packages, function(i, v) {
-            var context = "hd_btn"+i;
-            var link = $('#'+context);
-            var package_filter = new packageFilter(grid,message_box);
+            context = "hd_btn"+i;
+            link = $('#'+context);
             link.click(function() {
                 reset_btn.activate(grid,search_box.self,messageBoxId);
                 util.normalizeNumLink();
                 search_box.self.val('');
-                var numlink = $(this);
-                if(!numlink.hasClass('activeLink'))
-                   numlink.addClass('activeLink');
+                if(!$(this).hasClass('activeLink')) {
+                   $(this).addClass('activeLink');
+                 }
                 //remove the fix width columns from the equation
-                var property = parseInt(numlink.attr('data')) - 3; 
+                property = parseInt($(this).attr('data'), 10) - 3;
                 property = 'p' + property;
                 property = property+'||HD';
                 package_filter.filterChannelsByPackage(property,true);
             });
-    });    
+    });
 };
 
 
 /**
  * Activates the regular channels filter
- * 
+ *
  * @param {object} search_box the search box object
  * @param {string} messageBoxId the id of the message box to attach
  */
 bigGrid.prototype.activateRegularChannelsFilter = function(search_box,messageBoxId,resetBtnId,activeClass){
-    var grid = this;
-    var message_box = new messageBox(messageBoxId,grid); //initiate the message box
-    var util = new Utility();
-    var reset_btn = new reset(resetBtnId,activeClass);
+    "use strict";
+     /*jslint newcap: true */
+      /*jslint unparam: true */
+    var grid = this,
+    message_box = new messageBox(messageBoxId,grid), //initiate the message box
+    util = new Utility(),
+    reset_btn = new reset(resetBtnId,activeClass),
+    context,
+    link,
+    package_filter = new packageFilter(grid,message_box),
+    property;
+
     $.each(this.featured_packages, function(i, v) {
-        var context = "reg_btn"+i;
-        var link = $('#'+context);
-        var package_filter = new packageFilter(grid,message_box);
+      context = "reg_btn"+i;
+      link = $('#'+context);
         link.click(function(){
             reset_btn.activate(grid,search_box.self,messageBoxId);
             util.normalizeNumLink();
             search_box.self.val('');
-            var numlink = $(this);
-            if(!numlink.hasClass('activeLink'))
-                numlink.addClass('activeLink');
+
+            if(!$(this).hasClass('activeLink')) {
+                $(this).addClass('activeLink');
+              }
             //remove the fix width columns from the equation
-            var property = parseInt(numlink.attr('data')) - 3; 
+            property = parseInt($(this).attr('data'), 10) - 3;
             property = 'p' + property; //determine the property
             package_filter.filterChannelsByPackage(property,false);
-        });     
+        });
     });
 };
 /**
@@ -443,16 +508,31 @@ bigGrid.prototype.activateRegularChannelsFilter = function(search_box,messageBox
  * Start of small grid class
  */
 var smallGrid = function(rowHeight,context,featured_packages){
-   gridTable.call(this,rowHeight,context,featured_packages);   
+  "use strict";
+   gridTable.call(this,rowHeight,context,featured_packages);
 };
 inheritPrototype(smallGrid, gridTable);
 
+
+
+
+
+
 smallGrid.prototype.setChannels = function(){
-    for (var i = 0; i < 2; i++ ){
-        var channel_name = "Approximate number of HD channels";
-        if (i > 0)
+  "use strict";
+  var i,
+  channel_name,
+  n,
+  featured_package,
+  property,
+  num;
+
+    for (i = 0; i < 2; i++ ){
+        channel_name = "Approximate number of HD channels";
+        if (i > 0) {
           channel_name = "Approximate channels in per package<span class='red'>**</span>";
-          
+        }
+
         this.data[i] = {
             id:  "id_" + i,
             channel_name: channel_name,
@@ -460,18 +540,19 @@ smallGrid.prototype.setChannels = function(){
             call_letters: " ",
             genre:" "
         };
-        
-         
-        for(var n = 0; n < this.featured_packages.length; n++ ){ //loop through all featured packages
-          var featured_package = this.featured_packages[n];
-          var num = n + 1;
-          var property = 'p' + num;
+
+
+        for(n = 0; n < this.featured_packages.length; n++ ){ //loop through all featured packages
+          featured_package = this.featured_packages[n];
+          num = n + 1;
+          property = 'p' + num;
           if (i > 0) {
             this.data[i][property] = featured_package.total_channels;
           }
-          else
+          else {
             this.data[i][property] = featured_package.hd_channels;
-        }  
+          }
+        }
     }
 };
 /**
@@ -484,6 +565,7 @@ smallGrid.prototype.setChannels = function(){
  * Package filter class
  */
 var packageFilter = function(grid,message_box){
+  "use strict";
     this.grid = grid;
     this.message_box = message_box;
     /**
@@ -491,14 +573,15 @@ var packageFilter = function(grid,message_box){
      * @param {string} property represents the key value of the package from the data source
      * @param {boolean} hd_only determines if we're filtering hd only for true or all for false
      */
-    this.filterChannelsByPackage = function(property,hd_only){  
-      var msg_box = this.message_box;
+    this.filterChannelsByPackage = function(property,hd_only){
+      var msg_box = this.message_box,
+      count = this.grid.dataView.getLength();
       //start hooking-up to the grid
       this.grid.package_channels = property;
-      this.grid.search_terms = [];      
+      this.grid.search_terms = [];
       this.grid.searchString = 'x';
-      this.grid.updateFilter();      
-      var count = this.grid.dataView.getLength();
+      this.grid.updateFilter();
+
       //display message
       msg_box.createPackageMsg(count,hd_only);
     };
@@ -514,19 +597,20 @@ var packageFilter = function(grid,message_box){
  * @param {object} obj the DOM object element to attach tooltip
  */
 var toolTip = function(obj){
+  "use strict";
     this.self = obj;
     /**
      * activates genre codes tool tip
      * @param {object} data_temp_holder the object that holds the tooltip content
      */
     this.genreToolTip = function(data_temp_holder){
-        var html = data_temp_holder.html();       
+        var html = data_temp_holder.html();
         this.self.qtip({
             content: {
               text: html
             },
             position:{
-              my: 'left top',  
+              my: 'left top',
               at: 'bottom right',
               target: this
             },
@@ -534,30 +618,30 @@ var toolTip = function(obj){
               classes: 'qtip-bootstrap'
             }
         });
-        this.self.show()
+        this.self.show();
     };
     /**
      * activates the package header tooltip
      * @param {string} description the html to display inside tooltip
      */
-    this.packageHeaderTooltip = function(description){      
-        this.self.qtip({ 
+    this.packageHeaderTooltip = function(description){
+        this.self.qtip({
             content: {
               text: description
             },
             position:{
-              my: 'right top',  
-              at: 'bottom right', 
+              my: 'right top',
+              at: 'bottom right',
               target: this
             },
             style: {
               classes: 'qtip-youtube'
             }
-        });   
+        });
     };
 };
 /**
- * End for Genre tooltip class 
+ * End for Genre tooltip class
  */
 
 
@@ -569,95 +653,103 @@ var toolTip = function(obj){
  * @param {string} messageBoxId the id of the message box to attach
  */
 var searchBox = function(context,grid,messageBoxId,resetBtnId,activeClass){
+   "use strict";
+    /*jslint newcap: true */
     this.context = context;
     this.grid = grid;
     this.self = $('#'+this.context);
     this.self.focus();
     this.resetBtnId = resetBtnId;
     this.activeClass = activeClass;
-    
+
     var thisSearchBox = this;
-    
-    this.autoSearch = function(){
-        var oThis = this.self;
-        var oGrid = this.grid;
-        var msg_box = new messageBox(messageBoxId,this.grid);
-        var reset_btn = new reset(resetBtnId,activeClass);
-        var utility = new Utility();
+
+   this.autoSearch = function(){
+        var oThis = this.self,
+         oGrid = this.grid,
+        msg_box = new messageBox(messageBoxId,this.grid),
+        reset_btn = new reset(resetBtnId,activeClass),
+        result_count = '',
+        utility = new Utility();
         msg_box.clear();
-        
+
         oThis.keyup(function (e) {
-            if (  (e.keyCode == 27) // if escape
-               || (((e.keyCode == 8) || (e.keyCode == 46)) // ( [ OR backspace OR delete ]
+            if (  (e.keyCode === 27) // if escape
+               || (((e.keyCode === 8) || (e.keyCode === 46)) // ( [ OR backspace OR delete ]
                && ((oThis.val().match("^\\s*$")))) // AND search term is not a blank string "only spaces" )
                ){
-              $('#' + resetBtnId).click();              
-            } else if (  ((!oThis.val().match("^\\s*$")) && (oThis.val().length != 0)) // if ( term is not empty AND not a blank string "only spaces" )
-                      && ((e.keyCode == 8) || (e.keyCode = 32) || (e.keyCode == 46) // Note: Assignment AND ( backspace OR space OR delete
+              $('#' + resetBtnId).click();
+            } else if (
+                      ((!oThis.val().match("^\\s*$")) && (oThis.val().length !== 0)) // if ( term is not empty AND not a blank string "only spaces" )
+                      && ((e.keyCode === 8) || (e.keyCode === 32) || (e.keyCode === 46) // AND ( backspace OR space OR delete
                       || ((e.keyCode >= 48) && (e.keyCode <= 57)) // OR [ a number ]
                       || ((e.keyCode >= 65) && (e.keyCode <= 90))) // OR [ a letter ] )
                       ){
                 reset_btn.activate(oGrid,oThis,messageBoxId);
                 oGrid.package_channels = false; //set to false to broadcast we're searching normally
                 utility.normalizeNumLink();
-                
+
                 oGrid.searchString = oThis.val();
-                var result_count = thisSearchBox.doSearch(oGrid,config.search_delims);
-                
+                result_count = thisSearchBox.doSearch(oGrid,config.search_delims);
+
                 if ((result_count > 0 || result_count === 0) && oGrid.searchString.length > 0){
                    msg_box.createMsg(result_count);
                 }
-                
+
                 oThis.focus();
             }
         });
-        
+
         oThis.keydown(function (e) {
-            if (  (e.keyCode == 13) // if enter
-               && (oThis.val().length != 0) // AND search term is not empty
+            if (  (e.keyCode === 13) // if enter
+               && (oThis.val().length !== 0) // AND search term is not empty
                && (!oThis.val().match("^\\s*$")) // AND search term is not a blank string "only spaces"
                ) {
-                var clearedVal = oThis.val();
+                var clearedVal = oThis.val(),
+                 result_count = thisSearchBox.doSearch(oGrid,config.search_delims);
                 oThis.val('');
-                
+
                 oGrid.searchString = clearedVal;
-                var result_count = thisSearchBox.doSearch(oGrid,config.search_delims);
-                
+
+
                 if ((result_count > 0 || result_count === 0) && oGrid.searchString.length > 0){
                    msg_box.createMsg(result_count);
                 }
-                
+
                 msg_box.searchTerm(clearedVal.replace(/ /g, '\u00a0'));
                 reset_btn.activate(oGrid,oThis,messageBoxId);
             }
         });
 
     };
-    
+
     /**
      * Does the actual search
      * @param {object} grid the Grid class to attach
      * @param {object} search_box the searchBox class
      * @param {array} search_delims the accepted search delimiters
-     * @return {integer} 
+     * @return {integer}
      */
     this.doSearch = function(grid,search_delims){
+        /*global searchDelimiterMgr */
+        /*jslint newcap: true*/
         var delim_mgr = new searchDelimiterMgr(search_delims,grid.searchString);
         grid.search_terms = this.getSearchTerms(delim_mgr);
         grid.updateFilter();
         return grid.dataView.getLength();
     };
-    
+
     /* Returns an array of multiple search terms
      * @param {object} delim_mgr the searchDelimiterMgr class instantiated
      * @param {string} base_delim
      * @return {array} search_terms
      */
     this.getSearchTerms = function(delim_mgr){
-        var base_delimiter = delim_mgr.base_delim; 
-        var search_terms = [];
-        if (delim_mgr.checkSearchDelimiter())
+        var base_delimiter = delim_mgr.base_delim,
+         search_terms = [];
+        if (delim_mgr.checkSearchDelimiter()) {
             search_terms = delim_mgr.syncDelimiterToBase().split(base_delimiter);
+        }
         return search_terms;
     };
 };
@@ -669,10 +761,11 @@ var searchBox = function(context,grid,messageBoxId,resetBtnId,activeClass){
  * Class responsible for search delimiter checking, manipulation, etc.
  * @param {array} supported_delims collection of supported search delimiters
  * @param {string} search_term the term/word to search
- * 
+ *
  * @todo add an exception throw if supported_delims is not an array or empty
  */
 var searchDelimiterMgr = function(supported_delims,search_term){
+    "use strict";
     this.supported_delims = supported_delims;
     this.search_term = search_term;
     this.base_delim = supported_delims[0]; //assign the base delimiter
@@ -681,15 +774,19 @@ var searchDelimiterMgr = function(supported_delims,search_term){
 
 
 /**
- * Syncs all the multiple delimiters into one base delimiter 
+ * Syncs all the multiple delimiters into one base delimiter
  * @return {string} search term that is now delimited by one delimiter
  */
 searchDelimiterMgr.prototype.syncDelimiterToBase = function(){
-    for (var i = 0; i < this.supported_delims.length; i++) {
-        var supported_delim = jQuery.trim(this.supported_delims[i]);
-        if (supported_delim != this.base_delim)
+    "use strict";
+    var i,
+    supported_delim;
+    for (i = 0; i < this.supported_delims.length; i++) {
+         supported_delim = jQuery.trim(this.supported_delims[i]);
+        if (supported_delim !== this.base_delim) {
            this.search_term = this.util.replaceAll(this.search_term,supported_delim,this.base_delim);
-    }    
+       }
+    }
     return this.search_term;
 };
 
@@ -700,10 +797,13 @@ searchDelimiterMgr.prototype.syncDelimiterToBase = function(){
  * @return {boolean}
  */
 searchDelimiterMgr.prototype.checkSearchDelimiter = function(){
-    var found = false;
-    for (var i = 0; i < this.supported_delims.length; i++) {
-        var supported_delim = this.supported_delims[i];
-        if (this.search_term.indexOf(supported_delim) != -1){           
+    "use strict";
+    var found = false,
+        supported_delim,
+        i;
+    for (i = 0; i < this.supported_delims.length; i++) {
+        supported_delim = this.supported_delims[i];
+        if (this.search_term.indexOf(supported_delim) !== -1){
            found = true;
            break;
         }
@@ -716,7 +816,8 @@ searchDelimiterMgr.prototype.checkSearchDelimiter = function(){
  * Start of message box class
  *
  */
-var messageBox = function(context,grid){    
+var messageBox = function(context,grid){
+    "use strict";
     this.self = $('#'+context);
     this.grid = grid;
     this.clear = function(){
@@ -725,59 +826,71 @@ var messageBox = function(context,grid){
 };
 
 messageBox.prototype.createMsg = function(count){
-    var util = new Utility();
-    if (!util.isInteger(count) || count < 0)
+    "use strict";
+    var util = new Utility(),
+    msg = '';
+    if (!util.isInteger(count) || count < 0) {
            throw new Error('Enter a valid count.');
-    
-    if (this.self.hasClass('no-channels-found'))
-      this.self.removeClass('no-channels-found');
+       }
 
-    if (this.self.hasClass('search-term'))
+    if (this.self.hasClass('no-channels-found')) {
+      this.self.removeClass('no-channels-found');
+  }
+
+    if (this.self.hasClass('search-term')) {
       this.self.removeClass('search-term');
-      
-    var msg = '';
-    if (count == 0) {
+  }
+    /*global getServerPath */
+    if (count === 0) {
       this.self.addClass('no-channels-found');
       msg = '<b>' + count + ' channel(s) found</b>. <br />See <a target="_blank" href="'+getServerPath(config.localhost)+'programming/commercials.html">Programming Requests</a> for points about channels not currently available on DIRECTV.';
     }
-    else
+    else {
       msg = '<b>' + count + ' channel(s) found</b>.';
-    
+  }
+
     this.self.html(msg);
 };
 
 
 messageBox.prototype.createPackageMsg = function(count,is_hd){
-    var util = new Utility();
-    if (!util.isInteger(count) || count < 0)
+    "use strict";
+    var util = new Utility(),
+     formatter = new UrlFormatter(config.localhost),
+     package_index = '',
+     package_name,
+     package_link,
+     msg;
+
+    if (!util.isInteger(count) || count < 0) {
         throw new Error('Enter a valid count.');
-        
-    if (typeof is_hd != 'boolean')
+    }
+
+    if (typeof is_hd !== 'boolean') {
         throw new Error('Enter a valid boolean value if hd or not.');
-     
-    if (this.self.hasClass('no-channels-found'))
+    }
+
+    if (this.self.hasClass('no-channels-found')) {
       this.self.removeClass('no-channels-found');
-    
-    var formatter = new UrlFormatter(config.localhost);
-    var package_index = parseInt(this.grid.package_channels.match(/\d+/)[0]) - 1;
-    
+  }
     //reverse the index
     package_index = (this.grid.featured_packages.length - 1) - package_index;
-    var package_name = this.grid.featured_packages[package_index].display_name;
-    var package_link = formatter.adjustUrl(this.grid.featured_packages[package_index].url);
-    
-    var msg = 'Displaying <b>'+count+'</b> channels for '+'<a href="'+package_link+'" target="_blank">'+package_name+'</a> package.';
-    if (is_hd)
-       msg = 'Displaying <b>'+count+'</b> HD channels for '+'<a href="'+package_link+'" target="_blank">'+package_name+'</a> package.';    
-    
+    package_name = this.grid.featured_packages[package_index].display_name;
+    package_link = formatter.adjustUrl(this.grid.featured_packages[package_index].url);
+
+    msg = 'Displaying <b>'+count+'</b> channels for '+'<a href="'+package_link+'" target="_blank">'+package_name+'</a> package.';
+    if (is_hd) {
+       msg = 'Displaying <b>'+count+'</b> HD channels for '+'<a href="'+package_link+'" target="_blank">'+package_name+'</a> package.';
+   }
     this.self.html(msg);
 };
 
 messageBox.prototype.searchTerm = function(term) {
+    "use strict";
   var msg = "You searched for <b>&ldquo;<span>" + term + "</span>&rdquo;</b><br /><br />";
   this.self.addClass('search-term');
   this.self.prepend(msg);
-}
+};
 /**
  * End of message box class
  */
@@ -792,116 +905,123 @@ messageBox.prototype.searchTerm = function(term) {
  */
 
 var programmingHeaders = function(context, featured_packages, column_width){
+    "use strict";
     this.container = $('#' + context);
     this.featured_packages = featured_packages;
     this.headers = [];
     this.column_width = column_width;
+    var i,
+    rotated_header,
+    target;
     this.render = function(){
         this.featured_packages.reverse();
-        for(var i = 0; i < this.featured_packages.length; i++){
-            var rotated_header = $('<div class="pull-left narrower" id="head_'+i+'"><span>'+this.featured_packages[i].display_name+'</span></div>');
+        for(i = 0; i < this.featured_packages.length; i++){
+            rotated_header = $('<div class="pull-left narrower" id="head_'+i+'"><span>'+this.featured_packages[i].display_name+'</span></div>');
             this.headers.push(rotated_header); //fill the headers property
-            this.container.prepend(rotated_header);    
+            this.container.prepend(rotated_header);
         }
-        for(var i = 0; i < this.headers.length; i++){
-          this.headers[i].attr("style","width:" + this.column_width+"px"); 
-        }        
+        for(i = 0; i < this.headers.length; i++){
+          this.headers[i].attr("style","width:" + this.column_width+"px");
+        }
     };
     this.onHoverIn = function(e){
-                var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
-                target.style.cursor = "hand";               
+                target = (e.currentTarget) || e.srcElement;
+                target.style.cursor = "hand";
     };
     this.onHoverOut = function(e){
-        var target = (e.currentTarget) ? e.currentTarget : e.srcElement;
+        target = (e.currentTarget) || e.srcElement;
         target.style.cursor="pointer";
-    };    
+    };
 };
 
 
 
 /**
  * This function will rotate the programming headers on a given degree
- * 
+ *
  * @param {boolean} localhost determines if we're running on localhost or not
  * @param {integer} rect_deg the degree of inclination for the programming headers
  * @param {integer} y_diff the height adjustment factor
  */
 programmingHeaders.prototype.rotate = function(localhost,rect_deg, y_diff){
-      
-    var formatter = new UrlFormatter(localhost);
-    var util = new Utility(); 
-    
-    var oThis = this;
-    var rect_height = 150; //height of the rotated wrapper
-    var text_deg = rect_deg - 90; //calculate degree of rotattion of text to be parallel w/ container div
-    var featured_packages = this.featured_packages;
-    var width = this.column_width;
-    var headers = this.headers;
-    var column_height = headers[0].height();
-    
-    var rect_y_coord =  column_height - rect_height;
-    var rect_x_coord = util.calculateTangentWidth(rect_deg,column_height);
+    "use strict";
+            /*jslint newcap:true */
+             /*jslint unparam: true */
 
-    var count = headers.length;
-    var is_even_count = (0 === count % 2); //true if even then false otherwise
+    var formatter = new UrlFormatter(localhost),
+    util = new Utility(),
+    oThis = this,
+    rect_height = 150, //height of the rotated wrapper
+    text_deg = rect_deg - 90, //calculate degree of rotattion of text to be parallel w/ container div
+    featured_packages = this.featured_packages,
+    width = this.column_width,
+    headers = this.headers,
+    column_height = headers[0].height(),
 
-    $.each(headers, function(i, v) {        
-        var index = i;
-        var div = headers[i];
-        
-        var url = featured_packages[index].url;
-        url = formatter.adjustUrl(url);
-       
-        var tooltip_msg = featured_packages[index].description;       
-        var span = div.find('span');
-        var height = div.height();        
-        var text = span.text();
-       
-        var R = Raphael(div.attr('id'), width, 0); //create the canvas         
+    rect_y_coord =  column_height - rect_height,
+    rect_x_coord = util.calculateTangentWidth(rect_deg,column_height),
+
+    count = headers.length,
+    is_even_count = (0 === count % 2); //true if even then false otherwise
+
+    $.each(headers, function(i, v) {
+          /*global Raphael */
+        var index = i,
+        div = headers[i],
+        url = featured_packages[index].url,
+
+
+        tooltip_msg = featured_packages[index].description,
+        span = div.find('span'),
+        height = div.height(),
+        text = span.text(),
+        text_width = span.textWidth(),
+        text_y_coord = height/2 - text_width/2 + y_diff,
+        adjacent_height = height - text_y_coord,
+        text_x_coord = util.calculateTangentWidth(rect_deg, adjacent_height),
+        calc_text_x_coord = text_x_coord + width/2, //center it by adding half of the column width
+
+        //draw the text
+        R = new Raphael(div.attr('id'), width, 0), //create the canvas
+        paper = R.text(calc_text_x_coord, text_y_coord),
+
+
         //draw the rectangle that wraps the text
-        var rect = R.rect(rect_x_coord, rect_y_coord, width, rect_height);
-        
-        var is_odd = (0 !== index % 2);        
-        var rect_fill = is_even_count ? (is_odd ? '#86b9ec':'#cde1f5') : (is_odd ? '#cde1f5':'#86b9ec');
+        rect = R.rect(rect_x_coord, rect_y_coord, width, rect_height),
+
+        is_odd = (0 !== index % 2),
+        rect_fill = is_even_count ? (is_odd ? '#86b9ec':'#cde1f5') : (is_odd ? '#cde1f5':'#86b9ec'),
+        tool_tip = new toolTip(div);
+
 
         rect.attr({
             'fill': rect_fill,
-            'stroke':'#fff'         
+            'stroke':'#fff'
         }).rotate(rect_deg,0,0).click(function(){
-                window.open(url, '_blank');                
+                window.open(formatter.adjustUrl(url), '_blank');
         }).hover(
             oThis.onHoverIn, oThis.onHoverOut
         );
-        
-        
-        var text_width = span.textWidth();          
-        var text_y_coord = height/2 - text_width/2 + y_diff;     
-        var adjacent_height = height - text_y_coord;
-        var text_x_coord = util.calculateTangentWidth(rect_deg, adjacent_height); 
-        text_x_coord = text_x_coord + width/2; //center it by adding half of the column width
-        
-        //draw the text
-        var paper = R.text(text_x_coord, text_y_coord);
+
         paper.attr({
-                "font-family":"helvetica", 
-                "font-size":"12", 
-                "text-anchor":"center",                       
+                "font-family":"helvetica",
+                "font-size":"12",
+                "text-anchor":"center",
                 "text": text,
-                "fill":"#000"              
+                "fill":"#000"
         }).rotate(text_deg,false)
         .click(function(){
              window.open(url, '_blank');
         }).hover(
                  oThis.onHoverIn, oThis.onHoverOut
-        );     
-        
+        );
+
         //activate the tooltip for this featured package
-        var tool_tip = new toolTip(div);
         tool_tip.packageHeaderTooltip(tooltip_msg);
-        
-        span.hide();//hide the span text        
-    });      
-     
+
+        span.hide();//hide the span text
+    });
+
 };
 
 /**
@@ -911,11 +1031,12 @@ programmingHeaders.prototype.rotate = function(localhost,rect_deg, y_diff){
 
 /**
  * Class for sorting ability on each fixed columns
- * 
+ *
  */
 var columnSorter = function(sortType,nameSorter,channelNumberSorter,callLetterSorter,genreSorter,
                                 channelNameSortStart,channelNumberSortStart,callLetterSortStart,genreSortStart){
     //set properties
+    "use strict";
     this.sortType = sortType;
     this.nameSorter = nameSorter;
     this.channelNumberSorter = channelNumberSorter;
@@ -925,22 +1046,22 @@ var columnSorter = function(sortType,nameSorter,channelNumberSorter,callLetterSo
     this.channelNumberSortStart = channelNumberSortStart;
     this.callLetterSortStart = callLetterSortStart;
     this.genreSortStart = genreSortStart;
-    
-    
+
+
     this.display = function(){
-        
+
         this.nameSorter.hide();
         this.channelNameSortStart.show();
-        
+
         this.channelNumberSorter.hide();
         this.channelNumberSortStart.show();
-        
+
         this.callLetterSorter.hide();
         this.callLetterSortStart.show();
-        
+
         this.genreSorter.hide();
         this.genreSortStart.show();
-        
+
         var type = this.sortType;
         switch(type) {
             case 'sort_by_channel_name':
@@ -963,9 +1084,9 @@ var columnSorter = function(sortType,nameSorter,channelNumberSorter,callLetterSo
                     this.nameSorter.show();
                     this.channelNameSortStart.hide();
         }
-        
+
     };
-    
+
     this.sort = function(){
         var type = this.sortType;
         switch(type) {
@@ -984,13 +1105,13 @@ var columnSorter = function(sortType,nameSorter,channelNumberSorter,callLetterSo
             default:
                   this.sortByChannelName();
                   break;
-        } 
+        }
     };
-    
-    this.sortByChannelName= function(){        
-        var nameSorter = this.nameSorter;  
-        var up = nameSorter.find('.up');
-        var down = nameSorter.find('.down');
+
+    this.sortByChannelName= function(){
+        var nameSorter = this.nameSorter,
+        up = nameSorter.find('.up'),
+        down = nameSorter.find('.down');
         if (up.hasClass('hidden')) {
             up.removeClass('hidden');
             down.addClass('hidden');
@@ -999,17 +1120,17 @@ var columnSorter = function(sortType,nameSorter,channelNumberSorter,callLetterSo
             up.addClass('hidden');
             down.removeClass('hidden');
         }
-        
+
         $('#container .slick-header-columns').children().eq(0).trigger('click');
     };
-    
+
     this.sortByChannelNumber = function(){
-        var channelNumberSorter = this.channelNumberSorter;       
-        var up = channelNumberSorter.find('.up');
-        var down = channelNumberSorter.find('.down');
+        var channelNumberSorter = this.channelNumberSorter,
+        up = channelNumberSorter.find('.up'),
+        down = channelNumberSorter.find('.down');
         if (up.hasClass('hidden')) {
             up.removeClass('hidden');
-            down.addClass('hidden');       
+            down.addClass('hidden');
         }
         else{
             up.addClass('hidden');
@@ -1017,33 +1138,34 @@ var columnSorter = function(sortType,nameSorter,channelNumberSorter,callLetterSo
         }
         $('#container .slick-header-columns').children().eq(1).trigger('click');
     };
-    
+
     this.sortByCallLetters = function(){
-      var callLetterSorter = this.callLetterSorter;
-      var up = callLetterSorter.find('.up');
-      var down = callLetterSorter.find('.down');;
+      var callLetterSorter = this.callLetterSorter,
+      up = callLetterSorter.find('.up'),
+      down = callLetterSorter.find('.down');
       if (up.hasClass('hidden')) {
           up.removeClass('hidden');
           down.addClass('hidden');
       }
       else{
           up.addClass('hidden');
-          down.removeClass('hidden');       
+          down.removeClass('hidden');
       }
       $('#container .slick-header-columns').children().eq(2).trigger('click');
     };
-    
+
     this.sortByGenre = function(){
-      var genreSorter = this.genreSorter;
-      var up = genreSorter.find('.up');
-      var down = genreSorter.find('.down');;
+
+      var genreSorter = this.genreSorter,
+      up = genreSorter.find('.up'),
+      down = genreSorter.find('.down');
       if (up.hasClass('hidden')) {
           up.removeClass('hidden');
           down.addClass('hidden');
       }
       else{
           up.addClass('hidden');
-          down.removeClass('hidden');       
+          down.removeClass('hidden');
       }
       $('#container .slick-header-columns').children().eq(3).trigger('click');
     };
@@ -1051,9 +1173,10 @@ var columnSorter = function(sortType,nameSorter,channelNumberSorter,callLetterSo
 };
 
 columnSorter.prototype.enableChannelNameSort = function(){
-    var oThis = this;    
-    var nameSorterLink = oThis.nameSorter.find('a');
-    
+    "use strict";
+    var oThis = this,
+    nameSorterLink = oThis.nameSorter.find('a');
+
     nameSorterLink.click(function(){
       oThis.sortType = 'sort_by_channel_name';
       oThis.display();
@@ -1065,63 +1188,68 @@ columnSorter.prototype.enableChannelNameSort = function(){
 };
 
 columnSorter.prototype.enableChannelNumberSort = function(){
-    var oThis = this;    
-    var channelNumberSorterLink = oThis.channelNumberSorter.find('a');
+    "use strict";
+    var oThis = this,
+    channelNumberSorterLink = oThis.channelNumberSorter.find('a');
     channelNumberSorterLink.click(function(){
-      oThis.sortType = 'sort_by_channel_number';      
+      oThis.sortType = 'sort_by_channel_number';
       oThis.display();
       oThis.sort();
-    });     
+    });
     oThis.channelNumberSortStart.find('a').click(function(){
        channelNumberSorterLink.click();
     });
 };
 
 columnSorter.prototype.enableCallLetterSort = function(){
-    var oThis = this;    
-    var callLetterSorterLink = oThis.callLetterSorter.find('a');
-    callLetterSorterLink.click(function(){    
-      oThis.sortType = 'sort_by_call_letter';      
+    "use strict";
+    var oThis = this,
+    callLetterSorterLink = oThis.callLetterSorter.find('a');
+    callLetterSorterLink.click(function(){
+      oThis.sortType = 'sort_by_call_letter';
       oThis.display();
       oThis.sort();
-    });    
+    });
     oThis.callLetterSortStart.find('a').click(function(){
        callLetterSorterLink.click();
     });
 };
 
 columnSorter.prototype.enableGenreSort = function(){
-    var oThis = this;
-    var genreSorterLink = oThis.genreSorter.find('a');
-    genreSorterLink.click(function(){    
-      oThis.sortType = 'sort_by_genre';      
+    "use strict";
+    var oThis = this,
+    genreSorterLink = oThis.genreSorter.find('a');
+    genreSorterLink.click(function(){
+      oThis.sortType = 'sort_by_genre';
       oThis.display();
       oThis.sort();
-    });    
+    });
     oThis.genreSortStart.find('a').click(function(){
        genreSorterLink.click();
-    });    
+    });
 };
 /**
  * end Class for sorting ability
- * 
+ *
  */
 
 /**
  * The Reset Class
- * 
- * @param {string} context the id of the element to attach 
+ *
+ * @param {string} context the id of the element to attach
  */
 var reset = function(context, activeClass){
+    "use strict";
+    /*jslint newcap: true */
     var oThis = this;
     this.aClass = activeClass;
     this.self = $('#' + context);
     this.activate = function(grid,search_box,messageBoxId){
-        var util = new Utility();
-        var message_box = new messageBox(messageBoxId,grid);
-        
+        var util = new Utility(),
+        message_box = new messageBox(messageBoxId,grid);
+
         this.self.addClass(oThis.aClass);
-        this.self.unbind().click(function(e){
+        this.self.unbind().click(function(){
           grid.package_channels = false;
           util.normalizeNumLink();
           search_box.val('');
@@ -1130,8 +1258,9 @@ var reset = function(context, activeClass){
           grid.search_terms = [];
           grid.updateFilter();
           oThis.self.removeClass(oThis.aClass);
-          if (grid.environment !== 'test')
-            dcsMultiTrack("DCSext.channel_lineup_search_term","reset button hit");
+            if (grid.environment !== 'test') {
+              dcsMultiTrack("DCSext.channel_lineup_search_term","reset button hit");
+          }
         });
     };
 };
@@ -1146,28 +1275,32 @@ var reset = function(context, activeClass){
  * @param {boolean} localhost determines if we're running on localhost or on actual remote server
  */
 var UrlFormatter = function(localhost){
+    "use strict";
     this.localhost = localhost;
     this.formatUrl = function(url){
-        if (typeof url != 'string')
-            throw new Error('Enter a valid url.');        
+        if (typeof url !== 'string') {
+            throw new Error('Enter a valid url.');
+        }
         url = url.replace(/\s/g, ''); //remove spaces
-        var base = "href='";
-        var index = url.indexOf(base);
-        if (-1 === index)
+        var base = "href='",
+        index = url.indexOf(base);
+        if (-1 === index) {
            return this.adjustUrl(url.replace(/["']/g, ""));
-        
+       }
+
         url = url.replace(/http:\/\/agentanswercenterstg.directv.com/g, "");
-        url = url.substring(index + base.length,url.length - 1);        
+        url = url.substring(index + base.length,url.length - 1);
         return this.adjustUrl(url.replace(/["']/g, ""));
     };
     /**
      * Adjust url to relative server location
      */
     this.adjustUrl = function(url){
-            if (this.localhost && url)
+            if (this.localhost && url) {
                url = url.replace(/\/en-us\/res\//g, getServerPath(true));
+           }
             return url;
-    };    
+    };
 };
 
 
@@ -1176,11 +1309,12 @@ var UrlFormatter = function(localhost){
  */
 var Utility = function(){
     //checks if the number is an integer
+    "use strict";
     this.isInteger = function(n){
-       return parseInt(n) === n;
+       return parseInt(n, 10) === n;
     };
     this.randomizeClassName = function(name){
-        var rand = Math.floor(Math.random()*3);       
+        var rand = Math.floor(Math.random()*3);
         return name+rand;
     };
     this.normalizeNumLink = function(){
@@ -1188,47 +1322,50 @@ var Utility = function(){
             var el = $(this);
             if(el.hasClass('activeLink')){
                el.removeClass('activeLink');
-               return false; 
+               return false;
             }
         });
     };
     this.isIE = function() {
-        var ua = window.navigator.userAgent;
-        var msie = ua.indexOf("MSIE ");
-    
-        if (msie > 0)    
+        var ua = window.navigator.userAgent,
+        msie = ua.indexOf("MSIE ");
+
+        if (msie > 0) {
             return true;
-        else               
-          return false;
+        }
+    return false;
     };
     this.calculateTangentWidth = function(deg,opposite_height){
-        if (isNaN(deg))
+        if (isNaN(deg)) {
            throw new Error('Enter a valid degree value.');
-        if (isNaN(opposite_height)) 
-           throw new Error('Enter a valid opposite height value.');        
-        var tan_width = Math.tan(Raphael.rad(deg))*(opposite_height);
+       }
+        if (isNaN(opposite_height)) {
+           throw new Error('Enter a valid opposite height value.');
+       }
+        var tan_width = Math.tan(Raphael.rad(deg))*opposite_height;
         if (!this.isIE()) {
           return (Math.round(tan_width * 100) / 100);
         }
-        else
-          return (Math.round(tan_width * 100) / 100) - 2; //need to compensate 2 units if IE    
+          return (Math.round(tan_width * 100) / 100) - 2; //need to compensate 2 units if IE
     };
     this.escapeRegExp = function(string) {
-      return string.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+      return string.replace(/([.*+?\^=!:${}()|\[\]\/\\])/g, "\\$1");
     };
     this.replaceAll = function(string, find, replace) {
       return string.replace(new RegExp(this.escapeRegExp(find), 'g'), replace);
-    }
+    };
 };
 
 /**
  * The Error class
  */
 var Error = function(message){
+    "use strict";
     this.message = message;
 };
 
 Error.prototype.toString = function(){
+    "use strict";
     return this.message;
 };
 /**
@@ -1242,7 +1379,10 @@ Error.prototype.toString = function(){
  * @returns {integer} the pixel width
  */
 $.fn.textWidth = function(text, font) {
-    if (!$.fn.textWidth.fakeEl) $.fn.textWidth.fakeEl = $('<span>').hide().appendTo(document.body);
+    "use strict";
+    if (!$.fn.textWidth.fakeEl) {
+        $.fn.textWidth.fakeEl = $('<span>').hide().appendTo(document.body);
+    }
     $.fn.textWidth.fakeEl.text(text || this.val() || this.text()).css('font', font || this.css('font'));
     return $.fn.textWidth.fakeEl.width();
 };
@@ -1252,13 +1392,15 @@ $.fn.textWidth = function(text, font) {
 * Pops out a new window
 */
 var pop_at = function(a, b, c, d) {
-    1 == isNaN(b) && (b = 800);
-    1 == isNaN(c) && (c = 600);
-    1 == isNaN(d) && (d = "_blank");
-    width = b;
-    height = c;
-    newWin = window.open(a, d, ",status=no,toolbar=no,menubar=no,location=no,scrollbars=yes,resizable=yes width=" + width + ",height=" + height + "");
-    newWin.focus()
+    "use strict";
+
+  if (d === 'undefined') {
+      d = '_blank';
+  }
+    var width = b,
+    height = c,
+    newWin = window.open(a, d, ",status=no,toolbar=no,menubar=no,location=no,scrollbars=yes,resizable=yes width=" + width + ",height=" + height);
+    newWin.focus();
 };
 
 /**
@@ -1269,7 +1411,8 @@ var pop_at = function(a, b, c, d) {
  * @param {string} root_url the root url to call
  */
 var commentBtn = function(container, class_name, root_url){
-    this.self = container;    
+    "use strict";
+    this.self = container;
     this.class_name = class_name;
     this.root_url = root_url;
     var that = this;
@@ -1278,26 +1421,23 @@ var commentBtn = function(container, class_name, root_url){
      * @param {object} tool_author DOM element that holds the name of the tool's author
      */
     this.init = function(tool_author){
-        if (!tool_author || null === tool_author)
+        if (!tool_author || null === tool_author) {
            tool_author = $('#tool-author-id');
+       }
         var feedback_btn = '<div class='+this.class_name+'><span class="btn-feedback btns" shape="rect" title="Provide Feedback">Provide Feedback</span></div>';
-        this.self.append(feedback_btn); //append to itself      
-        $('.'+this.class_name+' span.btn-feedback').click(function(e){
-            var url = window.top.location.pathname;
-            var aID = tool_author.val();
-            var w = 375;
-            var h = 375;
-            var winl = (screen.width-w)/2;
-            var wint = ((screen.height-h)/2) - (h/2);  
-            var feedbackForm = window.open (that.root_url + 'system/scripts/add-feedback-tools.jsp?pid=' + url + '&aid=' + aID + '','feedbackForm','location=0,status=0,scrollbars=0,  width=' + w +',height=' + h + '');
+        this.self.append(feedback_btn); //append to itself
+        $('.'+this.class_name+' span.btn-feedback').click(function(){
+            var url = window.top.location.pathname,
+            aID = tool_author.val(),
+            w = 375,
+            h = 375,
+            winl = (screen.width-w)/2,
+            wint = ((screen.height-h)/2) - (h/2),
+
+            feedbackForm = window.open (that.root_url + 'system/scripts/add-feedback-tools.jsp?pid=' + url + '&aid=' + aID + 'feedbackForm,location=0,status=0,scrollbars=0,  width=' + w +',height=' + h);
+
             feedbackForm.moveTo(winl, wint);
-            feedbackForm.focus();                
+            feedbackForm.focus();
         });
-    };    
+    };
 };
-
-
-
-
-
-
