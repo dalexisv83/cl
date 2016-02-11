@@ -6,16 +6,6 @@
  *
  */
 
- /*global cachedElements*/
-  cachedElements.callType.on("click" , function(){
-    "use strict";
-    var
-    str = buildComment(cachedElements),
-    buildComment,
-    setCharactersRemaining;
-    setCharactersRemaining(cachedElements, str);
-  });
-
 /*jslint todo: true */
 /*jslint plusplus: true */
 /**
