@@ -13,7 +13,7 @@
  */
 if (typeof Object.create !== 'function') {
     Object.create = function (o) {
-      "use strict";
+        "use strict";
         function F(){
             return undefined;
         }
@@ -50,8 +50,8 @@ var gridTable = function(rowHeight,context,featured_packages){
     this.k_width = config.k_width;
 
     if (this.featured_packages === undefined || this.featured_packages.length === 0) {
-          throw new Error('Featured packages could not be empty.');
-        }
+        throw new Error('Featured packages could not be empty.');
+    }
 
     this.getNarrowCellWidth = function(){
         return this.k_width/this.featured_packages.length;
@@ -74,18 +74,18 @@ gridTable.prototype.setOptions = function(enableCellNavigation,enableColumnReord
 };
 
 gridTable.prototype.getOptions = function(){
-  "use strict";
+    "use strict";
     return this.options;
 };
 
 gridTable.prototype.getChannels = function(){
   "use strict";
-    return this.data;
+   return this.data;
 };
 
 gridTable.prototype.getColumns = function(){
   "use strict";
-    return this.columns;
+   return this.columns;
 };
 
 gridTable.prototype.setColumns = function(className,minWidth){
@@ -101,9 +101,7 @@ gridTable.prototype.setColumns = function(className,minWidth){
     columns,
     len,
     i,
-    class_name,
-    
-    
+    class_name,    
     /**
      * Private function used for formatting package cells
      */    
@@ -153,7 +151,7 @@ gridTable.prototype.setColumns = function(className,minWidth){
     len = columns.length;
     //fill the packages column
     for(i = 0; i < featured_packages_count; i++){
-       class_name = '';
+      class_name = '';
       if (i % 2 === 0) {
         class_name = className + ' even';
       }
@@ -168,7 +166,6 @@ gridTable.prototype.setColumns = function(className,minWidth){
         cssClass: class_name,
         minWidth: minWidth,
         formatter: narrowRowFormatter
-
       };
     }
     this.columns = columns;
@@ -239,94 +236,95 @@ bigGrid.prototype.render = function(){
     /* global config, Slick, messageBox, reset, packageFilter  */
      /*jslint unparam: true */
 
-        this.dataView = new Slick.Data.DataView();
-        var grid = new Slick.Grid("#" + this.context, this.dataView, this.columns, this.options),
-         oThis = this,
-        isMatched,
-        found = false,
-        search_str,
-        regex,
-        properties,
-        hd_regex,
-        i,
-        //private function for column searching
-        searchByColumns = function(rows,columns,search_term){
-            var regex = new RegExp(search_term, "i"),
-            is_matched = false;
-            $.each(columns, function(i, column_name) {
-                if (rows[column_name].search(regex) !== -1) {
-                    is_matched = true;
-                    return false;
-                }
-            });
-            return is_matched;
-        },
+    this.dataView = new Slick.Data.DataView();
+    var grid = new Slick.Grid("#" + this.context, this.dataView, this.columns, this.options),
+    oThis = this,
+    search_term_len, 
+    isMatched,
+    found = false,
+    search_str,
+    regex,
+    properties,
+    hd_regex,
+    i,
+    //private function for column searching
+    searchByColumns = function(rows,columns,search_term){
+        var regex = new RegExp(search_term, "i"),
+        is_matched = false;
+        $.each(columns, function(i, column_name) {
+            if (rows[column_name].search(regex) !== -1) {
+                is_matched = true;
+                return false;
+            }
+        });
+        return is_matched;
+    },
 
 
-        //function to modify if want to customize search
-        searchFilter = function(rows, args) {
-            isMatched  = false;
-            //check if we're doing regular search on the search box
-            if (!oThis.package_channels) {
-                //check if we have a multi search terms array
-                if (oThis.search_terms.length > 0) {                                 
-                    for (i = 0; i < oThis.search_terms.length; i += 1) {
-                        search_str = $.trim(oThis.search_terms[i]);
-                        if (search_str.length > 0){                                                  
-                            found = false;
-                            found = searchByColumns(rows,config.searchable_columns,search_str);
-                            if (found){
-                                isMatched = true;
-                                break;
-                            }  
-                        }
-                    }                   
-                }
-                else{
-                    isMatched = searchByColumns(rows,config.searchable_columns,args.searchString);
-                }
-            } else {
-               regex = new RegExp(args.searchString, "i");
-               properties = oThis.package_channels.split('||');
-               hd_regex = new RegExp('hd', "i");
-              if (properties[1]) {
-                  if(oThis.dataType === 'commercial') {
-                        isMatched = rows[properties[0]].search(regex) !== -1 && (rows.channel_name.search(hd_regex) !== -1 ||rows.call_letters.search(hd_regex) !== -1);
-                     } else {
-                       isMatched = rows[properties[0]].search(regex) !== -1 && rows.channel_name.search(hd_regex) !== -1;
-                  }
-              }
-              else {
-                  isMatched = rows[oThis.package_channels].search(regex) !== -1;
+    //function to modify if want to customize search
+    searchFilter = function(rows, args) {
+        isMatched  = false;
+        search_term_len = oThis.search_terms.length;
+        //check if we're doing regular search on the search box
+        if (!oThis.package_channels) {
+            //check if we have a multi search terms array
+            if (search_term_len > 0) {                                 
+                for (i = 0; i < search_term_len; i += 1) {
+                    search_str = $.trim(oThis.search_terms[i]);
+                    if (search_str.length > 0){                                                  
+                        found = false;
+                        found = searchByColumns(rows,config.searchable_columns,search_str);
+                        if (found){
+                            isMatched = true;
+                            break;
+                        }  
+                    }
+                }                   
+            }
+            else{
+                isMatched = searchByColumns(rows,config.searchable_columns,args.searchString);
+            }
+        } else {
+            regex = new RegExp(args.searchString, "i");
+            properties = oThis.package_channels.split('||');
+            hd_regex = new RegExp('hd', "i");
+            if (properties[1]) {
+                if(oThis.dataType === 'commercial') {
+                    isMatched = rows[properties[0]].search(regex) !== -1 && (rows.channel_name.search(hd_regex) !== -1 ||rows.call_letters.search(hd_regex) !== -1);
+                } else {
+                    isMatched = rows[properties[0]].search(regex) !== -1 && rows.channel_name.search(hd_regex) !== -1;
                 }
             }
-            return isMatched;
-        };
+            else {
+               isMatched = rows[oThis.package_channels].search(regex) !== -1;
+            }
+        }
+        return isMatched;
+    };
+    
+    this.dataView.onRowCountChanged.subscribe(function (e, args) {
+        grid.updateRowCount();
+        grid.render();
+    });
+    
+    this.dataView.onRowsChanged.subscribe(function (e, args) {
+        grid.invalidateRows(args.rows);
+        grid.render();
+    });
 
+    this.dataView.setItems(this.data);
+    this.dataView.setFilterArgs({
+        searchString: oThis.searchString
+    });
+    this.dataView.setFilter(searchFilter); //set the searchfilter function to use
 
+    grid.onSort.subscribe(function (e, args) {
+        oThis.sortdir = args.sortAsc ? 1 : -1;
+        oThis.sortcol = args.sortCol.field;
+        oThis.dataView.sort(oThis.comparer, args.sortAsc);
+    });
 
-        this.dataView.onRowCountChanged.subscribe(function (e, args) {
-            grid.updateRowCount();
-            grid.render();
-        });
-        this.dataView.onRowsChanged.subscribe(function (e, args) {
-            grid.invalidateRows(args.rows);
-            grid.render();
-        });
-
-        this.dataView.setItems(this.data);
-        this.dataView.setFilterArgs({
-            searchString: oThis.searchString
-        });
-        this.dataView.setFilter(searchFilter); //set the searchfilter function to use
-
-        grid.onSort.subscribe(function (e, args) {
-            oThis.sortdir = args.sortAsc ? 1 : -1;
-            oThis.sortcol = args.sortCol.field;
-            oThis.dataView.sort(oThis.comparer, args.sortAsc);
-        });
-
-        grid.setSortColumn("channel_name",true); //columnId, ascending
+    grid.setSortColumn("channel_name",true); //channel name ascending on page load
 };
 
 /**
@@ -348,9 +346,11 @@ bigGrid.prototype.setChannels = function(data){
     channel_url,
     id,
     channel_name,
+    len = data.length,
+    featured_pkg_len = this.featured_packages.length,
     channel_num;
 
-    for (i = 0; i < data.length; i++ ) { //loop through all channels
+    for (i = 0; i < len; i++ ) { //loop through all channels
         channel = data[i];
         if (!channel.hasOwnProperty('genre') || !channel.genre) {
           channel.genre = '';
@@ -388,7 +388,7 @@ bigGrid.prototype.setChannels = function(data){
             genre:channel.genre
         };
 
-        for(n = 0; n < this.featured_packages.length; n++ ){
+        for(n = 0; n < featured_pkg_len; n++ ){
             num = n + 1;
             property = 'p' + num;
             if (channel[property]) {
@@ -398,13 +398,12 @@ bigGrid.prototype.setChannels = function(data){
                 this.data[id][property] = " ";
             }
         }
-
     }
 };
 
 bigGrid.prototype.setColumns = function(columns){
     "use strict";
-   this.columns = columns;
+    this.columns = columns;
 };
 
 /**
@@ -418,8 +417,6 @@ bigGrid.prototype.activateHdChannelsFilter = function(search_box,messageBoxId,re
      /*jslint newcap: true */
       /*jslint unparam: true */
     var grid = this,
-
-
     message_box = new messageBox(messageBoxId,grid), //initiate the message box
     util = new Utility(),
     reset_btn = new reset(resetBtnId,activeClass),
@@ -428,22 +425,22 @@ bigGrid.prototype.activateHdChannelsFilter = function(search_box,messageBoxId,re
     package_filter = new packageFilter(grid,message_box),
     property;
 
-    $.each(this.featured_packages, function(i, v) {
-            context = "hd_btn"+i;
-            link = $('#'+context);
-            link.click(function() {
-                reset_btn.activate(grid,search_box.self,messageBoxId);
-                util.normalizeNumLink();
-                search_box.self.val('');
-                if(!$(this).hasClass('activeLink')) {
-                   $(this).addClass('activeLink');
-                 }
-                //remove the fix width columns from the equation
-                property = parseInt($(this).attr('data'), 10) - 3;
-                property = 'p' + property;
-                property = property+'||HD';                
-                package_filter.filterChannelsByPackage(property,true);
-            });
+    $.each(this.featured_packages, function(index, val) {
+        context = "hd_btn"+index;
+        link = $('#'+context);
+        link.click(function() {
+            reset_btn.activate(grid,search_box.self,messageBoxId);
+            util.normalizeNumLink();
+            search_box.self.val('');
+            if(!$(this).hasClass('activeLink')) {
+               $(this).addClass('activeLink');
+             }
+            //remove the fix width columns from the equation
+            property = parseInt($(this).attr('data'), 10) - 3;
+            property = 'p' + property;
+            property = property+'||HD';                
+            package_filter.filterChannelsByPackage(property,true);
+        });
     });
 };
 
@@ -456,8 +453,8 @@ bigGrid.prototype.activateHdChannelsFilter = function(search_box,messageBoxId,re
  */
 bigGrid.prototype.activateRegularChannelsFilter = function(search_box,messageBoxId,resetBtnId,activeClass){
     "use strict";
-     /*jslint newcap: true */
-      /*jslint unparam: true */
+    /*jslint newcap: true */
+    /*jslint unparam: true */
     var grid = this,
     message_box = new messageBox(messageBoxId,grid), //initiate the message box
     util = new Utility(),
@@ -467,8 +464,8 @@ bigGrid.prototype.activateRegularChannelsFilter = function(search_box,messageBox
     package_filter = new packageFilter(grid,message_box),
     property;
 
-    $.each(this.featured_packages, function(i, v) {
-      context = "reg_btn"+i;
+    $.each(this.featured_packages, function(index, val) {
+      context = "reg_btn"+index;
       link = $('#'+context);
         link.click(function(){
             reset_btn.activate(grid,search_box.self,messageBoxId);
@@ -503,17 +500,15 @@ inheritPrototype(smallGrid, gridTable);
 
 
 
-
-
-
 smallGrid.prototype.setChannels = function(){
-  "use strict";
-  var i,
-  channel_name,
-  n,
-  featured_package,
-  property,
-  num;
+    "use strict";
+    var i,
+    channel_name,
+    n,
+    featured_package,
+    featured_pkg_len = this.featured_packages.length,
+    property,
+    num;
 
     for (i = 0; i < 2; i++ ){
         channel_name = "Approximate number of HD channels";
@@ -530,7 +525,7 @@ smallGrid.prototype.setChannels = function(){
         };
 
 
-        for(n = 0; n < this.featured_packages.length; n++ ){ //loop through all featured packages
+        for(n = 0; n < featured_pkg_len; n++ ){ //loop through all featured packages
           featured_package = this.featured_packages[n];
           num = n + 1;
           property = 'p' + num;
@@ -568,7 +563,7 @@ var packageFilter = function(grid,message_box){
       this.grid.package_channels = property;
       this.grid.search_terms = [];
       this.grid.searchString = 'x';
-      this.grid.updateFilter(); 
+      this.grid.updateFilter(); //update the grid
       count = this.grid.dataView.getLength();
       //display message
       msg_box.createPackageMsg(count,hd_only);
@@ -693,13 +688,13 @@ var searchBox = function(context,grid,messageBoxId,resetBtnId,activeClass){
                && (oThis.val().length !== 0) // AND search term is not empty
                && (!oThis.val().match("^\\s*$")) // AND search term is not a blank string "only spaces"
                ) {
+                
                 var clearedVal = oThis.val(),
-                 result_count = thisSearchBox.doSearch(oGrid,config.search_delims);
+                result_count = thisSearchBox.doSearch(oGrid,config.search_delims);
                 oThis.val('');
 
                 oGrid.searchString = clearedVal;
-
-
+                
                 if ((result_count > 0 || result_count === 0) && oGrid.searchString.length > 0){
                    msg_box.createMsg(result_count);
                 }
@@ -734,7 +729,7 @@ var searchBox = function(context,grid,messageBoxId,resetBtnId,activeClass){
      */
     this.getSearchTerms = function(delim_mgr){
         var base_delimiter = delim_mgr.base_delim,
-         search_terms = [];
+        search_terms = [];
         if (delim_mgr.checkSearchDelimiter()) {
             search_terms = delim_mgr.syncDelimiterToBase().split(base_delimiter);
         }
@@ -787,9 +782,10 @@ searchDelimiterMgr.prototype.syncDelimiterToBase = function(){
 searchDelimiterMgr.prototype.checkSearchDelimiter = function(){
     "use strict";
     var found = false,
-        supported_delim,
-        i;
-    for (i = 0; i < this.supported_delims.length; i++) {
+    supported_delim,
+    supported_delims_len = this.supported_delims.length,
+    i;
+    for (i = 0; i < supported_delims_len; i++) {
         supported_delim = this.supported_delims[i];
         if (this.search_term.indexOf(supported_delim) !== -1){
            found = true;
@@ -818,16 +814,16 @@ messageBox.prototype.createMsg = function(count){
     var util = new Utility(),
     msg = '';
     if (!util.isInteger(count) || count < 0) {
-           throw new Error('Enter a valid count.');
-       }
+        throw new Error('Enter a valid count.');
+    }
 
     if (this.self.hasClass('no-channels-found')) {
       this.self.removeClass('no-channels-found');
-  }
+    }
 
     if (this.self.hasClass('search-term')) {
       this.self.removeClass('search-term');
-  }
+    }
     /*global getServerPath */
     if (count === 0) {
       this.self.addClass('no-channels-found');
@@ -835,7 +831,7 @@ messageBox.prototype.createMsg = function(count){
     }
     else {
       msg = '<b>' + count + ' channel(s) found</b>.';
-  }
+    }
 
     this.self.html(msg);
 };
@@ -860,7 +856,7 @@ messageBox.prototype.createPackageMsg = function(count,is_hd){
 
     if (this.self.hasClass('no-channels-found')) {
       this.self.removeClass('no-channels-found');
-  }
+    }
     //reverse the index
     package_index = (this.grid.featured_packages.length - 1) - package_index;
     package_name = this.grid.featured_packages[package_index].display_name;
@@ -869,15 +865,15 @@ messageBox.prototype.createPackageMsg = function(count,is_hd){
     msg = 'Displaying <b>'+count+'</b> channels for '+'<a href="'+package_link+'" target="_blank">'+package_name+'</a> package.';
     if (is_hd) {
        msg = 'Displaying <b>'+count+'</b> HD channels for '+'<a href="'+package_link+'" target="_blank">'+package_name+'</a> package.';
-   }
+    }
     this.self.html(msg);
 };
 
 messageBox.prototype.searchTerm = function(term) {
     "use strict";
-  var msg = "You searched for <b>&ldquo;<span>" + term + "</span>&rdquo;</b><br /><br />";
-  this.self.addClass('search-term');
-  this.self.prepend(msg);
+    var msg = "You searched for <b>&ldquo;<span>" + term + "</span>&rdquo;</b><br /><br />";
+    this.self.addClass('search-term');
+    this.self.prepend(msg);
 };
 /**
  * End of message box class
@@ -900,15 +896,17 @@ var programmingHeaders = function(context, featured_packages, column_width){
     this.column_width = column_width;
     var i,
     rotated_header,
+    featured_pkg_len = this.featured_packages.length,
+    headers_len = this.headers.length,
     target;
     this.render = function(){
         this.featured_packages.reverse();
-        for(i = 0; i < this.featured_packages.length; i++){
+        for(i = 0; i < featured_pkg_len; i++){
             rotated_header = $('<div class="pull-left narrower" id="head_'+i+'"><span>'+this.featured_packages[i].display_name+'</span></div>');
             this.headers.push(rotated_header); //fill the headers property
             this.container.prepend(rotated_header);
         }
-        for(i = 0; i < this.headers.length; i++){
+        for(i = 0; i < headers_len; i++){
           this.headers[i].attr("style","width:" + this.column_width+"px");
         }
     };
@@ -918,7 +916,7 @@ var programmingHeaders = function(context, featured_packages, column_width){
     };
     this.onHoverOut = function(e){
         target = (e.currentTarget) || e.srcElement;
-        target.style.cursor="pointer";
+        target.style.cursor = "pointer";
     };
 };
 
@@ -933,8 +931,8 @@ var programmingHeaders = function(context, featured_packages, column_width){
  */
 programmingHeaders.prototype.rotate = function(localhost,rect_deg, y_diff){
     "use strict";
-            /*jslint newcap:true */
-             /*jslint unparam: true */
+    /*jslint newcap:true */
+    /*jslint unparam: true */
 
     var formatter = new UrlFormatter(localhost),
     util = new Utility(),
@@ -952,13 +950,11 @@ programmingHeaders.prototype.rotate = function(localhost,rect_deg, y_diff){
     count = headers.length,
     is_even_count = (0 === count % 2); //true if even then false otherwise
 
-    $.each(headers, function(i, v) {
+    $.each(headers, function(i, header) {
           /*global Raphael */
         var index = i,
-        div = headers[i],
+        div = header,
         url = featured_packages[index].url,
-
-
         tooltip_msg = featured_packages[index].description,
         span = div.find('span'),
         height = div.height(),
@@ -986,7 +982,7 @@ programmingHeaders.prototype.rotate = function(localhost,rect_deg, y_diff){
             'fill': rect_fill,
             'stroke':'#fff'
         }).animate({transform: "r" + rect_deg + ",0,0"},1000).click(function(){
-                window.open(formatter.adjustUrl(url), '_blank');
+            window.open(formatter.adjustUrl(url), '_blank');
         }).hover(
             oThis.onHoverIn, oThis.onHoverOut
         );
@@ -1129,22 +1125,21 @@ var columnSorter = function(sortType,nameSorter,channelNumberSorter,callLetterSo
     };
 
     this.sortByCallLetters = function(){
-      var callLetterSorter = this.callLetterSorter,
-      up = callLetterSorter.find('.up'),
-      down = callLetterSorter.find('.down');
-      if (up.hasClass('hidden')) {
-          up.removeClass('hidden');
-          down.addClass('hidden');
-      }
-      else{
-          up.addClass('hidden');
-          down.removeClass('hidden');
-      }
-      $('#container .slick-header-columns').children().eq(2).trigger('click');
+        var callLetterSorter = this.callLetterSorter,
+        up = callLetterSorter.find('.up'),
+        down = callLetterSorter.find('.down');
+        if (up.hasClass('hidden')) {
+            up.removeClass('hidden');
+            down.addClass('hidden');
+        }
+        else{
+            up.addClass('hidden');
+            down.removeClass('hidden');
+        }
+        $('#container .slick-header-columns').children().eq(2).trigger('click');
     };
 
     this.sortByGenre = function(){
-
       var genreSorter = this.genreSorter,
       up = genreSorter.find('.up'),
       down = genreSorter.find('.down');
@@ -1165,7 +1160,6 @@ columnSorter.prototype.enableChannelNameSort = function(){
     "use strict";
     var oThis = this,
     nameSorterLink = oThis.nameSorter.find('a');
-
     nameSorterLink.click(function(){
       oThis.sortType = 'sort_by_channel_name';
       oThis.display();
@@ -1275,8 +1269,7 @@ var UrlFormatter = function(localhost){
         index = url.indexOf(base);
         if (-1 === index) {
            return this.adjustUrl(url.replace(/["']/g, ""));
-       }
-
+        }
         url = url.replace(/http:\/\/agentanswercenterstg.directv.com/g, "");
         url = url.substring(index + base.length,url.length - 1);
         return this.adjustUrl(url.replace(/["']/g, ""));
@@ -1285,10 +1278,10 @@ var UrlFormatter = function(localhost){
      * Adjust url to relative server location
      */
     this.adjustUrl = function(url){
-            if (this.localhost && url) {
-               url = url.replace(/\/en-us\/res\//g, getServerPath(true));
-           }
-            return url;
+        if (this.localhost && url) {
+           url = url.replace(/\/en-us\/res\//g, getServerPath(true));
+        }
+        return url;
     };
 };
 
@@ -1327,15 +1320,15 @@ var Utility = function(){
     this.calculateTangentWidth = function(deg,opposite_height){
         if (isNaN(deg)) {
            throw new Error('Enter a valid degree value.');
-       }
+        }
         if (isNaN(opposite_height)) {
            throw new Error('Enter a valid opposite height value.');
-       }
+        }
         var tan_width = Math.tan(Raphael.rad(deg))*opposite_height;
         if (!this.isIE()) {
           return (Math.round(tan_width * 100) / 100);
         }
-          return (Math.round(tan_width * 100) / 100) - 2; //need to compensate 2 units if IE
+        return (Math.round(tan_width * 100) / 100) - 2; //need to compensate 2 units if IE
     };
     this.escapeRegExp = function(string) {
       return string.replace(/([.*+?\^=!:${}()|\[\]\/\\])/g, "\\$1");
@@ -1412,7 +1405,7 @@ var commentBtn = function(container, class_name, root_url){
     this.init = function(tool_author){
         if (!tool_author || null === tool_author) {
            tool_author = $('#tool-author-id');
-       }
+        }
         var feedback_btn = '<div class='+this.class_name+'><span class="btn-feedback btns" shape="rect" title="Provide Feedback">Provide Feedback</span></div>';
         this.self.append(feedback_btn); //append to itself
         $('.'+this.class_name+' span.btn-feedback').click(function(){
