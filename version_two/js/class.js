@@ -1311,11 +1311,10 @@ var Utility = function(){
     this.isIE = function() {
         var ua = window.navigator.userAgent,
         msie = ua.indexOf("MSIE ");
-
         if (msie > 0) {
             return true;
         }
-    return false;
+        return false;
     };
     this.calculateTangentWidth = function(deg,opposite_height){
         if (isNaN(deg)) {
@@ -1331,7 +1330,7 @@ var Utility = function(){
         return (Math.round(tan_width * 100) / 100) - 2; //need to compensate 2 units if IE
     };
     this.escapeRegExp = function(string) {
-      return string.replace(/([.*+?\^=!:${}()|\[\]\/\\])/g, "\\$1");
+        return string.replace(/([.*+?\^=!:${}()|\[\]\/\\])/g, "\\$1");
     };
     this.replaceAll = function(string, find, replace) {
       return string.replace(new RegExp(this.escapeRegExp(find), 'g'), replace);
