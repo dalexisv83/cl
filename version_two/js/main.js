@@ -2,6 +2,7 @@
  * main configuration file that defines dependencies
  */
 require.config({
+    //urlArgs: "bust=" + (new Date()).getTime(), //should be taken out on production, prevents caching
     paths:{       
         //jquery
         jquery:config.baseUrlPath + 'system/js/jquery-1.10.2.min',
