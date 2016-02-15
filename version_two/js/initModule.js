@@ -1,6 +1,13 @@
-define(['data','adChannels','mainLib'], function() {
-    "use strict";   
-    
+/*global AdSales, smallGrid, config, bigGrid, searchBox, programmingHeaders, columnSorter, reset, toolTip, commentBtn */
+/*jslint newcap: true */
+var is_commercial = document.getElementById('data-type').value.toLowerCase() === 'commercial',
+data_source = 'data';
+if(is_commercial){
+    data_source = 'comData';
+}
+
+define([data_source,'adChannels','mainLib'], function() { 
+    'use strict';  
     var featured_packages = data.featured_packages,
     channels = data.channels,
     ad_channels = AdSales.channels,
@@ -26,10 +33,10 @@ define(['data','adChannels','mainLib'], function() {
     btn,
     root_url,
     class_name,
-    comment_btn;
+    comment_btn,
     
     //call to initialize app
-    var init = function(){
+    init = function(){        
         small_grid = new smallGrid(config.rowHeightShort,'containerSmall',featured_packages);
         small_grid.setOptions(true,false);
         small_grid.setColumns();
@@ -89,7 +96,7 @@ define(['data','adChannels','mainLib'], function() {
 
         //initiate the comment btn
         btn = $('#comment_btn');
-        root_url = '%%pub%%';
+        root_url = config.basePathUrl;
         class_name = 'comment-btn'; //add a class of comment-btn
         comment_btn = new commentBtn(btn,class_name,root_url);
         comment_btn.init();

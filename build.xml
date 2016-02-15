@@ -106,7 +106,7 @@
 
         <target name="jslint">
 		<jslint options="white,nomen,regexp" haltOnFailure="true">
-			<predef>screen,_,$$scope,$$,app,data,angular,DataStore,UrlFormatter,Utility,document,ToolTip,CommentBtn,jQuery,window,localhost, min_limit, max_limit, dcsMultiTrack</predef>
+			<predef>require,define,config,screen,_,$$scope,$$,app,data,angular,DataStore,UrlFormatter,Utility,document,ToolTip,CommentBtn,jQuery,window,localhost, min_limit, max_limit, dcsMultiTrack</predef>
 			<formatter type="plain" />
 			<formatter type="xml" destfile="${build.dir}/test-reports/jslint.xml" />
 			<fileset dir="version_two" includes="**/*.js" excludes="**js/unit_test/test.js" />
