@@ -18,22 +18,23 @@ define([data_source,'adChannels','mainLib'], function() {
     search_box,
     cell_width,
     programming_headers,
-    nameSorter,
-    channelNumberSorter,
-    callLetterSorter,
-    genreSorter,
-    channelNameSortStart,
-    channelNumberSortStart,
-    callLetterSortStart,
-    genreSortStart,
-    column_sorter,   
-    tool_tip_btn,
-    tooltip,
-    genre_codes_container,
-    btn,
-    root_url,
+    nameSorter = $('#nameSorter'),
+    channelNumberSorter = $('#channelNumberSorter'),
+    callLetterSorter = $('#callLetterSorter'),
+    genreSorter = $('#genreSorter'),
+    channelNameSortStart = $('#channelNameSortStart'),
+    channelNumberSortStart = $('#channelNumberSortStart'),
+    callLetterSortStart = $('#callLetterSortStart'),
+    genreSortStart = $('#genreSortStart'),      
+    tool_tip_btn = $('#genreLegend'),
+    genre_codes_container = $('#genreCodes'),
+    btn = $('#comment_btn'),
+    loader_spinner = $('.loader'),
+    column_sorter, 
+    tooltip,  
     class_name,
     comment_btn,
+    
     
     //call to initialize app
     init = function(){        
@@ -69,16 +70,7 @@ define([data_source,'adChannels','mainLib'], function() {
 
         //rotate package headers
         programming_headers.rotate(config.localhost,config.deg,config.y_diff);
-
-        //identify all sorter controls
-        nameSorter = $('#nameSorter');
-        channelNumberSorter = $('#channelNumberSorter');
-        callLetterSorter = $('#callLetterSorter');
-        genreSorter = $('#genreSorter');
-        channelNameSortStart = $('#channelNameSortStart');
-        channelNumberSortStart = $('#channelNumberSortStart');
-        callLetterSortStart = $('#callLetterSortStart');
-        genreSortStart = $('#genreSortStart');
+       
         //initialize column sorting
         column_sorter = new columnSorter('channel_name',nameSorter,channelNumberSorter,callLetterSorter,genreSorter,
                                     channelNameSortStart,channelNumberSortStart,callLetterSortStart,genreSortStart);
@@ -88,18 +80,16 @@ define([data_source,'adChannels','mainLib'], function() {
         column_sorter.enableGenreSort();
 
         //initialize tooltip
-        tool_tip_btn = $('#genreLegend');
         tooltip = new toolTip(tool_tip_btn);
-        //activate the genre codes tooltip
-        genre_codes_container = $('#genreCodes');
+        //activate the genre codes tooltip      
         tooltip.genreToolTip(genre_codes_container);
 
-        //initiate the comment btn
-        btn = $('#comment_btn');
-        root_url = config.basePathUrl;
+        //initiate the comment btn       
         class_name = 'comment-btn'; //add a class of comment-btn
-        comment_btn = new commentBtn(btn,class_name,root_url);
+        comment_btn = new commentBtn(btn,class_name,config.basePathUrl);
         comment_btn.init();
+        
+        loader_spinner.hide();
     };
 
     return {
