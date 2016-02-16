@@ -134,6 +134,7 @@
 	<target name="addBuildNumber">
 	    <replaceregexp flags="g" file="${build.dir}/index.htm" match="#.*#" replace="${env.BUILD_NUMBER}" />
 	    <replaceregexp flags="g" file="${build.dir}/index_com.htm" match="#.*#" replace="${env.BUILD_NUMBER}" />
+	    <replaceregexp flags="g" file="${build.dir}/js/main-min.js" match="#.*#" replace="${env.BUILD_NUMBER}" />	    
 	</target>
 
 	<target name="main" depends="start,jslint,compress,concat,copy,addBuildNumber,clean" />
