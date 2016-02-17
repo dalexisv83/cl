@@ -2,7 +2,7 @@
  * main configuration file that defines dependencies
  */
 require.config({
-    urlArgs: "bust=#00#", //bust caching
+    urlArgs: "build=#00#", //bust caching
     paths:{       
         //jquery
         jquery:config.baseUrlPath + 'system/js/jquery-1.10.2.min',

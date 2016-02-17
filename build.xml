@@ -127,13 +127,15 @@
 	</target>
 
 	<target name="copy">
-	    <copyfile src="${basedir}/version_two/index.htm" dest="${build.dir}/index.htm"/>
-	    <copyfile src="${basedir}/version_two/index_com.htm" dest="${build.dir}/index_com.htm"/>
+	    <copyfile src="${basedir}/channel_list.htm" dest="${build.dir}/channel_list.htm"/>
+	    <copyfile src="${basedir}/c_channel_list.htm" dest="${build.dir}/c_channel_list.htm"/>
 	</target>
 
 	<target name="addBuildNumber">
-	    <replaceregexp flags="g" file="${build.dir}/index.htm" match="#.*#" replace="${env.BUILD_NUMBER}" />
-	    <replaceregexp flags="g" file="${build.dir}/index_com.htm" match="#.*#" replace="${env.BUILD_NUMBER}" />
+	    <replaceregexp flags="g" file="${build.dir}/channel_list.htm" match="#.*#" replace="${env.BUILD_NUMBER}" />
+	    <replaceregexp file="${build.dir}/channel_list.htm" match="data-main=&quot;" replace="data-main=&quot;%%pub%%" />
+	    <replaceregexp flags="g" file="${build.dir}/c_channel_list.htm" match="#.*#" replace="${env.BUILD_NUMBER}" />
+            <replaceregexp file="${build.dir}/c_channel_list.htm" match="data-main=&quot;" replace="data-main=&quot;%%pub%%" />
 	    <replaceregexp flags="g" file="${build.dir}/js/main-min.js" match="#.*#" replace="${env.BUILD_NUMBER}" />	    
 	</target>
 
