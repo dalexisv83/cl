@@ -133,9 +133,9 @@
 
 	<target name="addBuildNumber">
 	    <replaceregexp flags="g" file="${build.dir}/channel_list.htm" match="#.*#" replace="${env.BUILD_NUMBER}" />
-	    <replaceregexp file="${build.dir}/channel_list.htm" match="data-main=&quot;" replace="data-main=&quot;%%pub%%" />
+	    <replaceregexp flags="g" file="${build.dir}/channel_list.htm" match="data-main=&quot;/rover_tools" replace="data-main=&quot;%%pub%%rover_tools" />
 	    <replaceregexp flags="g" file="${build.dir}/c_channel_list.htm" match="#.*#" replace="${env.BUILD_NUMBER}" />
-            <replaceregexp file="${build.dir}/c_channel_list.htm" match="data-main=&quot;" replace="data-main=&quot;%%pub%%" />
+            <replaceregexp flags="g" file="${build.dir}/c_channel_list.htm" match="data-main=&quot;/rover_tools" replace="data-main=&quot;%%pub%%rover_tools" />
 	    <replaceregexp flags="g" file="${build.dir}/js/main-min.js" match="#.*#" replace="${env.BUILD_NUMBER}" />	    
 	</target>
 
