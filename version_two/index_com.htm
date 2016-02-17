@@ -10,11 +10,11 @@
   <link rel="stylesheet" href="%%pub%%system/css/jquery.qtip.min.css"> 
   <link rel="stylesheet" href="style/style.css?build=#00#" type="text/css"/>
   <!--[if IE]>
-     <link rel="stylesheet" href="%%pub%%rover_tools/channel_list/version_two/style/ie.css?build=#00#">
+     <link rel="stylesheet" href="%%pub%%rover_tools/channel_list/version_two/style/ie.css?build=#00#" />
   <![endif]--> 
 </head>
 
-<body class="commercial">
+<body>
   <div class="headers full">
     <div id="comment_btn" class="pull-right" >
     </div>
@@ -28,21 +28,29 @@
 
 <div class="container">
   
-  
+  <div class="loader"></div> 
   <div id="xtra_notes">
-        - (m) indicates channels broadcast in <a href="javascript:pop_at('%%pub%%equipment/audio_problems.html',850,600);">mono sound</a>.<br />
-        <b>a - Available to in-markets customers only.</b><br />    
+       -See <a href="%%pub%%programming/directv_everywhere.html?fragid=3"
+        target="_blank">DIRECTV Everywhere</a> for a list of
+        available channels offering streaming content.<br>
+        -(*) <a href="%%pub%%rover_tools/redirectors/bce_redirect.html" target=
+        "_blank">DIRECTV On Demand</a> | («) <a href=
+        "%%pub%%programming/72hr_rewind_restart.html#fragment=4" target=
+        "_blank">Rewind &amp; Restart</a>
+        <br />
         <span class="red"><b>**REMINDER:</b></span> <b>DO NOT</b> discuss <u>exact</u> channel counts with customers.
-         <br />
+        <br />
         If the customer refers to a package color, see <a href="http://www.directv.com/DTVAPP/packages/base_packages.jsp" target=
         "_blank">DIRECTV TV PACKAGES</a> online.
   </div>
   
-  <div class="link-holder com">
+  <div class="link-holder">
       <ul>
-        <li><a href="%%pub%%programming/channel_neighborhoods.html" target="_blank" >Channel Neighborhoods</a></li>       
+        <li><a href="%%pub%%programming/channel_neighborhoods.html" target="_blank" >Channel Neighborhoods</a></li>
+        <li><a href="%%pub%%programming/expired_packages.html" target="_blank">Expired Packages</a></li>
         <li><a href="%%pub%%programming/paid_programming_part_time_channels.html" target="_blank">Ad Sales/Paid Program/Part-Time</a></li>
-        <li><a href="http://lil-lookup.directv.com:8080/lil/lilIndex.htm?site=res&amp;requestor=DORIS" target="_blank">Local Channel Availability</a></li>      
+        <li><a href="http://lil-lookup.directv.com:8080/lil/lilIndex.htm?site=res&amp;requestor=DORIS" target="_blank">Local Channel Availability</a></li>
+        <li><a href="javascript:pop_at('%%pub%%rover_tools/package/packagetool.htm',990,800);">Programming Package Tool</a></li>
         <li><a href="javascript:pop_at('%%pub%%rover_tools/package_compare/package_compare.htm',950,675);">Package Compare Tool</a></li>
       </ul>    
   </div>
@@ -160,27 +168,11 @@
 </div>
 
 <input type="hidden" id="tool-author-id" value="Joel Capillo">
+<input type="hidden" id="data-type" value="commercial">
 
 <script src="%%pub%%system/js/webtrends.js" type="text/javascript"></script>
-<script src="%%pub%%system/js/jquery-1.10.2.min.js"></script>
-<script src="%%pub%%system/js/raphael.js"></script>
-<script src="%%pub%%system/js/jquery.qtip.min.js"></script>
-<script src="%%pub%%system/js/jquery-event-drag.js"></script>
-<script src="%%pub%%system/js/slick-core.js"></script>
-<script src="%%pub%%rover_tools/channel_list/version_two/js/slick-grid.js"></script>
-<script src="%%pub%%rover_tools/channel_list/version_two/js/slick-dataview.js"></script>
-
-<!--start of two are the datasources-->
-<script src="%%pub%%rover_tools/channel_list/version_two/data/com_channels.js?build=#00#"></script>
-<script src="%%pub%%rover_tools/channel_list/version_two/data/ad_channels.js?build=#00#"></script>
-<!--end of two are the datasources-->
-
-<!--holds the configuration values-->
-<script src="js/config.js?build=#00#"></script>
-<!--the main library classes-->
-<script src="js/class.js?build=#00#"></script>
-<!--the entrance script-->
-<script src="js/script.js?build=#00#"></script>
+<script src="js/config.js"></script>
+<script data-main="/rover_tools/channels_linted/version_two/js/main.js?build=#00#" src="%%pub%%system/js/require.js"></script>
 
 </body>
 </html>

@@ -28,7 +28,7 @@
 
 <div class="container">
   
-  
+  <div class="loader"></div> 
   <div id="xtra_notes">
        -See <a href="%%pub%%programming/directv_everywhere.html?fragid=3"
         target="_blank">DIRECTV Everywhere</a> for a list of
@@ -168,27 +168,11 @@
 </div>
 
 <input type="hidden" id="tool-author-id" value="Joel Capillo">
-  
+<input type="hidden" id="data-type" value="residential">
+
 <script src="%%pub%%system/js/webtrends.js" type="text/javascript"></script>
-<script src="%%pub%%system/js/jquery-1.10.2.min.js"></script>
-<script src="%%pub%%system/js/raphael.js"></script>
-<script src="%%pub%%system/js/jquery.qtip.min.js"></script>
-<script src="%%pub%%system/js/jquery-event-drag.js"></script>
-<script src="%%pub%%system/js/slick-core.js"></script>
-<script src="%%pub%%rover_tools/channel_list/version_two/js/slick-grid.js"></script>
-<script src="%%pub%%rover_tools/channel_list/version_two/js/slick-dataview.js"></script>
-
-<!--start of two are the datasources-->
-<script src="%%pub%%rover_tools/channel_list/version_two/data/channels.js?build=#00#"></script>
-<script src="%%pub%%rover_tools/channel_list/version_two/data/ad_channels.js?build=#00#"></script>
-<!--end of two are the datasources-->
-
-<!--holds the configuration values-->
-<script src="js/config.js?build=#00#"></script>
-<!--the main library classes-->
-<script src="js/class.js?build=#00#"></script>
-<!--the entrance script-->
-<script src="js/script.js?build=#00#"></script>
+<script src="js/config.js"></script>
+<script data-main="/rover_tools/channels_linted/version_two/js/main.js?build=#00#" src="%%pub%%system/js/require.js"></script>
 
 </body>
 </html>

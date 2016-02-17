@@ -13,6 +13,7 @@
  * @return {string} the correct server path
  */
 var getServerPath = function(localhost){
+    'use strict';
     if (!localhost) {
         return '%%pub%%';
     }    
@@ -23,14 +24,15 @@ var getServerPath = function(localhost){
 /**
  * Constant values for customization.
  */
-var config = {
+var config = {    
     localhost:false, //important to set this value to true when running on local computer
     k_width: 410, //total width of the div that holds the featured packages
     rowHeightTall:38, //row height for the big grid
     rowHeightShort:30, //row height for the small grid
     y_diff:14, //constant used for calculating distance on rotated text to the bottom
-    adChannelUrl: "javascript:document.location.href='"+getServerPath(this.localhost)+"programming/paid_programming_part_time_channels.html'", //forms the url for networks classified as Ad Channels
+    adChannelUrl: "document.location.href='"+getServerPath(this.localhost)+"programming/paid_programming_part_time_channels.html'", //forms the url for networks classified as Ad Channels
     deg: 10, //degree of rotation of the featured packages divs; 
     search_delims: [','], //collection of supported search delimiters; add symbols like #,* etc. to be used as search delimiters
-    searchable_columns:['anchors','channel_name','channel_number','call_letters','genre'] //add the name of the columns to be searchable; remove a column if don't want to be searchable
+    searchable_columns:['anchors','channel_name','channel_number','call_letters','genre'], //add the name of the columns to be searchable; remove a column if don't want to be searchable
+    baseUrlPath:getServerPath(this.localhost)
 };
