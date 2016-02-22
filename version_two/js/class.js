@@ -981,7 +981,7 @@ programmingHeaders.prototype.rotate = function(localhost,rect_deg, y_diff){
         rect.attr({
             'fill': rect_fill,
             'stroke':'#fff'
-        }).animate({transform: "r" + rect_deg + ",0,0"},1000).click(function(){
+        }).rotate(rect_deg,0,0).click(function(){
             window.open(formatter.adjustUrl(url), '_blank');
         }).hover(
             oThis.onHoverIn, oThis.onHoverOut
