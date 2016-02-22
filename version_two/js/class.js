@@ -1397,6 +1397,7 @@ var commentBtn = function(container, class_name, root_url){
     this.class_name = class_name;
     this.root_url = root_url;
     var that = this;
+    
     /**
      * Initialize function
      * @param {object} tool_author DOM element that holds the name of the tool's author
@@ -1416,7 +1417,7 @@ var commentBtn = function(container, class_name, root_url){
             winl = (screen.width-w)/2,
             wint = ((screen.height-h)/2) - (h/2);
 
-            feedbackForm = window.open(this.root_url + "system/scripts/add-feedback-tools.jsp?pid=" + url + "&aid=" + aID + "","feedbackForm","location=0,status=0,scrollbars=0,  width=" + w + ",height=" + h);
+            feedbackForm = window.open(that.root_url + "system/scripts/add-feedback-tools.jsp?pid=" + url + "&aid=" + aID ,"feedbackForm","location=0,status=0,scrollbars=0,  width=" + w + ",height=" + h);
 
             feedbackForm.moveTo(winl, wint);
             feedbackForm.focus();
