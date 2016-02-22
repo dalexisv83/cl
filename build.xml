@@ -136,6 +136,6 @@
 	    <replaceregexp flags="g" file="${build.dir}/c_channel_list.htm" match="#.*#" replace="${env.BUILD_NUMBER}" />               
 	</target>
 
-	<target name="main" depends="start,jslint,compress,concat,copy,addBuildNumber,clean" />
+	<target name="main" depends="start,jslint,compress,concat,copy,clean" />
 
 </project>
