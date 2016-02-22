@@ -101,10 +101,10 @@ gridTable.prototype.setColumns = function(className,minWidth){
     columns,
     len,
     i,
-    class_name,    
+    class_name,
     /**
      * Private function used for formatting package cells
-     */    
+     */
     narrowRowFormatter = function(row, cell, value, columnDef, dataContext) {
         if (utility.isInteger(value)) {
           index = cell - 4;
@@ -118,7 +118,7 @@ gridTable.prototype.setColumns = function(className,minWidth){
         }
         return value;
     };
-   
+
     /**
     * Regular row formatter for fix width columns
     */
@@ -239,7 +239,7 @@ bigGrid.prototype.render = function(){
     this.dataView = new Slick.Data.DataView();
     var grid = new Slick.Grid("#" + this.context, this.dataView, this.columns, this.options),
     oThis = this,
-    search_term_len, 
+    search_term_len,
     isMatched,
     found = false,
     search_str,
@@ -268,18 +268,18 @@ bigGrid.prototype.render = function(){
         //check if we're doing regular search on the search box
         if (!oThis.package_channels) {
             //check if we have a multi search terms array
-            if (search_term_len > 0) {                                 
+            if (search_term_len > 0) {
                 for (i = 0; i < search_term_len; i += 1) {
                     search_str = $.trim(oThis.search_terms[i]);
-                    if (search_str.length > 0){                                                  
+                    if (search_str.length > 0){
                         found = false;
                         found = searchByColumns(rows,config.searchable_columns,search_str);
                         if (found){
                             isMatched = true;
                             break;
-                        }  
+                        }
                     }
-                }                   
+                }
             }
             else{
                 isMatched = searchByColumns(rows,config.searchable_columns,args.searchString);
@@ -301,12 +301,12 @@ bigGrid.prototype.render = function(){
         }
         return isMatched;
     };
-    
+
     this.dataView.onRowCountChanged.subscribe(function (e, args) {
         grid.updateRowCount();
         grid.render();
     });
-    
+
     this.dataView.onRowsChanged.subscribe(function (e, args) {
         grid.invalidateRows(args.rows);
         grid.render();
@@ -438,7 +438,7 @@ bigGrid.prototype.activateHdChannelsFilter = function(search_box,messageBoxId,re
             //remove the fix width columns from the equation
             property = parseInt($(this).attr('data'), 10) - 3;
             property = 'p' + property;
-            property = property+'||HD';                
+            property = property+'||HD';
             package_filter.filterChannelsByPackage(property,true);
         });
     });
@@ -478,7 +478,7 @@ bigGrid.prototype.activateRegularChannelsFilter = function(search_box,messageBox
             //remove the fix width columns from the equation
             property = parseInt($(this).attr('data'), 10) - 3;
             property = 'p' + property; //determine the property
-            
+
             package_filter.filterChannelsByPackage(property,false);
         });
     });
@@ -688,13 +688,13 @@ var searchBox = function(context,grid,messageBoxId,resetBtnId,activeClass){
                && (oThis.val().length !== 0) // AND search term is not empty
                && (!oThis.val().match("^\\s*$")) // AND search term is not a blank string "only spaces"
                ) {
-                
+
                 var clearedVal = oThis.val(),
                 result_count = thisSearchBox.doSearch(oGrid,config.search_delims);
                 oThis.val('');
 
                 oGrid.searchString = clearedVal;
-                
+
                 if ((result_count > 0 || result_count === 0) && oGrid.searchString.length > 0){
                    msg_box.createMsg(result_count);
                 }
@@ -977,7 +977,7 @@ programmingHeaders.prototype.rotate = function(localhost,rect_deg, y_diff){
         rect_fill = is_even_count ? (is_odd ? '#86b9ec':'#cde1f5') : (is_odd ? '#cde1f5':'#86b9ec'),
         tool_tip = new toolTip(div);
 
-         
+
         rect.attr({
             'fill': rect_fill,
             'stroke':'#fff'
@@ -986,7 +986,7 @@ programmingHeaders.prototype.rotate = function(localhost,rect_deg, y_diff){
         }).hover(
             oThis.onHoverIn, oThis.onHoverOut
         );
-        
+
         paper = R.text(calc_text_x_coord, text_y_coord);
         paper.attr({
                 "font-family":"helvetica",
@@ -1410,12 +1410,13 @@ var commentBtn = function(container, class_name, root_url){
         $('.'+this.class_name+' span.btn-feedback').click(function(){
             var url = window.top.location.pathname,
             aID = tool_author.val(),
+            feedbackForm,
             w = 375,
             h = 375,
             winl = (screen.width-w)/2,
-            wint = ((screen.height-h)/2) - (h/2),
+            wint = ((screen.height-h)/2) - (h/2);
 
-            feedbackForm = window.open (that.root_url + 'system/scripts/add-feedback-tools.jsp?pid=' + url + '&aid=' + aID + 'feedbackForm,location=0,status=0,scrollbars=0,  width=' + w +',height=' + h);
+            feedbackForm = window.open(this.root_url + "system/scripts/add-feedback-tools.jsp?pid=" + url + "&aid=" + aID + "","feedbackForm","location=0,status=0,scrollbars=0,  width=" + w + ",height=" + h);
 
             feedbackForm.moveTo(winl, wint);
             feedbackForm.focus();
