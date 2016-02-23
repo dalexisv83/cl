@@ -77,6 +77,6 @@ $(function () {
 
     //initiate the comment btn       
     class_name = 'comment-btn'; //add a class of comment-btn
-    comment_btn = new commentBtn(btn,class_name,config.basePathUrl);
+    comment_btn = new commentBtn(btn,class_name,config.baseUrlPath);
     comment_btn.init();
 });
