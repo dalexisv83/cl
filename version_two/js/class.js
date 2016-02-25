@@ -665,7 +665,8 @@ var searchBox = function(context,grid,messageBoxId,resetBtnId,activeClass){
             } else if (
                       ((!oThis.val().match("^\\s*$")) && (oThis.val().length !== 0)) // if ( term is not empty AND not a blank string "only spaces" )
                       && ((e.keyCode === 8) || (e.keyCode === 32) || (e.keyCode === 46) // AND ( backspace OR space OR delete
-                      || ((e.keyCode >= 48) && (e.keyCode <= 57)) // OR [ a number ]
+                      || ((e.keyCode >= 48) && (e.keyCode <= 57)) // OR [ a keyboard number ]
+                      || ((e.keyCode >= 96) && (e.keyCode <= 105)) // OR [ a numpad number ]
                       || ((e.keyCode >= 65) && (e.keyCode <= 90))) // OR [ a letter ] )
                       ){
                 reset_btn.activate(oGrid,oThis,messageBoxId);

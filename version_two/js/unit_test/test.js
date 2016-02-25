@@ -357,7 +357,7 @@ QUnit.test( "Testing the \"autoSearch\" function.", function( assert ) {
         assert.equal($('#' + search_box.resetBtnId).attr("class"), search_box.activeClass, "On " + e.type + ", the keycode " + v + " (" + newString + ") DOES add the class \"" + search_box.activeClass + "\" when the textbox says: " + (boxValue.replace(/ /g, '\u00a0') == '' ? "empty" : boxValue.replace(/ /g, '\u00a0')) + ".");
     });
 
-    var testCodes = [48,49,50,51,52,53,54,55,56,57,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90];
+    var testCodes = [48,49,50,51,52,53,54,55,56,57,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,96,97,98,99,100,101,102,103,104,105];
 
     $("#testBox").val('espn');
     var boxValue = $("#testBox").val();
