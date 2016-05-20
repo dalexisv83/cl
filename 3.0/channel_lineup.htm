@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en" xmlns:ng="http://angularjs.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+    <title>Channel Lineup</title>
+    <!--[if lt IE 9]>
+      <script src="http://agentanswercenterstg.directv.com/en-us/res/system/js/html5shiv.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.7/es5-shim.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.7/es5-sham.min.js"></script>
+    <![endif]-->
+    <script src="http://agentanswercenter.directv.com/en-us/res/system/js/jquery-1.11.3.min.js"></script>
+    <script src="http://agentanswercenter.directv.com/en-us/res/system/js/jquery.datatables.1.10.7.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.29/angular.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.29/angular-resource.js"></script>
+    <script src="https://rawgit.com/l-lin/angular-datatables/dev/src/angular-datatables.js"></script>
+    <script src="https://rawgit.com/l-lin/angular-datatables/dev/src/angular-datatables.directive.js"></script>
+    <script src="https://rawgit.com/l-lin/angular-datatables/dev/src/angular-datatables.factory.js"></script>
+    <script src="https://rawgit.com/l-lin/angular-datatables/dev/src/angular-datatables.instances.js"></script>
+    <script src="https://rawgit.com/l-lin/angular-datatables/dev/src/angular-datatables.util.js"></script>
+    <script src="https://rawgit.com/l-lin/angular-datatables/dev/src/angular-datatables.renderer.js"></script>
+    <script src="https://rawgit.com/l-lin/angular-datatables/dev/src/angular-datatables.options.js"></script>
+    <script src="https://rawgit.com/l-lin/angular-datatables/dev/src/plugins/scroller/angular-datatables.scroller.js"></script>
+    <script src="https://rawgit.com/l-lin/angular-datatables/dev/vendor/datatables-scroller/js/dataTables.scroller.js"></script>
+    <link rel="stylesheet" href="//agentanswercenter.directv.com/en-us/res/system/css/normalize.css">
+    <link rel="stylesheet" href="https://rawgit.com/l-lin/angular-datatables/dev/src/css/angular-datatables.css">
+    <link rel="stylesheet" href="https://rawgit.com/l-lin/angular-datatables/dev/vendor/datatables-scroller/css/dataTables.scroller.css">
+    <script>
+    // if (typeof Object.create != 'function') {
+    //     Object.create = (function() {
+    //         var Temp = function() {};
+    //         return function(prototype) {
+    //             if (arguments.length > 1) {
+    //                 throw Error('Second argument not supported');
+    //             }
+    //             if (prototype !== Object(prototype) && prototype !== null) {
+    //                 throw TypeError('Argument must be an object or null');
+    //             }
+    //             if (prototype === null) {
+    //                 throw Error('null [[Prototype]] not supported');
+    //             }
+    //             Temp.prototype = prototype;
+    //             var result = new Temp();
+    //             Temp.prototype = null;
+    //             return result;
+    //         };
+    //     })();
+    // }
+    </script>
+    <script>
+        /*jslint unparam: true*/
+        (function(angular) {
+            'use strict';
+            angular.module('channelLineup', ['datatables', 'ngResource', 'datatables.scroller'])
+                .controller('MainCtrl', ['$scope', '$resource', 'DTOptionsBuilder',
+                    function($scope, $resource, DTOptionsBuilder) {
+                        $scope.myFilter = function(obj) {
+                            var isMatch = false;
+                            if ($scope.inputText) {
+                                var parts = $scope.inputText.replace(/\, /g, ',').split(','),
+                                    ignore = ['id', 'url', '$$hashKey', "p1", "p2","p3","p4","p5","p6","p7","p8","p9","p10","p11","p12","p13","p14"],
+                                    replacer = function(key, value) {
+                                        if (ignore.indexOf(key) > -1) {
+                                            return undefined;
+                                        } else {
+                                            return value;
+                                        }
+                                    }
+                                obj = JSON.stringify(obj, replacer);
+                                parts.forEach(function(part) {
+                                    if ((part != '') && (new RegExp(part, 'i').test(obj))) {
+                                        isMatch = true;
+                                    }
+                                });
+                            } else {
+                                isMatch = true;
+                            }
+                            return isMatch;
+                        };
+
+                        var vm = this;
+                        vm.dtOptions = DTOptionsBuilder.newOptions()
+                            .withDOM('frt')
+                            .withScroller()
+                            .withOption('paging', false)
+                            .withOption('deferRender', true)
+                            // Do not forget to add the scorllY option!!!
+                            .withOption('scrollY', 300)
+                        $scope.channels = [];
+                        $resource('data/channels.js').query().$promise.then(function(data) {
+                            $scope.channels = data;
+                        });
+                        vm.dtInstance = {};
+                        //vm.dtInstance.rerender();
+                    }
+                ])
+                .filter('toDot', function() {
+                    return function(input, value) {
+                        if (input) {
+                            return "•";
+                        } else {
+                            return "";
+                        }
+                    }
+                });
+        }(window.angular));
+        /*jslint unparam: false*/
+        $.extend($.fn.DataTable.ext.internal, {
+            _fnLog: function () {
+                //console.log('foobar');
+            }
+        });
+    </script>
+    <style>
+        td.grey:before {
+            content: "";
+            position: absolute;
+            background-color: #ddd;
+            left: 0;
+            top: -5000px;
+            height: 10000px;
+            width: 100%;
+            z-index: -2;
+        }
+        td.ltgrey:before {
+            content: "";
+            position: absolute;
+            background-color: #eee;
+            left: 0;
+            top: -5000px;
+            height: 10000px;
+            width: 100%;
+            z-index: -2;
+        }
+        table {
+            overflow: hidden;
+        }
+
+        tr,
+        td,
+        th {
+            position: relative;
+            height: 100%;
+        }
+
+        td.phov:hover::before {
+            content: "";
+            position: absolute;
+            background-color: #C0DFF8;
+            top: 0;
+            left: -5000px;
+            width: 10000px;
+            height: 100%;
+            z-index: -1;
+            opacity: .5;
+        }
+
+        td.phov:hover::after,
+        th.phov:hover::after {
+            content: "";
+            position: absolute;
+            background-color: #C0DFF8;
+            left: 0;
+            top: -5000px;
+            height: 10000px;
+            width: 100%;
+            z-index: -1;
+            opacity: .5;
+        }
+
+        tr:hover td.phov:hover,
+        tr:hover th.phov:hover {
+            background-color: #74B6EA;
+        }
+    </style>
+</head>
+<body ng-app="channelLineup" id="ng-app">
+    <div ng-controller="MainCtrl as main">
+        <table id="table" datatable="ng" dt-options="main.dtOptions" dt-instance="main.dtInstance">
+            <thead>
+                <tr>
+                    <td>Name</td><td>Num</td><td>Genre</td><td>P1</td><td>P2</td><td>P3</td><td>P4</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="channel in channels | filter:myFilter">
+                    <td>{{channel.channelname}}</td><td>{{channel.channelnumber}}</td><td>{{channel.genre}}</td><td class="phov grey">{{channel.p1 | toDot:true}}</td><td class="phov ltgrey">{{channel.p2 | toDot:true}}</td><td class="phov grey">{{channel.p3 | toDot:true}}</td><td class="phov ltgrey">{{channel.p4 | toDot:true}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <input ng-model="inputText">{{inputText}}
+    </div>
+</body>
+</html>
