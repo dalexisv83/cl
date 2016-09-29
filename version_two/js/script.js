@@ -1,6 +1,8 @@
 /*global AdSales, smallGrid, config, bigGrid, searchBox, programmingHeaders, columnSorter, reset, toolTip, commentBtn */
 /*jslint newcap: true */
-var featured_packages = data.featured_packages,
+var featured_packages = data.featured_packages.sort(function(a, b) {
+                            return a.sortOrder - b.sortOrder;
+                        }),
 channels = data.channels,
 ad_channels = AdSales.channels,
 data_type = data.type;

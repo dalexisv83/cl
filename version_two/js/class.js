@@ -530,10 +530,10 @@ smallGrid.prototype.setChannels = function(){
           num = n + 1;
           property = 'p' + num;
           if (i > 0) {
-            this.data[i][property] = featured_package.total_channels;
+            this.data[i][property] = featured_package.channelCount;
           }
           else {
-            this.data[i][property] = featured_package.hd_channels;
+            this.data[i][property] = featured_package.hdChannelCount;
           }
         }
     }
