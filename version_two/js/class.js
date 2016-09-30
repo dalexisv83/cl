@@ -252,6 +252,7 @@ bigGrid.prototype.render = function(){
         var regex = new RegExp(search_term, "i"),
         is_matched = false;
         $.each(columns, function(i, column_name) {
+          console.log(rows[column_name]);
             if (rows[column_name].search(regex) !== -1) {
                 is_matched = true;
                 return false;
@@ -372,10 +373,10 @@ bigGrid.prototype.setChannels = function(data){
         else{
           //if regular channel
           id = i;
-          anchor = channel.anchors;
-          channel_url = formatter.formatUrl(channel.url);
-          channel_name = channel.channelnamebold;
-          channel_num = channel.channelnumber;
+          anchor = channel.anchors ? channel.anchors : '';
+          channel_url = channel.url ? formatter.formatUrl(channel.url) : '';
+          channel_name = channel.channelnamebold ? channel.channelnamebold : '';
+          channel_num = channel.channelnumber ? channel.channelnumber : '';
         }
 
         this.data[id] = {
