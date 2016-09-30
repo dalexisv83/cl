@@ -252,7 +252,6 @@ bigGrid.prototype.render = function(){
         var regex = new RegExp(search_term, "i"),
         is_matched = false;
         $.each(columns, function(i, column_name) {
-          console.log(rows[column_name]);
             if (rows[column_name].search(regex) !== -1) {
                 is_matched = true;
                 return false;
