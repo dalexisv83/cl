@@ -423,7 +423,8 @@ bigGrid.prototype.activateHdChannelsFilter = function(search_box,messageBoxId,re
     context,
     link,
     package_filter = new packageFilter(grid,message_box),
-    property;
+    property,
+    sortNum;
 
     $.each(this.featured_packages, function(index, val) {
         context = "hd_btn"+index;
@@ -437,9 +438,10 @@ bigGrid.prototype.activateHdChannelsFilter = function(search_box,messageBoxId,re
              }
             //remove the fix width columns from the equation
             property = parseInt($(this).attr('data'), 10) - 3;
+            sortNum = property;
             property = 'p' + property;
             property = property+'||HD';
-            package_filter.filterChannelsByPackage(property,true);
+            package_filter.filterChannelsByPackage(property,true,sortNum);
         });
     });
 };
@@ -462,7 +464,8 @@ bigGrid.prototype.activateRegularChannelsFilter = function(search_box,messageBox
     context,
     link,
     package_filter = new packageFilter(grid,message_box),
-    property;
+    property,
+    sortNum;
 
     $.each(this.featured_packages, function(index, val) {
       context = "reg_btn"+index;
@@ -477,9 +480,10 @@ bigGrid.prototype.activateRegularChannelsFilter = function(search_box,messageBox
               }
             //remove the fix width columns from the equation
             property = parseInt($(this).attr('data'), 10) - 3;
+            sortNum = property;
             property = 'p' + property; //determine the property
 
-            package_filter.filterChannelsByPackage(property,false);
+            package_filter.filterChannelsByPackage(property,false,sortNum);
         });
     });
 };
@@ -556,7 +560,7 @@ var packageFilter = function(grid,message_box){
      * @param {string} property represents the key value of the package from the data source
      * @param {boolean} hd_only determines if we're filtering hd only for true or all for false
      */
-    this.filterChannelsByPackage = function(property,hd_only){
+    this.filterChannelsByPackage = function(property,hd_only,sNum){
       var msg_box = this.message_box,
       count;
       //start hooking-up to the grid
@@ -566,7 +570,7 @@ var packageFilter = function(grid,message_box){
       this.grid.updateFilter(); //update the grid
       count = this.grid.dataView.getLength();
       //display message
-      msg_box.createPackageMsg(count,hd_only);
+      msg_box.createPackageMsg(count,hd_only,sNum);
     };
 };
 /**
@@ -838,14 +842,15 @@ messageBox.prototype.createMsg = function(count){
 };
 
 
-messageBox.prototype.createPackageMsg = function(count,is_hd){
+messageBox.prototype.createPackageMsg = function(count,is_hd,sort){
     "use strict";
     var util = new Utility(),
      formatter = new UrlFormatter(config.localhost),
-     package_index = '',
+     package_index = null,
      package_name,
      package_link,
-     msg;
+     msg,
+     ind;
 
     if (!util.isInteger(count) || count < 0) {
         throw new Error('Enter a valid count.');
@@ -859,7 +864,11 @@ messageBox.prototype.createPackageMsg = function(count,is_hd){
       this.self.removeClass('no-channels-found');
     }
     //reverse the index
-    package_index = (this.grid.featured_packages.length - 1) - package_index;
+    for (ind in this.grid.featured_packages) {
+      if (this.grid.featured_packages[ind].sortOrder == sort) {
+        package_index = ind;
+      }
+    }
     package_name = this.grid.featured_packages[package_index].display_name;
     package_link = formatter.adjustUrl(this.grid.featured_packages[package_index].url);
 
