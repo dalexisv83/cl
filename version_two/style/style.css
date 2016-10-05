@@ -7,17 +7,17 @@ classes should alter those!
 */
 
 .slick-header-columns {
-  background: url('%%pub%%system/img/header-columns-bg.gif') repeat-x center bottom;
+  background: url('http://agentanswercenter.directv.com/en-us/res/system/img/header-columns-bg.gif') repeat-x center bottom;
   border-bottom: 1px solid silver;
 }
 
 .slick-header-column {
-  background: url('%%pub%%system/img/header-columns-bg.gif') repeat-x center bottom;
+  background: url('http://agentanswercenter.directv.com/en-us/res/system/img/header-columns-bg.gif') repeat-x center bottom;
   border-right: 1px solid silver;
 }
 
 .slick-header-column:hover, .slick-header-column-active {
-  background: white url('%%pub%%system/img/header-columns-over-bg.gif') repeat-x center bottom;
+  background: white url('http://agentanswercenter.directv.com/en-us/res/system/img/header-columns-over-bg.gif') repeat-x center bottom;
 }
 
 .slick-headerrow {
@@ -62,11 +62,11 @@ classes should alter those!
 }
 
 .slick-group-toggle.expanded {
-  background: url(%%pub%%system/img/collapse.gif) no-repeat center center;
+  background: url(http://agentanswercenter.directv.com/en-us/res/system/img/collapse.gif) no-repeat center center;
 }
 
 .slick-group-toggle.collapsed {
-  background: url(%%pub%%system/img/expand.gif) no-repeat center center;
+  background: url(http://agentanswercenter.directv.com/en-us/res/system/img/expand.gif) no-repeat center center;
 }
 
 .slick-group-totals {
@@ -141,7 +141,7 @@ ul {
 }
 
 li {
-  background: url("%%pub%%system/img/arrow_right_spearmint.png") no-repeat center left;
+  background: url("http://agentanswercenter.directv.com/en-us/res/system/img/arrow_right_spearmint.png") no-repeat center left;
   padding: 0 0 0 14px;
   list-style: none;
   margin: 0;
@@ -157,7 +157,7 @@ li {
   border: 1px solid gray;
   border-bottom: 0;
   border-top: 0;
-  background: url('%%pub%%system/img/header-bg.gif') repeat-x center top;
+  background: url('http://agentanswercenter.directv.com/en-us/res/system/img/header-bg.gif') repeat-x center top;
   color: black;
   height: 24px;
   line-height: 24px;
@@ -279,7 +279,7 @@ input.editor-percentcomplete {
   display: inline-block;
   width: 16px;
   height: 100%;
-  background: url("%%pub%%system/img/pencil.gif") no-repeat center center;
+  background: url("http://agentanswercenter.directv.com/en-us/res/system/img/pencil.gif") no-repeat center center;
   overflow: visible;
   z-index: 1000;
   float: right;
@@ -290,7 +290,7 @@ input.editor-percentcomplete {
   position: absolute;
   top: -2px;
   left: -9px;
-  background: url("%%pub%%system/img/editor-helper-bg.gif") no-repeat top left;
+  background: url("http://agentanswercenter.directv.com/en-us/res/system/img/editor-helper-bg.gif") no-repeat top left;
   padding-left: 9px;
 
   width: 120px;
@@ -359,7 +359,7 @@ html, body {
 }
 
 .full{
-  background-image: url(%%pub%%system/img/tool_bg-09212015.jpg);
+  background-image: url(http://agentanswercenter.directv.com/en-us/res/system/img/tool_bg-09212015.jpg);
   background-repeat: no-repeat;
   background-position: left -30px;
   background-color: #black;
@@ -703,7 +703,7 @@ input#txtSearch{
   height: 26px;
   border: 1px solid gray;
   border-top: 0;
-  background: url('%%pub%%system/img/header-columns-bg.gif') repeat-x center bottom;*/
+  background: url('http://agentanswercenter.directv.com/en-us/res/system/img/header-columns-bg.gif') repeat-x center bottom;*/
   vertical-align: middle;
 }
 
@@ -852,7 +852,7 @@ input#txtSearch{
 
 .ui-state-default .ui-icon:hover{
     cursor: pointer;
-    background-image:url(%%pub%%system/img/ui-icons_454545_256x240.png);
+    background-image:url(http://agentanswercenter.directv.com/en-us/res/system/img/ui-icons_454545_256x240.png);
 }
 
 body a{
@@ -869,7 +869,7 @@ a.activeLink {
 }
 
 .why {
-     background: url(%%pub%%system/img/why-icon.png) no-repeat;
+     background: url(http://agentanswercenter.directv.com/en-us/res/system/img/why-icon.png) no-repeat;
      width: 14px;
      height: 15px;
      cursor: pointer;
@@ -918,17 +918,17 @@ a.activeLink {
 
 /**these will display a fake table images while grid is re-rendering the table during scroll**/
 .fake-table0{
-  background-image:url(%%pub%%system/img/fake_table0.jpg);
+  background-image:url(http://agentanswercenter.directv.com/en-us/res/system/img/fake_table0.jpg);
   background-position: -2px -2px;
 }
 
 .fake-table1{
-  background-image:url(%%pub%%system/img/fake_table1.jpg);
+  background-image:url(http://agentanswercenter.directv.com/en-us/res/system/img/fake_table1.jpg);
   background-position: -2px -2px;
 }
 
 .fake-table2{
-  background-image:url(%%pub%%system/img/fake_table2.jpg);
+  background-image:url(http://agentanswercenter.directv.com/en-us/res/system/img/fake_table2.jpg);
   background-position: -1px -2px;
 }
 
@@ -960,7 +960,7 @@ span.btn-feedback:hover {
     display: block;
     width: 44px;
     height: 16px;
-    background: url(%%pub%%system/img/content_btns.gif) left -192px no-repeat;
+    background: url(http://agentanswercenter.directv.com/en-us/res/system/img/content_btns.gif) left -192px no-repeat;
     text-indent: -9999px;    
 }
 
@@ -976,7 +976,7 @@ span.btn-feedback:hover {
 
 .loader{
     display: block;
-    background-image: url(%%pub%%system/img/image-loader-large.gif);
+    background-image: url(http://agentanswercenter.directv.com/en-us/res/system/img/image-loader-large.gif);
     background-position: 50% 50%;
     background-repeat: no-repeat;
     position: absolute;
