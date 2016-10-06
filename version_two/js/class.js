@@ -372,10 +372,10 @@ bigGrid.prototype.setChannels = function(data){
         else{
           //if regular channel
           id = i;
-          anchor = channel.anchors ? channel.anchors : '';
+          anchor = channel.anchors || '';
           channel_url = channel.url ? formatter.formatUrl(channel.url) : '';
-          channel_name = channel.channelnamebold ? channel.channelnamebold : '';
-          channel_num = channel.channelnumber ? channel.channelnumber : '';
+          channel_name = channel.channelnamebold || '';
+          channel_num = channel.channelnumber || '';
         }
 
         this.data[id] = {
@@ -850,7 +850,8 @@ messageBox.prototype.createPackageMsg = function(count,is_hd,sort){
      package_name,
      package_link,
      msg,
-     ind;
+     ind,
+     featured_length = this.grid.featured_packages.length;
 
     if (!util.isInteger(count) || count < 0) {
         throw new Error('Enter a valid count.');
@@ -864,8 +865,8 @@ messageBox.prototype.createPackageMsg = function(count,is_hd,sort){
       this.self.removeClass('no-channels-found');
     }
     //reverse the index
-    for (ind in this.grid.featured_packages) {
-      if (this.grid.featured_packages[ind].sortOrder == sort) {
+    for (ind = 0; ind < featured_length; ind ++) {
+      if (this.grid.featured_packages[ind].sortOrder === sort) {
         package_index = ind;
       }
     }
