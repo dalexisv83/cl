@@ -100,7 +100,18 @@
 		</yui-compressor>
 
 	</target>
-
+	<target name="replace">
+		<replace dir="${build.dir}">
+			<include name="**/*.*"/>
+			<replacetoken>http://agentanswercenter.directv.com/en-us/res/</replacetoken>
+			<replacevalue>%%pub%%</replacevalue>
+		</replace>
+		<replace dir="${build.dir}">
+			<include name="**/*.*"/>
+			<replacetoken>http://agentanswercenterstg.directv.com/en-us/res/</replacetoken>
+			<replacevalue>%%pub%%</replacevalue>
+		</replace>
+	</target>
 	<target name="clean">
 	</target>
 
@@ -124,6 +135,14 @@
 		<mkdir dir="${build.dir}/css" />
                 <echo message="Building build/test-reports" />
 		<mkdir dir="${build.dir}/test-reports" />
+		<copy todir="${build.dir}">
+			<file file="version_two/index.htm" />
+		</copy>
+		<echo message="Copied index.htm" />
+		<copy todir="${build.dir}">
+			<file file="version_two/index_com.htm" />
+		</copy>
+		<echo message="Copied index_com.htm" />
 	</target>
 
 	<target name="copy">
@@ -136,6 +155,6 @@
 	    <replaceregexp flags="g" file="${build.dir}/c_channel_list.htm" match="#.*#" replace="${env.BUILD_NUMBER}" />               
 	</target>
 
-	<target name="main" depends="start,jslint,compress,concat,clean" />
+	<target name="main" depends="start,jslint,compress,concat,replace,clean" />
 
 </project>
