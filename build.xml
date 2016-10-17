@@ -113,8 +113,23 @@
 		</replace>
 		<replace dir="${build.dir}">
 			<include name="**/*.*"/>
+			<replacetoken>http://agentanswercenter.directv.com/en-us/com/</replacetoken>
+			<replacevalue>%%pub%%</replacevalue>
+		</replace>
+		<replace dir="${build.dir}">
+			<include name="**/*.*"/>
+			<replacetoken>http://agentanswercenterstg.directv.com/en-us/com/</replacetoken>
+			<replacevalue>%%pub%%</replacevalue>
+		</replace>
+		<replace dir="${build.dir}">
+			<include name="**/*.*"/>
 			<replacetoken>http://vwecda05.testla.testfrd.directv.com/toolmanager/index.php/channellineupres</replacetoken>
 			<replacevalue>%%pub%%rover_tools/channel_list/version_two/data/channellineupres.js</replacevalue>
+		</replace>
+		<replace dir="${build.dir}">
+			<include name="**/*.*"/>
+			<replacetoken>http://vwecda05.testla.testfrd.directv.com/toolmanager/index.php/channellineupcom</replacetoken>
+			<replacevalue>%%pub%%rover_tools/channel_list/version_two/data/channellineupcom.js</replacevalue>
 		</replace>
 	</target>
 	<target name="clean">
