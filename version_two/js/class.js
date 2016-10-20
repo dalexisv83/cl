@@ -554,6 +554,7 @@ smallGrid.prototype.setChannels = function(){
 var packageFilter = function(grid,message_box){
   "use strict";
     this.grid = grid;
+    //console.log(message_box.grid.featured_packages[0].channelCount);
     this.message_box = message_box;
     /**
      * Shows all channels for a given package
@@ -562,13 +563,18 @@ var packageFilter = function(grid,message_box){
      */
     this.filterChannelsByPackage = function(property,hd_only,sNum){
       var msg_box = this.message_box,
-      count;
+      count,i;
       //start hooking-up to the grid
       this.grid.package_channels = property;
       this.grid.search_terms = [];
       this.grid.searchString = 'x';
       this.grid.updateFilter(); //update the grid
-      count = this.grid.dataView.getLength();
+      // count = this.grid.dataView.getLength();
+      
+      // grab channelCount from inside this.grid Object
+      i = this.grid.featured_packages.length - this.grid.package_channels.substr(1);
+      count = this.grid.featured_packages[i].channelCount;
+
       //display message
       msg_box.createPackageMsg(count,hd_only,sNum);
     };
