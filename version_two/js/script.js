@@ -82,4 +82,8 @@ $(function () {
     class_name = 'comment-btn'; //add a class of comment-btn
     comment_btn = new commentBtn(btn,class_name,config.baseUrlPath);
     comment_btn.init();
+
+    // hack
+    $('#container .slick-header-columns').children().eq(0).trigger('click');
+    $('#container .slick-header-columns').children().eq(0).trigger('click');
 });
