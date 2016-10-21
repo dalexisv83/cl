@@ -573,10 +573,12 @@ var packageFilter = function(grid,message_box){
      
       // grab channelCount from inside this.grid Object
       i = this.grid.featured_packages.length - this.grid.package_channels.match(/\d+/g);
-      if(hd_only)
+      if(hd_only) {
         count = this.grid.featured_packages[i].hdChannelCount;
-      else
+      }
+      else {
         count = this.grid.featured_packages[i].channelCount;
+      }
 
       //display message
       msg_box.createPackageMsg(count,hd_only,sNum);
