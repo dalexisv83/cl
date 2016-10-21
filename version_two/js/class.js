@@ -562,13 +562,22 @@ var packageFilter = function(grid,message_box){
      */
     this.filterChannelsByPackage = function(property,hd_only,sNum){
       var msg_box = this.message_box,
-      count;
+      count,i;
       //start hooking-up to the grid
       this.grid.package_channels = property;
       this.grid.search_terms = [];
       this.grid.searchString = 'x';
       this.grid.updateFilter(); //update the grid
-      count = this.grid.dataView.getLength();
+
+      // count = this.grid.dataView.getLength();
+     
+      // grab channelCount from inside this.grid Object
+      i = this.grid.featured_packages.length - this.grid.package_channels.match(/\d+/g);
+      if(hd_only)
+        count = this.grid.featured_packages[i].hdChannelCount;
+      else
+        count = this.grid.featured_packages[i].channelCount;
+
       //display message
       msg_box.createPackageMsg(count,hd_only,sNum);
     };
